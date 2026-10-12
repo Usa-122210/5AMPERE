@@ -62,7 +62,7 @@ export function EnergyOverview() {
           <span
             className="text-[11px] font-mono px-2 py-0.5 rounded border text-[var(--color-text-secondary)] bg-[var(--color-surface-secondary)] border-[var(--color-border)]"
           >
-            Illustrative Telemetry · 230V · 50 Hz
+            Simulated 3BHK Profile · 230V AC
           </span>
         </div>
 
@@ -96,7 +96,7 @@ export function EnergyOverview() {
         <Surface variant="primary" padding="md" className="border border-[var(--color-border)] flex flex-col justify-between">
           <div className="space-y-1">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-[var(--color-text-secondary)]">Active Household Load</span>
+              <span className="text-xs font-medium text-[var(--color-text-secondary)]">Power In Use Now</span>
               <div
                 className="w-7 h-7 rounded-lg flex items-center justify-center bg-[var(--color-accent-subtle)]"
               >
@@ -114,9 +114,7 @@ export function EnergyOverview() {
             <div className="flex items-center gap-2 text-xs text-[var(--color-text-secondary)] pt-1">
               <span className="font-mono font-medium">{currentAmps} A</span>
               <span>·</span>
-              <span>PF 0.95</span>
-              <span>·</span>
-              <span className="text-[var(--color-success)] font-medium">Nominal</span>
+              <span className="text-[var(--color-success)] font-medium">Safe Load Level</span>
             </div>
           </div>
 
@@ -133,7 +131,7 @@ export function EnergyOverview() {
             </div>
             <div className="flex justify-between text-[10px] font-mono text-[var(--color-text-muted)]">
               <span>0 kW</span>
-              <span>Sanctioned Load: {metadata.contractedLoadKw.toFixed(1)} kW</span>
+              <span>Meter Limit: {metadata.contractedLoadKw.toFixed(1)} kW</span>
             </div>
           </div>
         </Surface>
@@ -142,7 +140,7 @@ export function EnergyOverview() {
         <Surface variant="primary" padding="md" className="border border-[var(--color-border)] flex flex-col justify-between">
           <div className="space-y-1">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-[var(--color-text-secondary)]">Energy Consumed</span>
+              <span className="text-xs font-medium text-[var(--color-text-secondary)]">Electricity Used Today</span>
               <div
                 className="w-7 h-7 rounded-lg flex items-center justify-center bg-[var(--color-surface-secondary)]"
               >
@@ -154,7 +152,7 @@ export function EnergyOverview() {
               <span className="text-2xl sm:text-3xl font-mono font-extrabold tracking-tight text-[var(--color-text)]">
                 {selectedPeriodKwh.toFixed(1)}
               </span>
-              <span className="text-xs font-mono font-bold text-[var(--color-text-secondary)]">kWh</span>
+              <span className="text-xs font-mono font-bold text-[var(--color-text-secondary)]">kWh (Units)</span>
             </div>
 
             <div className="flex items-center gap-1.5 text-xs text-[var(--color-success)] font-medium pt-1">
@@ -164,8 +162,8 @@ export function EnergyOverview() {
           </div>
 
           <div className="pt-3 mt-3 border-t border-[var(--color-border-subtle)] flex items-center justify-between text-[11px] text-[var(--color-text-secondary)]">
-            <span>Standby Vampire Load:</span>
-            <span className="font-mono font-bold text-[var(--color-text)]">95 W continuous</span>
+            <span>Standby idle draw:</span>
+            <span className="font-mono font-bold text-[var(--color-text)]">95 Watts</span>
           </div>
         </Surface>
 
@@ -174,7 +172,7 @@ export function EnergyOverview() {
           <div className="space-y-1">
             <div className="flex items-center justify-between gap-1">
               <span className="text-xs font-medium text-[var(--color-text-secondary)]">
-                {timeRange === 'month' ? 'Projected Monthly Bill' : 'Estimated Energy Cost'}
+                {timeRange === 'month' ? 'Projected Monthly Bill' : 'Estimated Electricity Bill'}
               </span>
               <div className="flex items-center gap-1">
                 {!isTariffVerified && (
@@ -186,7 +184,7 @@ export function EnergyOverview() {
                   type="button"
                   onClick={openTariffModal}
                   className="text-[10px] font-mono font-semibold px-1.5 py-0.5 rounded bg-[var(--color-surface-secondary)] text-[var(--color-accent)] hover:underline cursor-pointer"
-                  title="Change DISCOM or customize rates"
+                  title="Change utility or edit rates"
                 >
                   {activeTariff.discom.split(' ')[0]} ⚙
                 </button>
@@ -202,13 +200,13 @@ export function EnergyOverview() {
             <div className="flex items-center gap-1.5 text-xs text-[var(--color-text-secondary)] pt-1">
               <span className={`w-2 h-2 rounded-full shrink-0 ${isTariffVerified ? 'bg-[var(--color-success)]' : 'bg-[var(--color-warning)]'}`} />
               <span className="truncate">
-                Rate: <strong>{formatINR(periodEstimate.effectiveEnergyRate)}/kWh</strong> (Effective)
+                Average Rate: <strong>{formatINR(periodEstimate.effectiveEnergyRate)}/unit</strong>
               </span>
             </div>
           </div>
 
           <div className="pt-3 mt-3 border-t border-[var(--color-border-subtle)] flex items-center justify-between text-[11px] text-[var(--color-text-secondary)]">
-            <span>30-Day Cycle Projection:</span>
+            <span>30-Day Estimated Total:</span>
             <span className="font-mono font-bold text-[var(--color-text)]">
               {formatINR(projectedMonthlyBill.totalBill)}
             </span>

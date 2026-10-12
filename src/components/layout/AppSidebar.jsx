@@ -1,43 +1,60 @@
-import { NavLink } from 'react-router-dom';
+import { useState } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
 import {
   Activity,
   Bell,
-  CheckCircle2,
+  ChevronDown,
+  ChevronRight,
   Cpu,
-  CreditCard,
-  Gauge,
   Home,
-  LayoutDashboard,
   Leaf,
   Lightbulb,
+  MoreHorizontal,
   Palette,
-  Power,
   Receipt,
   Settings,
-  ShieldAlert,
-  Sparkles,
   TrendingUp,
   Zap,
 } from 'lucide-react';
 import { useEnergyData } from '../../context/EnergyDataContext';
 
 export function AppSidebar({ isOpen, onClose }) {
+  const location = useLocation();
   const { isSavingModeActive, toggleSavingMode, unreadAlertCount } = useEnergyData();
 
-  const navigationItems = [
-    { to: '/', label: 'Overview', icon: LayoutDashboard, exact: true },
-    { to: '/monitoring', label: 'Live Monitoring', icon: Activity },
+  // Determine if current route is part of "More"
+  const moreRoutePaths = ['/more', '/analytics', '/alerts', '/recommendations', '/monitoring', '/settings', '/preview'];
+  const isMoreRouteActive = moreRoutePaths.some((p) =>
+    p === '/' ? location.pathname === '/' : location.pathname.startsWith(p)
+  );
+
+  const [isMoreExpanded, setIsMoreExpanded] = useState(true);
+
+  // 5 Primary Navigation Sections (Requirement 2)
+  const primaryNavigation = [
+    { to: '/', label: 'Home', icon: Home, exact: true },
     { to: '/appliances', label: 'Appliances', icon: Cpu },
+    { to: '/billing', label: 'Electricity Bill', icon: Receipt },
     {
       to: '/saving-mode',
-      label: 'Saving Mode',
+      label: 'Savings',
       icon: Leaf,
       badge: isSavingModeActive ? 'ON' : null,
       badgeColor: 'var(--color-success)',
     },
-    { to: '/billing', label: 'Bill & Tariff', icon: Receipt },
+    {
+      to: '/more',
+      label: 'More',
+      icon: MoreHorizontal,
+      badge: unreadAlertCount > 0 ? unreadAlertCount : null,
+      badgeColor: 'var(--color-warning)',
+      isMoreTrigger: true,
+    },
+  ];
+
+  // Secondary tools grouped under "More" (Requirement 3)
+  const moreSubItems = [
     { to: '/analytics', label: 'Analytics', icon: TrendingUp },
-    { to: '/recommendations', label: 'Recommendations', icon: Lightbulb },
     {
       to: '/alerts',
       label: 'Alerts',
@@ -45,8 +62,9 @@ export function AppSidebar({ isOpen, onClose }) {
       badge: unreadAlertCount > 0 ? unreadAlertCount : null,
       badgeColor: 'var(--color-warning)',
     },
+    { to: '/recommendations', label: 'Recommendations', icon: Lightbulb },
+    { to: '/monitoring', label: 'Live Telemetry', icon: Activity },
     { to: '/settings', label: 'Settings', icon: Settings },
-    { to: '/preview', label: 'Design System', icon: Palette, isSecondary: true },
   ];
 
   return (
@@ -73,46 +91,117 @@ export function AppSidebar({ isOpen, onClose }) {
         {/* Navigation Links List */}
         <div className="p-3 space-y-1 overflow-y-auto flex-1">
           <div className="px-3 py-1.5 text-[10px] font-mono uppercase font-bold tracking-wider text-[var(--color-text-muted)]">
-            Energy Management
+            Menu
           </div>
 
-          {navigationItems.map((item) => {
+          {primaryNavigation.map((item) => {
             const Icon = item.icon;
+            const isItemActive = item.isMoreTrigger
+              ? isMoreRouteActive
+              : item.exact
+              ? location.pathname === item.to
+              : location.pathname.startsWith(item.to);
 
             return (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                end={item.exact}
-                onClick={() => {
-                  if (window.innerWidth < 1024) onClose();
-                }}
-                className={({ isActive }) =>
-                  `flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
-                    isActive
+              <div key={item.to} className="space-y-1">
+                <NavLink
+                  to={item.to}
+                  end={item.exact}
+                  onClick={() => {
+                    if (item.isMoreTrigger) {
+                      setIsMoreExpanded(true);
+                    }
+                    if (window.innerWidth < 1024) onClose();
+                  }}
+                  className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+                    isItemActive
                       ? 'bg-[var(--color-surface-selected)] text-[var(--color-accent)] font-bold shadow-xs'
                       : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-secondary)]'
-                  }`
-                }
-              >
-                <div className="flex items-center gap-2.5">
-                  <Icon size={16} />
-                  <span>{item.label}</span>
-                </div>
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <Icon size={17} />
+                    <span>{item.label}</span>
+                  </div>
 
-                {item.badge && (
-                  <span
-                    className="text-[10px] font-mono px-1.5 py-0.2 rounded font-bold"
-                    style={{
-                      backgroundColor: 'var(--color-surface-secondary)',
-                      color: item.badgeColor || 'var(--color-text)',
-                      border: '1px solid var(--color-border)',
-                    }}
-                  >
-                    {item.badge}
-                  </span>
+                  <div className="flex items-center gap-1.5">
+                    {item.badge && (
+                      <span
+                        className="text-[10px] font-mono px-1.5 py-0.2 rounded font-bold"
+                        style={{
+                          backgroundColor: 'var(--color-surface-secondary)',
+                          color: item.badgeColor || 'var(--color-text)',
+                          border: '1px solid var(--color-border)',
+                        }}
+                      >
+                        {item.badge}
+                      </span>
+                    )}
+
+                    {item.isMoreTrigger && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setIsMoreExpanded(!isMoreExpanded);
+                        }}
+                        className="p-1 rounded text-[var(--color-text-muted)] hover:text-[var(--color-text)] cursor-pointer"
+                        title={isMoreExpanded ? 'Collapse sub-menu' : 'Expand sub-menu'}
+                        aria-label="Toggle More menu"
+                      >
+                        <ChevronDown
+                          size={14}
+                          className={`transition-transform duration-200 ${isMoreExpanded ? 'rotate-180' : ''}`}
+                        />
+                      </button>
+                    )}
+                  </div>
+                </NavLink>
+
+                {/* Sub-items nested under "More" (Requirement 3) */}
+                {item.isMoreTrigger && isMoreExpanded && (
+                  <div className="pl-4 pr-1 py-1 space-y-0.5 border-l-2 border-[var(--color-border)] ml-4 mt-1">
+                    {moreSubItems.map((sub) => {
+                      const SubIcon = sub.icon;
+                      return (
+                        <NavLink
+                          key={sub.to}
+                          to={sub.to}
+                          onClick={() => {
+                            if (window.innerWidth < 1024) onClose();
+                          }}
+                          className={({ isActive }) =>
+                            `flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                              isActive
+                                ? 'bg-[var(--color-accent-subtle)] text-[var(--color-accent)] font-bold'
+                                : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-secondary)]'
+                            }`
+                          }
+                        >
+                          <div className="flex items-center gap-2">
+                            <SubIcon size={14} />
+                            <span className="truncate">{sub.label}</span>
+                          </div>
+
+                          {sub.badge && (
+                            <span
+                              className="text-[9px] font-mono px-1 py-0.2 rounded font-bold"
+                              style={{
+                                backgroundColor: 'var(--color-surface-secondary)',
+                                color: sub.badgeColor || 'var(--color-text)',
+                                border: '1px solid var(--color-border)',
+                              }}
+                            >
+                              {sub.badge}
+                            </span>
+                          )}
+                        </NavLink>
+                      );
+                    })}
+                  </div>
                 )}
-              </NavLink>
+              </div>
             );
           })}
         </div>
@@ -127,7 +216,7 @@ export function AppSidebar({ isOpen, onClose }) {
                 className={isSavingModeActive ? 'text-[var(--color-success)]' : 'text-[var(--color-text-muted)]'}
               />
               <div>
-                <span className="text-[11px] font-bold block text-[var(--color-text)]">Saving Mode</span>
+                <span className="text-[11px] font-bold block text-[var(--color-text)]">Savings Mode</span>
                 <span className="text-[9px] font-mono text-[var(--color-text-muted)]">
                   {isSavingModeActive ? 'Active (-15%)' : 'Disabled'}
                 </span>
@@ -147,10 +236,15 @@ export function AppSidebar({ isOpen, onClose }) {
             </button>
           </div>
 
-          {/* Telemetry Status Indicator */}
-          <div className="px-2 py-1 text-[10px] font-mono text-[var(--color-text-muted)] flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-success)] animate-pulse shrink-0" />
-            <span className="truncate">Calibrated Simulation Engine</span>
+          {/* Telemetry Status Indicator (Clearly distinguishes simulated data from live physical hardware - Requirement 7) */}
+          <div className="px-2 py-1 text-[10px] font-mono text-[var(--color-text-muted)] flex items-center justify-between gap-1.5">
+            <div className="flex items-center gap-1.5 truncate">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+              <span className="truncate">Simulated 3BHK Profile</span>
+            </div>
+            <span className="text-[9px] px-1 py-0.2 rounded bg-[var(--color-surface-secondary)] border border-[var(--color-border)] font-semibold uppercase">
+              Demo
+            </span>
           </div>
         </div>
       </aside>
@@ -158,3 +252,4 @@ export function AppSidebar({ isOpen, onClose }) {
   );
 }
 
+export default AppSidebar;

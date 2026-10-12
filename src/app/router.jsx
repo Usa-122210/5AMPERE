@@ -9,6 +9,7 @@ import { AnalyticsPage } from '../pages/AnalyticsPage';
 import { RecommendationsPage } from '../pages/RecommendationsPage';
 import { AlertsPage } from '../pages/AlertsPage';
 import { SettingsPage } from '../pages/SettingsPage';
+import { MorePage } from '../pages/MorePage';
 import { FoundationPreview } from '../pages/FoundationPreview';
 
 /**
@@ -65,6 +66,10 @@ export function createAppRouter(options = {}) {
     {
       path: 'settings',
       element: <SettingsPage />,
+    },
+    {
+      path: 'more',
+      element: <MorePage />,
     },
     {
       path: 'preview',
