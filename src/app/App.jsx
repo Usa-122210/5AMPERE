@@ -1,12 +1,13 @@
 import { useMemo } from 'react';
 import { RouterProvider } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme';
+import { AuthProvider } from '../context/AuthContext';
 import { createAppRouter } from './router';
 
 /**
  * App — Root application component.
  *
- * Directly renders the energy management router and provides instant dashboard access.
+ * Provides theme and authentication role context and renders the router.
  */
 export default function App() {
   const { theme, toggleTheme } = useTheme();
@@ -16,5 +17,10 @@ export default function App() {
     [theme, toggleTheme]
   );
 
-  return <RouterProvider router={router} />;
+  return (
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
+  );
 }
+

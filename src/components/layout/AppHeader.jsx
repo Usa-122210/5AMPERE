@@ -1,12 +1,15 @@
-import { Link } from 'react-router-dom';
-import { Menu, X, Zap } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Menu, X, Zap, Sparkles, User, Wrench } from 'lucide-react';
 import { BrandWordmark } from '../brand/BrandWordmark';
 import { ThemeToggle } from './ThemeToggle';
 import { Button } from '../ui/Button';
 import { useEnergyData } from '../../context/EnergyDataContext';
+import { useAuth } from '../../context/AuthContext';
 
 export function AppHeader({ theme, onToggleTheme, onOpenSizing, onToggleSidebar, isSidebarOpen }) {
+  const navigate = useNavigate();
   const { activeTariff, openTariffModal } = useEnergyData();
+  const { currentUser, switchRole } = useAuth();
 
   return (
     <header
@@ -38,7 +41,7 @@ export function AppHeader({ theme, onToggleTheme, onOpenSizing, onToggleSidebar,
           </Link>
         </div>
 
-        {/* Right: Tariff Pill, Electrical State, Theme, Panel Config */}
+        {/* Right: Tariff Pill, Electrical State, Role Switcher, Theme, Login */}
         <div className="flex items-center gap-2.5">
           {/* Active Utility Tariff Pill */}
           <button
@@ -68,18 +71,36 @@ export function AppHeader({ theme, onToggleTheme, onOpenSizing, onToggleSidebar,
             </span>
           </button>
 
-          {/* Nominal Grid Telemetry Indicator */}
-          <div
-            className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-[11px] font-mono"
+          {/* Quick Staff Workspace Switcher (Evaluation Helper) */}
+          <button
+            type="button"
+            onClick={() => {
+              switchRole('technician');
+              navigate('/technician');
+            }}
+            className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-[var(--color-accent)] bg-[var(--color-accent-subtle)] text-[var(--color-accent)] text-xs font-bold cursor-pointer hover:opacity-90 transition-opacity"
+            title="Switch demo role to Technician workspace"
+          >
+            <Sparkles size={12} />
+            <span>Staff Portal</span>
+          </button>
+
+          {/* User Profile / Login Link */}
+          <Link
+            to="/login"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-medium hover:border-[var(--color-accent)] transition-all"
             style={{
               backgroundColor: 'var(--color-surface)',
               borderColor: 'var(--color-border)',
-              color: 'var(--color-text-secondary)',
+              color: 'var(--color-text)',
             }}
+            title="Switch user account or sign in"
           >
-            <span className="w-2 h-2 rounded-full bg-[var(--color-success)] animate-pulse" />
-            <span>230V · 50 Hz Nominal</span>
-          </div>
+            <User size={13} className="text-[var(--color-accent)]" />
+            <span className="font-semibold hidden sm:inline">
+              {currentUser?.name ? currentUser.name.split(' ')[0] : 'Sign In'}
+            </span>
+          </Link>
 
           <ThemeToggle theme={theme} onToggle={onToggleTheme} />
 
@@ -87,7 +108,7 @@ export function AppHeader({ theme, onToggleTheme, onOpenSizing, onToggleSidebar,
             variant="primary"
             size="sm"
             onClick={onOpenSizing}
-            className="shadow-xs font-semibold text-xs hidden sm:inline-flex"
+            className="shadow-xs font-semibold text-xs hidden lg:inline-flex"
           >
             <span>Panel Config</span>
           </Button>
@@ -96,4 +117,5 @@ export function AppHeader({ theme, onToggleTheme, onOpenSizing, onToggleSidebar,
     </header>
   );
 }
+
 

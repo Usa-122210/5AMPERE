@@ -13,6 +13,8 @@ import {
   Settings,
   TrendingUp,
   Zap,
+  Package,
+  Wrench,
 } from 'lucide-react';
 import { Surface } from '../components/ui/Surface';
 import { PageHeader } from '../components/common/PageHeader';
@@ -23,8 +25,30 @@ export function MorePage() {
 
   const sections = [
     {
+      category: 'Hardware Ecosystem & Field Support',
+      items: [
+        {
+          to: '/devices',
+          title: 'Device Marketplace & Hardware Catalogue',
+          description: 'Browse certified 5AMPERE gateways, split-core CT clamps, contactor relays, and request on-site installation.',
+          icon: Package,
+          iconColor: 'var(--color-accent)',
+          badge: 'Ecosystem',
+        },
+        {
+          to: '/installation',
+          title: 'Installation Tracker & Field Support',
+          description: 'Follow your 5-stage commissioning progress, view assigned field technician details, and check site visit status.',
+          icon: Wrench,
+          iconColor: 'var(--color-accent)',
+          badge: 'Field Service',
+        },
+      ],
+    },
+    {
       category: 'Detailed Reports & Intelligence',
       items: [
+
         {
           to: '/analytics',
           title: 'Energy Analytics & History',
@@ -160,3 +184,4 @@ export function MorePage() {
 }
 
 export default MorePage;
+

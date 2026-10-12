@@ -13,12 +13,16 @@ import {
   Receipt,
   ShieldCheck,
   Zap,
+  Wrench,
+  Clock,
+  Package,
 } from 'lucide-react';
 import { Surface } from '../components/ui/Surface';
 import { Button } from '../components/ui/Button';
 import { PageHeader } from '../components/common/PageHeader';
 import { EnergyOverview } from '../components/dashboard/EnergyOverview';
 import { useEnergyData } from '../context/EnergyDataContext';
+import { useAuth } from '../context/AuthContext';
 
 export function OverviewPage() {
   const {
@@ -32,9 +36,17 @@ export function OverviewPage() {
     totalActiveKw,
   } = useEnergyData();
 
+  const { activeCustomerHome, marketplaceHardware } = useAuth();
+
   // Active vs inactive appliances
   const activeLoads = loads.filter((l) => l.active);
   const inactiveLoads = loads.filter((l) => !l.active);
+
+  const installedDevices = activeCustomerHome?.installedDevices || [];
+  const requestedDevices = activeCustomerHome?.requestedDevices || [];
+  const isInstallationPending =
+    activeCustomerHome?.installationStatus === 'pending_assessment' ||
+    activeCustomerHome?.installationStatus === 'visit_scheduled';
 
   return (
     <div className="space-y-6">
@@ -42,7 +54,7 @@ export function OverviewPage() {
       <PageHeader
         category="Home"
         title="Home Electricity Dashboard"
-        badge="Simulated 3BHK Profile"
+        badge={activeCustomerHome?.locality || 'Simulated 3BHK Profile'}
         badgeColor="var(--color-warning)"
         description="Monitor how much electricity your home is using today, track your estimated bill, and see simple ways to save money."
       >
@@ -54,24 +66,61 @@ export function OverviewPage() {
         </Link>
       </PageHeader>
 
-      {/* 1. Clear Simulation Distinction Banner (Requirement 7) */}
-      <div className="p-3.5 rounded-xl border bg-amber-500/10 border-amber-500/30 text-amber-900 dark:text-amber-200 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+      {/* 1. Installation & Service Status Banner (Requirement 3) */}
+      <div
+        className={`p-3.5 rounded-xl border text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs ${
+          isInstallationPending
+            ? 'bg-amber-500/10 border-amber-500/30 text-amber-950 dark:text-amber-200'
+            : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-950 dark:text-emerald-200'
+        }`}
+      >
         <div className="flex items-start sm:items-center gap-2.5">
-          <Info size={18} className="text-amber-600 dark:text-amber-400 shrink-0 mt-0.5 sm:mt-0" />
+          {isInstallationPending ? (
+            <Clock size={18} className="text-amber-600 dark:text-amber-400 shrink-0 mt-0.5 sm:mt-0" />
+          ) : (
+            <ShieldCheck size={18} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5 sm:mt-0" />
+          )}
           <span>
-            <strong>Simulated Demonstration Profile:</strong> Current power readings and appliance states are generated from a calibrated 3BHK Indian home baseline (UPPCL tariff). Physical smart meters can be linked in Settings.
+            {isInstallationPending ? (
+              <>
+                <strong>Installation Visit Pending:</strong> A certified 5AMPERE technician is scheduled to assess your distribution board and mount edge hardware.
+              </>
+            ) : (
+              <>
+                <strong>Installation Status:</strong> System fully commissioned. {installedDevices.length} edge hardware modules active on your breaker panel.
+              </>
+            )}
+          </span>
+        </div>
+        <Link
+          to="/installation"
+          className={`font-bold text-xs underline shrink-0 hover:opacity-80 ${
+            isInstallationPending ? 'text-amber-700 dark:text-amber-300' : 'text-emerald-700 dark:text-emerald-300'
+          }`}
+        >
+          Track Service →
+        </Link>
+      </div>
+
+      {/* 1b. Simulation Distinction Banner (Requirement 7) */}
+      <div className="p-3 rounded-xl border bg-neutral-500/5 border-[var(--color-border)] text-[var(--color-text-secondary)] text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-xs">
+        <div className="flex items-center gap-2">
+          <Info size={15} className="text-[var(--color-accent)] shrink-0" />
+          <span>
+            <strong>Simulated Telemetry Mode:</strong> Current power readings reflect calibrated 3BHK Indian baseline model. Real readings link upon gateway sync.
           </span>
         </div>
         <Link
           to="/settings"
-          className="font-bold text-xs underline shrink-0 hover:opacity-80 text-amber-700 dark:text-amber-300"
+          className="font-bold text-xs underline shrink-0 hover:opacity-80 text-[var(--color-accent)]"
         >
           Meter Settings →
         </Link>
       </div>
 
-      {/* 2. Primary Consumption & Bill Metrics (Requirement 4.1 & 4.2) */}
+      {/* 2. Primary Consumption & Bill Metrics */}
       <EnergyOverview />
+
 
       {/* 3. One Useful Electricity-Saving Suggestion (Requirement 4.4) */}
       <Surface variant="primary" padding="lg" className="border border-[var(--color-accent)] bg-[var(--color-accent-subtle)] space-y-3">
@@ -252,8 +301,90 @@ export function OverviewPage() {
           </Surface>
         </div>
       </div>
+
+      {/* 5. Installed Hardware & Ecosystem Section (Requirement 3 & 4) */}
+      <Surface variant="primary" padding="md" className="border border-[var(--color-border)] space-y-3.5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--color-border-subtle)] pb-3">
+          <div>
+            <div className="flex items-center gap-2">
+              <h3 className="text-sm font-bold text-[var(--color-text)] flex items-center gap-2">
+                <Cpu size={16} className="text-[var(--color-accent)]" />
+                <span>Installed 5AMPERE Hardware ({installedDevices.length} Modules in Panel)</span>
+              </h3>
+              {requestedDevices.length > 0 && (
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-700 dark:text-amber-300 font-bold border border-amber-500/30">
+                  {requestedDevices.length} Addition Pending
+                </span>
+              )}
+            </div>
+            <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">
+              Certified DIN gateway, split-core CT sensors, and contactor relays installed in your breaker board.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Link to="/installation">
+              <Button variant="secondary" size="sm" className="text-xs">
+                <Wrench size={13} />
+                <span>Service Status</span>
+              </Button>
+            </Link>
+
+            <Link to="/devices">
+              <Button variant="primary" size="sm" className="text-xs font-bold shadow-xs">
+                <Package size={13} />
+                <span>Add Hardware</span>
+                <ArrowRight size={13} />
+              </Button>
+            </Link>
+          </div>
+        </div>
+
+        {/* Installed Chips */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+          {installedDevices.map((dev) => {
+            const hw = marketplaceHardware?.find((h) => h.id === dev.id);
+            return (
+              <div
+                key={dev.serial || dev.id}
+                className="p-2.5 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-secondary)] space-y-1"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-[var(--color-text)] truncate">
+                    {hw ? hw.name : dev.id}
+                  </span>
+                  <span className="w-2 h-2 rounded-full bg-[var(--color-success)] shrink-0" />
+                </div>
+                <div className="flex items-center justify-between text-[10px] font-mono text-[var(--color-text-muted)]">
+                  <span>{dev.serial}</span>
+                  <span className="text-[var(--color-accent)]">{dev.circuit || 'Panel'}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {requestedDevices.length > 0 && (
+          <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs flex items-center justify-between gap-2 text-amber-900 dark:text-amber-200">
+            <div className="flex items-center gap-2">
+              <Clock size={15} className="text-amber-600 dark:text-amber-400 shrink-0" />
+              <span>
+                <strong>Requested:</strong>{' '}
+                {requestedDevices.map((r) => r.deviceName || r.deviceId).join(', ')} — Scheduled for {requestedDevices[0].preferredSlot}
+              </span>
+            </div>
+            <Link
+              to="/devices"
+              className="font-bold underline text-xs shrink-0 text-amber-700 dark:text-amber-300"
+            >
+              View Queue →
+            </Link>
+          </div>
+        )}
+      </Surface>
     </div>
   );
 }
+
 
 export default OverviewPage;

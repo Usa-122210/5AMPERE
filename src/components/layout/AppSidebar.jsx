@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   Activity,
   Bell,
@@ -15,12 +15,18 @@ import {
   Settings,
   TrendingUp,
   Zap,
+  Package,
+  Wrench,
+  Sparkles,
 } from 'lucide-react';
 import { useEnergyData } from '../../context/EnergyDataContext';
+import { useAuth } from '../../context/AuthContext';
 
 export function AppSidebar({ isOpen, onClose }) {
   const location = useLocation();
+  const navigate = useNavigate();
   const { isSavingModeActive, toggleSavingMode, unreadAlertCount } = useEnergyData();
+  const { switchRole, activeCustomerHome } = useAuth();
 
   // Determine if current route is part of "More"
   const moreRoutePaths = ['/more', '/analytics', '/alerts', '/recommendations', '/monitoring', '/settings', '/preview'];
@@ -30,7 +36,9 @@ export function AppSidebar({ isOpen, onClose }) {
 
   const [isMoreExpanded, setIsMoreExpanded] = useState(true);
 
-  // 5 Primary Navigation Sections (Requirement 2)
+  const pendingRequestsCount = activeCustomerHome?.requestedDevices?.length || 0;
+
+  // Primary Navigation Sections (Requirement 6)
   const primaryNavigation = [
     { to: '/', label: 'Home', icon: Home, exact: true },
     { to: '/appliances', label: 'Appliances', icon: Cpu },
@@ -41,6 +49,14 @@ export function AppSidebar({ isOpen, onClose }) {
       icon: Leaf,
       badge: isSavingModeActive ? 'ON' : null,
       badgeColor: 'var(--color-success)',
+    },
+    { to: '/devices', label: 'My Devices', icon: Package },
+    {
+      to: '/installation',
+      label: 'Installation & Support',
+      icon: Wrench,
+      badge: pendingRequestsCount > 0 ? `${pendingRequestsCount} PENDING` : null,
+      badgeColor: 'var(--color-warning)',
     },
     {
       to: '/more',
@@ -66,6 +82,7 @@ export function AppSidebar({ isOpen, onClose }) {
     { to: '/monitoring', label: 'Live Telemetry', icon: Activity },
     { to: '/settings', label: 'Settings', icon: Settings },
   ];
+
 
   return (
     <>
@@ -246,10 +263,25 @@ export function AppSidebar({ isOpen, onClose }) {
               Demo
             </span>
           </div>
+
+          {/* Quick Staff Workspace Switcher (Demo Review Helper) */}
+          <button
+            type="button"
+            onClick={() => {
+              switchRole('technician');
+              navigate('/technician');
+              if (window.innerWidth < 1024) onClose();
+            }}
+            className="w-full p-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-accent)] hover:bg-[var(--color-accent-subtle)] text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer transition-all"
+          >
+            <Sparkles size={13} className="text-[var(--color-accent)]" />
+            <span>Switch to Staff Workspace</span>
+          </button>
         </div>
       </aside>
     </>
   );
 }
+
 
 export default AppSidebar;
