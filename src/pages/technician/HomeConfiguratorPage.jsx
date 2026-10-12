@@ -316,12 +316,44 @@ export function HomeConfiguratorPage() {
                 onChange={(e) => setCircuitAssignment(e.target.value)}
                 className="w-full px-2.5 py-1.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] text-xs text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent)]"
               >
-                <option value="Main Incomer (Busbar Phase A)">Main Incomer (Busbar Phase A)</option>
-                <option value="Living Room 1.5T AC (32A Contactor)">Living Room 1.5T AC (32A Contactor)</option>
-                <option value="Master Geyser 25L (16A Relay)">Master Geyser 25L (16A Relay)</option>
-                <option value="Kitchen Microwave Socket (16A Plug)">Kitchen Microwave Socket (16A Plug)</option>
-                <option value="EV Charger Sub-circuit (32A)">EV Charger Sub-circuit (32A)</option>
-                <option value="Whole House Incomer (3-Phase)">Whole House Incomer (3-Phase)</option>
+                {activeHome?.rooms && activeHome.rooms.length > 0 && (
+                  <optgroup label="Property Rooms &amp; Appliances">
+                    {activeHome.rooms.map((room) =>
+                      room.appliances?.map((app) => (
+                        <option
+                          key={`${room.id}-${app.id}`}
+                          value={`${room.name} · ${app.name} (${app.drawKw}kW)`}
+                        >
+                          {room.name} — {app.name} ({app.drawKw} kW)
+                        </option>
+                      ))
+                    )}
+                    {activeHome.rooms.map((room) => (
+                      <option key={`sub-${room.id}`} value={`${room.name} Sub-Circuit`}>
+                        {room.name} — Sub-Circuit Breaker
+                      </option>
+                    ))}
+                  </optgroup>
+                )}
+
+                {activeHome?.circuits && activeHome.circuits.length > 0 && (
+                  <optgroup label="Property Circuits">
+                    {activeHome.circuits.map((ckt) => (
+                      <option key={ckt.id} value={ckt.name}>
+                        {ckt.name} ({ckt.rating || '16A'})
+                      </option>
+                    ))}
+                  </optgroup>
+                )}
+
+                <optgroup label="Distribution Board Busbars &amp; Heavy Feeds">
+                  <option value="Main Incomer (Busbar Phase A)">Main Incomer (Busbar Phase A)</option>
+                  <option value="Main Incomer (Busbar Phase B)">Main Incomer (Busbar Phase B)</option>
+                  <option value="Main Incomer (Busbar Phase C)">Main Incomer (Busbar Phase C)</option>
+                  <option value="Whole House Incomer (3-Phase)">Whole House Incomer (3-Phase)</option>
+                  <option value="EV Charger Sub-circuit (32A)">EV Charger Sub-circuit (32A)</option>
+                  <option value="Solar Net Meter Feeder">Solar Net Meter Feeder</option>
+                </optgroup>
               </select>
             </div>
 
@@ -400,3 +432,4 @@ export function HomeConfiguratorPage() {
 }
 
 export default HomeConfiguratorPage;
+

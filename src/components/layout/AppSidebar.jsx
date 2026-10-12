@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import {
   Activity,
   Bell,
   ChevronDown,
-  ChevronRight,
   Cpu,
   Home,
   Leaf,
@@ -14,63 +13,45 @@ import {
   Receipt,
   Settings,
   TrendingUp,
-  Zap,
   Package,
   Wrench,
-  Sparkles,
+  Layers,
+  Building,
+  School,
+  Factory,
 } from 'lucide-react';
 import { useEnergyData } from '../../context/EnergyDataContext';
 import { useAuth } from '../../context/AuthContext';
 
 export function AppSidebar({ isOpen, onClose }) {
   const location = useLocation();
-  const navigate = useNavigate();
   const { isSavingModeActive, toggleSavingMode, unreadAlertCount } = useEnergyData();
-  const { switchRole, activeCustomerHome } = useAuth();
+  const { activeCustomerProperty } = useAuth();
 
   // Determine if current route is part of "More"
-  const moreRoutePaths = ['/more', '/analytics', '/alerts', '/recommendations', '/monitoring', '/settings', '/preview'];
+  const moreRoutePaths = ['/more', '/appliances', '/analytics', '/recommendations', '/preview'];
   const isMoreRouteActive = moreRoutePaths.some((p) =>
     p === '/' ? location.pathname === '/' : location.pathname.startsWith(p)
   );
 
-  const [isMoreExpanded, setIsMoreExpanded] = useState(true);
+  const [isMoreExpanded, setIsMoreExpanded] = useState(false);
 
-  const pendingRequestsCount = activeCustomerHome?.requestedDevices?.length || 0;
+  const pendingRequestsCount = activeCustomerProperty?.requestedDevices?.length || 0;
 
-  // Primary Navigation Sections (Requirement 6)
+  // Primary Navigation Sections (Standardized for Customer Experience)
   const primaryNavigation = [
-    { to: '/', label: 'Home', icon: Home, exact: true },
-    { to: '/appliances', label: 'Appliances', icon: Cpu },
+    { to: '/', label: 'Overview', icon: Home, exact: true },
+    { to: '/monitoring', label: 'Energy Monitoring', icon: Activity },
+    { to: '/rooms-appliances', label: 'Rooms & Appliances', icon: Layers },
+    { to: '/devices', label: 'Devices & Hardware', icon: Package },
     { to: '/billing', label: 'Electricity Bill', icon: Receipt },
     {
       to: '/saving-mode',
-      label: 'Savings',
+      label: 'Savings & Recommendations',
       icon: Leaf,
       badge: isSavingModeActive ? 'ON' : null,
       badgeColor: 'var(--color-success)',
     },
-    { to: '/devices', label: 'My Devices', icon: Package },
-    {
-      to: '/installation',
-      label: 'Installation & Support',
-      icon: Wrench,
-      badge: pendingRequestsCount > 0 ? `${pendingRequestsCount} PENDING` : null,
-      badgeColor: 'var(--color-warning)',
-    },
-    {
-      to: '/more',
-      label: 'More',
-      icon: MoreHorizontal,
-      badge: unreadAlertCount > 0 ? unreadAlertCount : null,
-      badgeColor: 'var(--color-warning)',
-      isMoreTrigger: true,
-    },
-  ];
-
-  // Secondary tools grouped under "More" (Requirement 3)
-  const moreSubItems = [
-    { to: '/analytics', label: 'Analytics', icon: TrendingUp },
     {
       to: '/alerts',
       label: 'Alerts',
@@ -78,11 +59,39 @@ export function AppSidebar({ isOpen, onClose }) {
       badge: unreadAlertCount > 0 ? unreadAlertCount : null,
       badgeColor: 'var(--color-warning)',
     },
-    { to: '/recommendations', label: 'Recommendations', icon: Lightbulb },
-    { to: '/monitoring', label: 'Live Telemetry', icon: Activity },
-    { to: '/settings', label: 'Settings', icon: Settings },
+    {
+      to: '/installation',
+      label: 'Installation & Support',
+      icon: Wrench,
+      badge: pendingRequestsCount > 0 ? `${pendingRequestsCount} PENDING` : null,
+      badgeColor: 'var(--color-warning)',
+    },
+    { to: '/settings', label: 'Property Settings', icon: Settings },
+    {
+      to: '/more',
+      label: 'More',
+      icon: MoreHorizontal,
+      isMoreTrigger: true,
+    },
   ];
 
+  // Secondary tools grouped under "More"
+  const moreSubItems = [
+    { to: '/appliances', label: 'Appliance Relays', icon: Cpu },
+    { to: '/analytics', label: 'Analytics & Trends', icon: TrendingUp },
+    { to: '/recommendations', label: 'Energy Advice', icon: Lightbulb },
+    { to: '/preview', label: 'Design System Preview', icon: Palette },
+  ];
+
+  const propType = activeCustomerProperty?.propertyType || 'home';
+  const PropIcon =
+    propType === 'school'
+      ? School
+      : propType === 'office'
+      ? Building
+      : propType === 'industry'
+      ? Factory
+      : Home;
 
   return (
     <>
@@ -108,7 +117,7 @@ export function AppSidebar({ isOpen, onClose }) {
         {/* Navigation Links List */}
         <div className="p-3 space-y-1 overflow-y-auto flex-1">
           <div className="px-3 py-1.5 text-[10px] font-mono uppercase font-bold tracking-wider text-[var(--color-text-muted)]">
-            Menu
+            Workspace
           </div>
 
           {primaryNavigation.map((item) => {
@@ -126,18 +135,18 @@ export function AppSidebar({ isOpen, onClose }) {
                   end={item.exact}
                   onClick={() => {
                     if (item.isMoreTrigger) {
-                      setIsMoreExpanded(true);
+                      setIsMoreExpanded(!isMoreExpanded);
                     }
                     if (window.innerWidth < 1024) onClose();
                   }}
-                  className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+                  className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
                     isItemActive
                       ? 'bg-[var(--color-surface-selected)] text-[var(--color-accent)] font-bold shadow-xs'
                       : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-secondary)]'
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
-                    <Icon size={17} />
+                    <Icon size={16} />
                     <span>{item.label}</span>
                   </div>
 
@@ -176,7 +185,7 @@ export function AppSidebar({ isOpen, onClose }) {
                   </div>
                 </NavLink>
 
-                {/* Sub-items nested under "More" (Requirement 3) */}
+                {/* Sub-items nested under "More" */}
                 {item.isMoreTrigger && isMoreExpanded && (
                   <div className="pl-4 pr-1 py-1 space-y-0.5 border-l-2 border-[var(--color-border)] ml-4 mt-1">
                     {moreSubItems.map((sub) => {
@@ -200,19 +209,6 @@ export function AppSidebar({ isOpen, onClose }) {
                             <SubIcon size={14} />
                             <span className="truncate">{sub.label}</span>
                           </div>
-
-                          {sub.badge && (
-                            <span
-                              className="text-[9px] font-mono px-1 py-0.2 rounded font-bold"
-                              style={{
-                                backgroundColor: 'var(--color-surface-secondary)',
-                                color: sub.badgeColor || 'var(--color-text)',
-                                border: '1px solid var(--color-border)',
-                              }}
-                            >
-                              {sub.badge}
-                            </span>
-                          )}
                         </NavLink>
                       );
                     })}
@@ -223,8 +219,25 @@ export function AppSidebar({ isOpen, onClose }) {
           })}
         </div>
 
-        {/* Sidebar Footer — Saving Mode Quick Status & Telemetry Mode */}
+        {/* Sidebar Footer — Property Info & Saving Mode Toggle */}
         <div className="p-3 border-t border-[var(--color-border)] space-y-2.5">
+          {/* Active Property Card */}
+          <div className="p-2.5 rounded-xl border bg-[var(--color-surface-secondary)] border-[var(--color-border)]">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-[var(--color-accent-subtle)] text-[var(--color-accent)] flex items-center justify-center shrink-0 border border-[var(--color-accent)]/20">
+                <PropIcon size={16} />
+              </div>
+              <div className="min-w-0 flex-1">
+                <span className="text-[11px] font-bold block text-[var(--color-text)] truncate">
+                  {activeCustomerProperty?.propertyName || 'Customer Property'}
+                </span>
+                <span className="text-[9px] font-mono text-[var(--color-text-muted)] block truncate uppercase">
+                  {propType} · {activeCustomerProperty?.sanctionedLoadKw || 5} kW Sanctioned
+                </span>
+              </div>
+            </div>
+          </div>
+
           {/* Quick Saving Mode Toggle Pill */}
           <div className="p-2.5 rounded-xl border bg-[var(--color-surface-secondary)] border-[var(--color-border)] flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
@@ -252,36 +265,10 @@ export function AppSidebar({ isOpen, onClose }) {
               {isSavingModeActive ? 'ON' : 'OFF'}
             </button>
           </div>
-
-          {/* Telemetry Status Indicator (Clearly distinguishes simulated data from live physical hardware - Requirement 7) */}
-          <div className="px-2 py-1 text-[10px] font-mono text-[var(--color-text-muted)] flex items-center justify-between gap-1.5">
-            <div className="flex items-center gap-1.5 truncate">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
-              <span className="truncate">Simulated 3BHK Profile</span>
-            </div>
-            <span className="text-[9px] px-1 py-0.2 rounded bg-[var(--color-surface-secondary)] border border-[var(--color-border)] font-semibold uppercase">
-              Demo
-            </span>
-          </div>
-
-          {/* Quick Staff Workspace Switcher (Demo Review Helper) */}
-          <button
-            type="button"
-            onClick={() => {
-              switchRole('technician');
-              navigate('/technician');
-              if (window.innerWidth < 1024) onClose();
-            }}
-            className="w-full p-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-accent)] hover:bg-[var(--color-accent-subtle)] text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer transition-all"
-          >
-            <Sparkles size={13} className="text-[var(--color-accent)]" />
-            <span>Switch to Staff Workspace</span>
-          </button>
         </div>
       </aside>
     </>
   );
 }
-
 
 export default AppSidebar;

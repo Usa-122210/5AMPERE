@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import {
   Shield,
@@ -13,20 +13,42 @@ import {
   AlertCircle,
   HelpCircle,
   Sparkles,
-  Zap,
+  Building,
+  School,
+  Factory,
+  Home,
+  RotateCcw,
 } from 'lucide-react';
 import { BrandWordmark } from '../../components/brand/BrandWordmark';
 import { Surface } from '../../components/ui/Surface';
 import { Button } from '../../components/ui/Button';
 import { EnergyFlowBackground } from '../../components/motion/EnergyFlowBackground';
+import { EvaluatorControls } from '../../components/common/EvaluatorControls';
 import { useAuth } from '../../context/AuthContext';
 
-export function LoginPage() {
+export function LoginPage({ defaultTab = 'customer' }) {
   const navigate = useNavigate();
-  const { loginCustomer, loginTechnician, switchRole } = useAuth();
+  const {
+    currentUser,
+    loginCustomer,
+    loginTechnician,
+    loginAsDemoUser,
+    resetDemoData,
+  } = useAuth();
+
+  // If already authenticated, redirect to their workspace
+  useEffect(() => {
+    if (currentUser) {
+      if (currentUser.role === 'technician') {
+        navigate('/technician');
+      } else {
+        navigate('/');
+      }
+    }
+  }, [currentUser, navigate]);
 
   // Active tab: 'customer' | 'staff'
-  const [activeTab, setActiveTab] = useState('customer');
+  const [activeTab, setActiveTab] = useState(defaultTab);
 
   // Form states
   const [email, setEmail] = useState('');
@@ -34,33 +56,17 @@ export function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [error, setError] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Forgot Password modal state
   const [isForgotModalOpen, setIsForgotModalOpen] = useState(false);
   const [forgotEmail, setForgotEmail] = useState('');
   const [forgotSent, setForgotSent] = useState(false);
 
-  // Quick fill demo credentials
-  const handleQuickDemoCustomer = () => {
-    setActiveTab('customer');
-    setEmail('arpita@example.com');
-    setPassword('5Ampere@2026');
-    setError('');
-  };
-
-  const handleQuickDemoStaff = () => {
-    setActiveTab('staff');
-    setEmail('rajesh.kumar@5ampere.com');
-    setPassword('TechStaff#42');
-    setError('');
-  };
-
+  // Instant login handler (NO artificial timeouts or delays!)
   const handleSubmit = (e) => {
     e.preventDefault();
     setError('');
 
-    // Validation
     if (!email || !email.includes('@')) {
       setError('Please enter a valid email address.');
       return;
@@ -70,17 +76,23 @@ export function LoginPage() {
       return;
     }
 
-    setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      if (activeTab === 'customer') {
-        loginCustomer(email, password);
-        navigate('/');
-      } else {
-        loginTechnician(email, password);
-        navigate('/technician');
-      }
-    }, 400);
+    if (activeTab === 'customer') {
+      loginCustomer(email, password);
+      navigate('/');
+    } else {
+      loginTechnician(email, password);
+      navigate('/technician');
+    }
+  };
+
+  const handleDemoLogin = (demoKey) => {
+    setError('');
+    loginAsDemoUser(demoKey);
+    if (demoKey === 'technician') {
+      navigate('/technician');
+    } else {
+      navigate('/');
+    }
   };
 
   return (
@@ -90,33 +102,28 @@ export function LoginPage() {
     >
       <EnergyFlowBackground intensity="subtle" />
 
-      {/* Top Header Bar */}
-      <header className="relative z-10 w-full px-6 py-4 flex items-center justify-between border-b border-[var(--color-border)] bg-[var(--color-surface)]/80 backdrop-blur-md">
+      {/* Top Application Header */}
+      <header className="relative z-10 w-full px-4 sm:px-6 py-3.5 flex items-center justify-between border-b border-[var(--color-border)] bg-[var(--color-surface)]/80 backdrop-blur-md">
         <Link to="/" className="flex items-center gap-2">
           <BrandWordmark size="sm" showBadge={true} badgeText="Smart Energy" />
         </Link>
         <div className="flex items-center gap-2">
           <span className="text-xs text-[var(--color-text-secondary)] hidden sm:inline">
-            Evaluating the prototype?
+            New to 5AMPERE?
           </span>
-          <button
-            type="button"
-            onClick={() => {
-              switchRole(activeTab === 'customer' ? 'technician' : 'customer');
-              navigate(activeTab === 'customer' ? '/technician' : '/');
-            }}
-            className="text-xs px-2.5 py-1 rounded-lg border border-[var(--color-accent)] bg-[var(--color-accent-subtle)] text-[var(--color-accent)] font-semibold cursor-pointer hover:opacity-90 flex items-center gap-1.5"
-          >
-            <Sparkles size={12} />
-            <span>Instant Role Switch ({activeTab === 'customer' ? 'Staff' : 'Homeowner'})</span>
-          </button>
+          <Link to="/signup">
+            <Button variant="primary" size="sm" className="text-xs font-bold shadow-xs">
+              <span>Create Account &amp; Register Property</span>
+              <ArrowRight size={13} />
+            </Button>
+          </Link>
         </div>
       </header>
 
-      {/* Main Authentication Card Container */}
-      <main className="relative z-10 flex-1 flex items-center justify-center p-4 sm:p-6 my-6">
+      {/* Main Container */}
+      <main className="relative z-10 flex-1 flex items-center justify-center p-4 sm:p-6 my-4">
         <div className="w-full max-w-md space-y-4">
-          {/* Role Tabs Header */}
+          {/* Sign In vs Staff Tab Switcher */}
           <div className="p-1 rounded-xl bg-[var(--color-surface-secondary)] border border-[var(--color-border)] grid grid-cols-2 gap-1">
             <button
               type="button"
@@ -131,7 +138,7 @@ export function LoginPage() {
               }`}
             >
               <User size={15} />
-              <span>Homeowner / Customer</span>
+              <span>Customer Sign In</span>
             </button>
 
             <button
@@ -147,57 +154,57 @@ export function LoginPage() {
               }`}
             >
               <Wrench size={15} />
-              <span>Company Staff &amp; Tech</span>
+              <span>Staff &amp; Tech Access</span>
             </button>
           </div>
 
-          {/* Login Card */}
-          <Surface variant="primary" padding="lg" className="border border-[var(--color-border)] shadow-md">
-            <div className="mb-5">
+          {/* Authentication Card */}
+          <Surface variant="primary" padding="lg" className="border border-[var(--color-border)] shadow-md space-y-4">
+            <div>
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-mono uppercase tracking-wider font-bold px-2 py-0.5 rounded bg-[var(--color-surface-secondary)] text-[var(--color-text-secondary)] border border-[var(--color-border)]">
-                  {activeTab === 'customer' ? 'Customer Portal' : 'Technician Workspace'}
+                  {activeTab === 'customer' ? 'Customer Authentication' : 'Staff Portal'}
                 </span>
                 <span className="text-[10px] font-mono text-[var(--color-text-muted)]">
-                  Prototype Auth
+                  Simulated Demo
                 </span>
               </div>
               <h1 className="text-xl font-bold text-[var(--color-text)] mt-2">
                 {activeTab === 'customer'
-                  ? 'Welcome back to 5AMPERE'
-                  : 'Field Engineering & Support'}
+                  ? 'Sign In to Your Workspace'
+                  : 'Company Technician Console'}
               </h1>
               <p className="text-xs text-[var(--color-text-secondary)] mt-1">
                 {activeTab === 'customer'
-                  ? 'Log in to track home energy, view your monthly bill, and manage appliances.'
-                  : 'Managed staff access for system technicians, site installers, and dispatchers.'}
+                  ? 'Monitor power draw, review electricity bills, and manage your property appliances.'
+                  : 'Authorized access for field engineers, electrical wiremen, and installation staff.'}
               </p>
             </div>
 
-            {/* Managed Access Notice for Staff */}
+            {/* Staff Restriction Notice */}
             {activeTab === 'staff' && (
-              <div className="mb-4 p-3 rounded-xl border bg-amber-500/10 border-amber-500/30 text-amber-900 dark:text-amber-200 text-xs flex items-start gap-2.5">
+              <div className="p-3 rounded-xl border bg-amber-500/10 border-amber-500/30 text-amber-900 dark:text-amber-200 text-xs flex items-start gap-2.5">
                 <Shield size={16} className="text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
                 <div>
                   <strong className="block font-semibold">Managed Company Access:</strong>
-                  Public staff registration is restricted. Accounts are provisioned by 5AMPERE Systems Operations.
+                  Public staff registration is restricted. Technician accounts are provisioned by 5AMPERE Systems Operations.
                 </div>
               </div>
             )}
 
             {/* Error Message */}
             {error && (
-              <div className="mb-4 p-3 rounded-xl border bg-red-500/10 border-red-500/30 text-red-700 dark:text-red-300 text-xs flex items-center gap-2">
+              <div className="p-3 rounded-xl border bg-red-500/10 border-red-500/30 text-red-700 dark:text-red-300 text-xs flex items-center gap-2">
                 <AlertCircle size={15} className="shrink-0" />
                 <span>{error}</span>
               </div>
             )}
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-3.5">
               <div>
                 <label className="block text-xs font-semibold text-[var(--color-text)] mb-1">
-                  {activeTab === 'customer' ? 'Email Address' : 'Staff Email / Employee ID'}
+                  {activeTab === 'customer' ? 'Registered Email Address' : 'Staff Email / Employee ID'}
                 </label>
                 <div className="relative">
                   <Mail
@@ -269,7 +276,7 @@ export function LoginPage() {
                     onChange={(e) => setRememberMe(e.target.checked)}
                     className="rounded border-[var(--color-border)] text-[var(--color-accent)]"
                   />
-                  <span>Remember this device</span>
+                  <span>Remember this session</span>
                 </label>
               </div>
 
@@ -278,77 +285,110 @@ export function LoginPage() {
                 variant="primary"
                 size="md"
                 className="w-full shadow-xs justify-center font-bold text-xs"
-                disabled={isSubmitting}
               >
-                {isSubmitting ? (
-                  <span>Authenticating...</span>
-                ) : (
-                  <>
-                    <span>
-                      {activeTab === 'customer'
-                        ? 'Sign In to Home Dashboard'
-                        : 'Sign In to Staff Workspace'}
-                    </span>
-                    <ArrowRight size={14} />
-                  </>
-                )}
+                <span>
+                  {activeTab === 'customer' ? 'Sign In to Workspace' : 'Sign In as Technician'}
+                </span>
+                <ArrowRight size={14} />
               </Button>
             </form>
 
-            {/* Quick Demo Autofill Helpers */}
-            <div className="mt-5 pt-4 border-t border-[var(--color-border-subtle)] space-y-2">
-              <span className="text-[10px] font-mono text-[var(--color-text-muted)] uppercase tracking-wider block">
-                Quick Demo Autofill
-              </span>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={handleQuickDemoCustomer}
-                  className="p-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-secondary)] hover:border-[var(--color-accent)] text-left cursor-pointer transition-colors"
-                >
-                  <span className="text-[11px] font-bold block text-[var(--color-text)]">
-                    Homeowner
-                  </span>
-                  <span className="text-[10px] text-[var(--color-text-muted)] block truncate">
-                    Arpita Sharma (3BHK)
-                  </span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleQuickDemoStaff}
-                  className="p-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-secondary)] hover:border-[var(--color-accent)] text-left cursor-pointer transition-colors"
-                >
-                  <span className="text-[11px] font-bold block text-[var(--color-text)]">
-                    Lead Technician
-                  </span>
-                  <span className="text-[10px] text-[var(--color-text-muted)] block truncate">
-                    Rajesh Kumar (Staff)
-                  </span>
-                </button>
-              </div>
-            </div>
-
-            {/* Sign up link for Homeowner */}
+            {/* Create Account Link for Customers */}
             {activeTab === 'customer' && (
-              <div className="mt-5 text-center text-xs text-[var(--color-text-secondary)]">
-                Don&apos;t have a 5AMPERE home setup yet?{' '}
+              <div className="pt-2 text-center text-xs text-[var(--color-text-secondary)]">
+                Don&apos;t have an energy profile yet?{' '}
                 <Link
                   to="/signup"
                   className="font-bold text-[var(--color-accent)] hover:underline inline-flex items-center gap-1"
                 >
-                  <span>Sign up &amp; Book Installation</span>
-                  <ArrowRight size={12} />
+                  <span>Register a New Property →</span>
                 </Link>
               </div>
             )}
+          </Surface>
+
+          {/* Evaluator Instant Demo Accounts Box */}
+          <Surface variant="primary" padding="md" className="border border-[var(--color-border)] bg-[var(--color-surface-secondary)] space-y-2.5">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-mono text-[var(--color-text-muted)] uppercase tracking-wider font-bold flex items-center gap-1.5">
+                <Sparkles size={12} className="text-[var(--color-accent)]" />
+                <span>Simulated Demo Accounts (1-Click Test)</span>
+              </span>
+              <button
+                type="button"
+                onClick={resetDemoData}
+                className="text-[10px] text-[var(--color-text-muted)] hover:text-red-600 font-semibold flex items-center gap-1 cursor-pointer"
+                title="Reset all demo accounts and localStorage to original baseline"
+              >
+                <RotateCcw size={11} />
+                <span>Reset Demo</span>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 text-left">
+              <button
+                type="button"
+                onClick={() => handleDemoLogin('customer-home')}
+                className="p-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-accent)] cursor-pointer transition-colors text-left"
+              >
+                <div className="flex items-center gap-1.5 text-xs font-bold text-[var(--color-text)]">
+                  <Home size={13} className="text-[var(--color-accent)]" />
+                  <span>Home (3BHK)</span>
+                </div>
+                <span className="text-[10px] text-[var(--color-text-muted)] block truncate">
+                  Arpita Sharma · Active
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleDemoLogin('customer-school')}
+                className="p-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-accent)] cursor-pointer transition-colors text-left"
+              >
+                <div className="flex items-center gap-1.5 text-xs font-bold text-[var(--color-text)]">
+                  <School size={13} className="text-blue-600 dark:text-blue-400" />
+                  <span>School Campus</span>
+                </div>
+                <span className="text-[10px] text-[var(--color-text-muted)] block truncate">
+                  Greenwood · Scheduled
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleDemoLogin('customer-office')}
+                className="p-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-accent)] cursor-pointer transition-colors text-left"
+              >
+                <div className="flex items-center gap-1.5 text-xs font-bold text-[var(--color-text)]">
+                  <Building size={13} className="text-purple-600 dark:text-purple-400" />
+                  <span>Office Hub</span>
+                </div>
+                <span className="text-[10px] text-[var(--color-text-muted)] block truncate">
+                  TechCorp · Installing
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleDemoLogin('technician')}
+                className="p-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-accent)] cursor-pointer transition-colors text-left"
+              >
+                <div className="flex items-center gap-1.5 text-xs font-bold text-[var(--color-text)]">
+                  <Wrench size={13} className="text-amber-600 dark:text-amber-400" />
+                  <span>Lead Technician</span>
+                </div>
+                <span className="text-[10px] text-[var(--color-text-muted)] block truncate">
+                  Rajesh Kumar · Staff
+                </span>
+              </button>
+            </div>
           </Surface>
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="relative z-10 py-4 text-center text-xs text-[var(--color-text-muted)] border-t border-[var(--color-border)]">
-        <span>5AMPERE Smart Home Energy Platform · Prototype Frontend (Demo Mode)</span>
+      <footer className="relative z-10 py-3.5 text-center text-xs text-[var(--color-text-muted)] border-t border-[var(--color-border)]">
+        <span>5AMPERE Smart Energy Management Platform · Simulated Frontend Prototype</span>
       </footer>
 
       {/* Forgot Password Modal (Mock) */}
@@ -358,7 +398,7 @@ export function LoginPage() {
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-bold text-[var(--color-text)] flex items-center gap-2">
                 <HelpCircle size={16} className="text-[var(--color-accent)]" />
-                <span>Password Recovery Assistance</span>
+                <span>Simulated Password Recovery</span>
               </h3>
               <button
                 type="button"
@@ -390,7 +430,7 @@ export function LoginPage() {
             ) : (
               <div className="space-y-3">
                 <p className="text-xs text-[var(--color-text-secondary)]">
-                  Enter your registered homeowner email address. We will verify your DISCOM connection and send reset instructions.
+                  Enter your registered property email address. We will verify your DISCOM connection and simulate reset instructions.
                 </p>
                 <div>
                   <label className="block text-[11px] font-semibold text-[var(--color-text)] mb-1">
@@ -427,6 +467,9 @@ export function LoginPage() {
           </Surface>
         </div>
       )}
+
+      {/* Isolated Evaluator Demo Drawer */}
+      <EvaluatorControls />
     </div>
   );
 }

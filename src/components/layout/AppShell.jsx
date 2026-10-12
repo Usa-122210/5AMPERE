@@ -6,6 +6,7 @@ import { AppSidebar } from './AppSidebar';
 import { ConfirmationModal } from '../common/ConfirmationModal';
 import { SizingModal } from '../home/SizingModal';
 import { TariffConfigModal } from '../dashboard/TariffConfigModal';
+import { EvaluatorControls } from '../common/EvaluatorControls';
 import { EnergyDataProvider, useEnergyData } from '../../context/EnergyDataContext';
 import { useTheme } from '../../hooks/useTheme';
 
@@ -65,6 +66,9 @@ function AppShellInner({ theme, onToggleTheme }) {
         isOpen={isTariffModalOpen}
         onClose={closeTariffModal}
       />
+
+      {/* Isolated Evaluator Demo Drawer */}
+      <EvaluatorControls />
     </div>
   );
 }

@@ -169,7 +169,7 @@ export function CustomerProfilesPage() {
                       {selectedHome.customerName}
                     </h3>
                     <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-[var(--color-surface-secondary)] border border-[var(--color-border)] text-[var(--color-accent)] font-bold">
-                      {selectedHome.homeType.replace('_', ' ')}
+                      {selectedHome.homeType ? selectedHome.homeType.replace('_', ' ') : (selectedHome.propertyType?.toUpperCase() || 'RESIDENTIAL')}
                     </span>
                   </div>
                   <p className="text-xs text-[var(--color-text-secondary)] mt-0.5 flex items-center gap-1.5">
@@ -318,21 +318,58 @@ export function CustomerProfilesPage() {
                 </div>
               )}
 
-              {/* Registered Household Appliances */}
+              {/* Configured Rooms & Appliances Topology */}
               <div>
-                <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--color-text-secondary)] mb-2 font-mono">
-                  Registered Appliances ({(selectedHome.registeredAppliances || []).length})
+                <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--color-text-secondary)] mb-2 font-mono flex items-center justify-between">
+                  <span>Configured Rooms &amp; Loads Topology</span>
+                  <span className="text-[10px] text-[var(--color-text-muted)]">
+                    {selectedHome.rooms ? `${selectedHome.rooms.length} Rooms/Zones` : `${(selectedHome.registeredAppliances || []).length} Loads`}
+                  </span>
                 </h4>
-                <div className="flex flex-wrap gap-1.5">
-                  {(selectedHome.registeredAppliances || []).map((app, i) => (
-                    <span
-                      key={i}
-                      className="text-xs px-2.5 py-1 rounded-lg bg-[var(--color-surface-secondary)] border border-[var(--color-border)] text-[var(--color-text-secondary)]"
-                    >
-                      {app}
-                    </span>
-                  ))}
-                </div>
+
+                {selectedHome.rooms && selectedHome.rooms.length > 0 ? (
+                  <div className="space-y-2">
+                    {selectedHome.rooms.map((room) => (
+                      <div
+                        key={room.id}
+                        className="p-2.5 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-secondary)] space-y-1.5"
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold text-[var(--color-text)]">
+                            {room.name}
+                          </span>
+                          <span className="text-[10px] font-mono text-[var(--color-text-muted)]">
+                            {room.appliances?.length || 0} Connected Load(s)
+                          </span>
+                        </div>
+                        <div className="flex flex-wrap gap-1">
+                          {room.appliances?.map((app) => (
+                            <span
+                              key={app.id}
+                              className="text-[11px] px-2 py-0.5 rounded-md bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text)] flex items-center gap-1"
+                            >
+                              <span>{app.name}</span>
+                              <span className="font-mono text-[var(--color-accent)] font-semibold">
+                                {app.drawKw} kW
+                              </span>
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex flex-wrap gap-1.5">
+                    {(selectedHome.registeredAppliances || []).map((app, i) => (
+                      <span
+                        key={i}
+                        className="text-xs px-2.5 py-1 rounded-lg bg-[var(--color-surface-secondary)] border border-[var(--color-border)] text-[var(--color-text-secondary)]"
+                      >
+                        {app}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             </Surface>
           </div>
@@ -343,3 +380,4 @@ export function CustomerProfilesPage() {
 }
 
 export default CustomerProfilesPage;
+

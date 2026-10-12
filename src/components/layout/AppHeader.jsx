@@ -1,15 +1,19 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Menu, X, Zap, Sparkles, User, Wrench } from 'lucide-react';
+import { Menu, X, Zap, User, LogOut } from 'lucide-react';
 import { BrandWordmark } from '../brand/BrandWordmark';
 import { ThemeToggle } from './ThemeToggle';
-import { Button } from '../ui/Button';
 import { useEnergyData } from '../../context/EnergyDataContext';
 import { useAuth } from '../../context/AuthContext';
 
-export function AppHeader({ theme, onToggleTheme, onOpenSizing, onToggleSidebar, isSidebarOpen }) {
+export function AppHeader({ theme, onToggleTheme, onToggleSidebar, isSidebarOpen }) {
   const navigate = useNavigate();
   const { activeTariff, openTariffModal } = useEnergyData();
-  const { currentUser, switchRole } = useAuth();
+  const { currentUser, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   return (
     <header
@@ -41,7 +45,7 @@ export function AppHeader({ theme, onToggleTheme, onOpenSizing, onToggleSidebar,
           </Link>
         </div>
 
-        {/* Right: Tariff Pill, Electrical State, Role Switcher, Theme, Login */}
+        {/* Right: Tariff Pill, User Session, Theme Toggle */}
         <div className="flex items-center gap-2.5">
           {/* Active Utility Tariff Pill */}
           <button
@@ -71,51 +75,54 @@ export function AppHeader({ theme, onToggleTheme, onOpenSizing, onToggleSidebar,
             </span>
           </button>
 
-          {/* Quick Staff Workspace Switcher (Evaluation Helper) */}
-          <button
-            type="button"
-            onClick={() => {
-              switchRole('technician');
-              navigate('/technician');
-            }}
-            className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-[var(--color-accent)] bg-[var(--color-accent-subtle)] text-[var(--color-accent)] text-xs font-bold cursor-pointer hover:opacity-90 transition-opacity"
-            title="Switch demo role to Technician workspace"
-          >
-            <Sparkles size={12} />
-            <span>Staff Portal</span>
-          </button>
+          {/* User Account / Profile Info */}
+          {currentUser ? (
+            <div className="flex items-center gap-1.5">
+              <Link
+                to="/settings"
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-medium hover:border-[var(--color-accent)] transition-all"
+                style={{
+                  backgroundColor: 'var(--color-surface)',
+                  borderColor: 'var(--color-border)',
+                  color: 'var(--color-text)',
+                }}
+                title="Account Settings"
+              >
+                <User size={13} className="text-[var(--color-accent)]" />
+                <span className="font-semibold hidden md:inline truncate max-w-[120px]">
+                  {currentUser.name}
+                </span>
+                <span className="text-[9px] font-mono uppercase px-1 py-0.2 rounded bg-[var(--color-surface-secondary)] text-[var(--color-text-muted)] border border-[var(--color-border)]">
+                  {currentUser.propertyType || 'Home'}
+                </span>
+              </Link>
 
-          {/* User Profile / Login Link */}
-          <Link
-            to="/login"
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-medium hover:border-[var(--color-accent)] transition-all"
-            style={{
-              backgroundColor: 'var(--color-surface)',
-              borderColor: 'var(--color-border)',
-              color: 'var(--color-text)',
-            }}
-            title="Switch user account or sign in"
-          >
-            <User size={13} className="text-[var(--color-accent)]" />
-            <span className="font-semibold hidden sm:inline">
-              {currentUser?.name ? currentUser.name.split(' ')[0] : 'Sign In'}
-            </span>
-          </Link>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="p-1.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:text-red-600 hover:border-red-500/30 transition-all cursor-pointer"
+                title="Sign Out"
+                aria-label="Sign out"
+              >
+                <LogOut size={14} />
+              </button>
+            </div>
+          ) : (
+            <Link
+              to="/login"
+              className="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold border border-[var(--color-accent)] bg-[var(--color-accent-subtle)] text-[var(--color-accent)]"
+            >
+              <User size={13} />
+              <span>Sign In</span>
+            </Link>
+          )}
 
+          {/* Theme Mode Toggle */}
           <ThemeToggle theme={theme} onToggle={onToggleTheme} />
-
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={onOpenSizing}
-            className="shadow-xs font-semibold text-xs hidden lg:inline-flex"
-          >
-            <span>Panel Config</span>
-          </Button>
         </div>
       </div>
     </header>
   );
 }
 
-
+export default AppHeader;

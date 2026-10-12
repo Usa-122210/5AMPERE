@@ -12,7 +12,8 @@ import { SettingsPage } from '../pages/SettingsPage';
 import { MorePage } from '../pages/MorePage';
 import { FoundationPreview } from '../pages/FoundationPreview';
 
-// Customer Hardware & Support Pages
+// Customer Hardware, Topology & Support Pages
+import { RoomsAppliancesPage } from '../pages/customer/RoomsAppliancesPage';
 import { DeviceMarketplacePage } from '../pages/customer/DeviceMarketplacePage';
 import { InstallationSupportPage } from '../pages/customer/InstallationSupportPage';
 
@@ -29,28 +30,51 @@ import { ServiceRequestsPage } from '../pages/technician/ServiceRequestsPage';
 import { TechnicianCataloguePage } from '../pages/technician/TechnicianCataloguePage';
 import { HomeConfiguratorPage } from '../pages/technician/HomeConfiguratorPage';
 
+// Auth State Context
+import { useAuth } from '../context/AuthContext';
+
+/**
+ * CustomerAuthGuard — Root entry guard.
+ * If unauthenticated, displays LoginPage immediately with zero delay.
+ * If authenticated as technician, directs to technician operations workspace.
+ * If customer, renders the full customer AppShell.
+ */
+function CustomerAuthGuard({ theme, onToggleTheme }) {
+  const { currentUser } = useAuth();
+
+  if (!currentUser) {
+    return <LoginPage defaultTab="customer" />;
+  }
+
+  if (currentUser.role === 'technician') {
+    return <Navigate to="/technician" replace />;
+  }
+
+  return <AppShell theme={theme} onToggleTheme={onToggleTheme} />;
+}
+
+/**
+ * TechnicianAuthGuard — Staff portal guard.
+ * If unauthenticated, displays LoginPage with Staff tab pre-selected.
+ * If customer, redirects back to customer overview.
+ * If technician, renders TechnicianShell.
+ */
+function TechnicianAuthGuard({ theme, onToggleTheme }) {
+  const { currentUser } = useAuth();
+
+  if (!currentUser) {
+    return <LoginPage defaultTab="staff" />;
+  }
+
+  if (currentUser.role !== 'technician') {
+    return <Navigate to="/" replace />;
+  }
+
+  return <TechnicianShell theme={theme} onToggleTheme={onToggleTheme} />;
+}
+
 /**
  * createAppRouter — Builds the React Router configuration.
- *
- * Configures role-separated routes:
- *   - Customer Portal (AppShell):
- *     - '/' : Home Electricity Dashboard
- *     - '/appliances' : Appliance Management & Relay Controls
- *     - '/billing' : Electricity Bill Breakdown & UPPCL Slabs
- *     - '/saving-mode' : Dedicated Saving Mode & Budget Pacing
- *     - '/devices' : Device Marketplace & Installed Hardware
- *     - '/installation' : Installation & Support Progress Tracker
- *     - '/more', '/analytics', '/alerts', '/recommendations', '/monitoring', '/settings'
- *   - Authentication:
- *     - '/login' : Dual-Path Login (Homeowner + Staff)
- *     - '/signup' : 4-Step Homeowner Onboarding Wizard
- *   - Technician Workspace (TechnicianShell):
- *     - '/technician' : Field Operations Overview
- *     - '/technician/customers' : Customer Homes & Profile Inspector
- *     - '/technician/appointments' : Field Visits Calendar
- *     - '/technician/service-requests' : Inbound Device Requests Queue
- *     - '/technician/catalogue' : Hardware Engineering Catalogue
- *     - '/technician/configure' & '/technician/configure/:homeId' : Hardware Configurator
  */
 export function createAppRouter(options = {}) {
   const { theme, onToggleTheme } = options;
@@ -61,8 +85,20 @@ export function createAppRouter(options = {}) {
       element: <OverviewPage />,
     },
     {
+      path: 'monitoring',
+      element: <LiveMonitoringPage />,
+    },
+    {
+      path: 'rooms-appliances',
+      element: <RoomsAppliancesPage />,
+    },
+    {
       path: 'appliances',
       element: <AppliancesPage />,
+    },
+    {
+      path: 'devices',
+      element: <DeviceMarketplacePage />,
     },
     {
       path: 'billing',
@@ -73,16 +109,12 @@ export function createAppRouter(options = {}) {
       element: <SavingModePage />,
     },
     {
-      path: 'devices',
-      element: <DeviceMarketplacePage />,
+      path: 'alerts',
+      element: <AlertsPage />,
     },
     {
       path: 'installation',
       element: <InstallationSupportPage />,
-    },
-    {
-      path: 'monitoring',
-      element: <LiveMonitoringPage />,
     },
     {
       path: 'analytics',
@@ -91,10 +123,6 @@ export function createAppRouter(options = {}) {
     {
       path: 'recommendations',
       element: <RecommendationsPage />,
-    },
-    {
-      path: 'alerts',
-      element: <AlertsPage />,
     },
     {
       path: 'settings',
@@ -142,7 +170,7 @@ export function createAppRouter(options = {}) {
   ];
 
   return createBrowserRouter([
-    // Authentication Routes
+    // Public / Entry Authentication Routes
     {
       path: '/login',
       element: <LoginPage />,
@@ -155,14 +183,14 @@ export function createAppRouter(options = {}) {
     // Technician / Company Staff Workspace Routes
     {
       path: '/technician',
-      element: <TechnicianShell theme={theme} onToggleTheme={onToggleTheme} />,
+      element: <TechnicianAuthGuard theme={theme} onToggleTheme={onToggleTheme} />,
       children: technicianRoutes,
     },
 
-    // Homeowner / Customer Portal Routes
+    // Customer Portal Routes (Protected by CustomerAuthGuard)
     {
       path: '/',
-      element: <AppShell theme={theme} onToggleTheme={onToggleTheme} />,
+      element: <CustomerAuthGuard theme={theme} onToggleTheme={onToggleTheme} />,
       children: [
         ...customerRoutes,
         {
@@ -173,7 +201,7 @@ export function createAppRouter(options = {}) {
     },
     {
       path: '/index.html',
-      element: <AppShell theme={theme} onToggleTheme={onToggleTheme} />,
+      element: <CustomerAuthGuard theme={theme} onToggleTheme={onToggleTheme} />,
       children: customerRoutes,
     },
   ]);
@@ -181,4 +209,3 @@ export function createAppRouter(options = {}) {
 
 export const router = createAppRouter();
 export default router;
-

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Activity,
@@ -16,6 +17,11 @@ import {
   Wrench,
   Clock,
   Package,
+  Layers,
+  Building,
+  School,
+  Factory,
+  Home,
 } from 'lucide-react';
 import { Surface } from '../components/ui/Surface';
 import { Button } from '../components/ui/Button';
@@ -29,34 +35,51 @@ export function OverviewPage() {
     loads,
     isSavingModeActive,
     toggleSavingMode,
-    savingModeTargetPercent,
-    alerts,
     formatINR,
     periodEstimate,
     totalActiveKw,
   } = useEnergyData();
 
-  const { activeCustomerHome, marketplaceHardware } = useAuth();
+  const { activeCustomerProperty, marketplaceHardware } = useAuth();
+  const property = activeCustomerProperty || {};
 
-  // Active vs inactive appliances
-  const activeLoads = loads.filter((l) => l.active);
-  const inactiveLoads = loads.filter((l) => !l.active);
-
-  const installedDevices = activeCustomerHome?.installedDevices || [];
-  const requestedDevices = activeCustomerHome?.requestedDevices || [];
+  const propType = property.propertyType || 'home';
+  const installedDevices = property.installedDevices || [];
+  const requestedDevices = property.requestedDevices || [];
+  const rooms = property.rooms || [];
+  const hasHardwareInstalled = installedDevices.length > 0;
   const isInstallationPending =
-    activeCustomerHome?.installationStatus === 'pending_assessment' ||
-    activeCustomerHome?.installationStatus === 'visit_scheduled';
+    property.installationStatus === 'pending_assessment' ||
+    property.installationStatus === 'visit_scheduled';
+
+  // Toggle preview of calibrated baseline for uncommissioned homes
+  const [showSimulatedPreview, setShowSimulatedPreview] = useState(hasHardwareInstalled);
+
+  // Property type titles
+  const typeTitles = {
+    home: 'Home Electricity Dashboard',
+    school: 'Campus Energy Console',
+    office: 'Facility Power Dashboard',
+    industry: 'Industrial Plant Power & HT Substation',
+  };
 
   return (
     <div className="space-y-6">
       {/* Page Header */}
       <PageHeader
-        category="Home"
-        title="Home Electricity Dashboard"
-        badge={activeCustomerHome?.locality || 'Simulated 3BHK Profile'}
-        badgeColor="var(--color-warning)"
-        description="Monitor how much electricity your home is using today, track your estimated bill, and see simple ways to save money."
+        category={property.propertyType ? property.propertyType.toUpperCase() : 'ENERGY WORKSPACE'}
+        title={typeTitles[propType] || 'Property Electricity Dashboard'}
+        badge={property.propertyName || property.locality || 'Active Profile'}
+        badgeColor="var(--color-accent)"
+        description={
+          propType === 'home'
+            ? 'Monitor electricity consumption across rooms, track your estimated UPPCL bill, and optimize appliance runtimes.'
+            : propType === 'school'
+            ? 'Monitor multi-block educational campus power draw, track transformer load, and optimize HVAC runtimes.'
+            : propType === 'office'
+            ? 'Track commercial floor electricity consumption, server room PAC cooling loads, and automated after-hours shedding.'
+            : 'Monitor 3-phase high-tension power demand, screw compressors, CNC bays, and mitigate peak ToD tariff penalties.'
+        }
       >
         <Link to="/saving-mode">
           <Button variant={isSavingModeActive ? 'primary' : 'secondary'} size="sm">
@@ -66,63 +89,146 @@ export function OverviewPage() {
         </Link>
       </PageHeader>
 
-      {/* 1. Installation & Service Status Banner (Requirement 3) */}
+      {/* 1. Installation Status & Commissioning Lifecycle Banner */}
       <div
-        className={`p-3.5 rounded-xl border text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs ${
-          isInstallationPending
+        className={`p-4 rounded-2xl border text-xs flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-xs ${
+          isInstallationPending || !hasHardwareInstalled
             ? 'bg-amber-500/10 border-amber-500/30 text-amber-950 dark:text-amber-200'
             : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-950 dark:text-emerald-200'
         }`}
       >
-        <div className="flex items-start sm:items-center gap-2.5">
-          {isInstallationPending ? (
-            <Clock size={18} className="text-amber-600 dark:text-amber-400 shrink-0 mt-0.5 sm:mt-0" />
+        <div className="flex items-start md:items-center gap-3">
+          {hasHardwareInstalled ? (
+            <ShieldCheck size={20} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5 md:mt-0" />
           ) : (
-            <ShieldCheck size={18} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5 sm:mt-0" />
+            <Clock size={20} className="text-amber-600 dark:text-amber-400 shrink-0 mt-0.5 md:mt-0" />
           )}
-          <span>
-            {isInstallationPending ? (
-              <>
-                <strong>Installation Visit Pending:</strong> A certified 5AMPERE technician is scheduled to assess your distribution board and mount edge hardware.
-              </>
-            ) : (
-              <>
-                <strong>Installation Status:</strong> System fully commissioned. {installedDevices.length} edge hardware modules active on your breaker panel.
-              </>
-            )}
-          </span>
+          <div>
+            <span className="font-bold block text-sm">
+              {hasHardwareInstalled
+                ? 'System Operational & Telemetry Commissioned'
+                : 'Technician Installation Visit Pending'}
+            </span>
+            <span className="opacity-90 block mt-0.5">
+              {hasHardwareInstalled
+                ? `${installedDevices.length} certified modules active on distribution board. Calibrated with ${property.discom || 'DISCOM'} meter.`
+                : `A certified 5AMPERE technician will visit ${property.address || 'your property'} to install your EdgeCore Gateway and CT clamps.`}
+            </span>
+          </div>
         </div>
-        <Link
-          to="/installation"
-          className={`font-bold text-xs underline shrink-0 hover:opacity-80 ${
-            isInstallationPending ? 'text-amber-700 dark:text-amber-300' : 'text-emerald-700 dark:text-emerald-300'
-          }`}
-        >
-          Track Service →
-        </Link>
+
+        <div className="flex items-center gap-2 shrink-0">
+          <Link to="/installation">
+            <Button variant="secondary" size="sm" className="text-xs">
+              <Wrench size={13} />
+              <span>Track Service Visit</span>
+            </Button>
+          </Link>
+          <Link to="/devices">
+            <Button variant="primary" size="sm" className="text-xs font-bold shadow-xs">
+              <Package size={13} />
+              <span>Add Hardware</span>
+            </Button>
+          </Link>
+        </div>
       </div>
 
-      {/* 1b. Simulation Distinction Banner (Requirement 7) */}
-      <div className="p-3 rounded-xl border bg-neutral-500/5 border-[var(--color-border)] text-[var(--color-text-secondary)] text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-xs">
-        <div className="flex items-center gap-2">
-          <Info size={15} className="text-[var(--color-accent)] shrink-0" />
-          <span>
-            <strong>Simulated Telemetry Mode:</strong> Current power readings reflect calibrated 3BHK Indian baseline model. Real readings link upon gateway sync.
-          </span>
+      {/* 2. Setup Progress Indicator for Newly Registered Customers */}
+      {!hasHardwareInstalled && (
+        <Surface variant="primary" padding="lg" className="border border-[var(--color-border)] space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--color-text-secondary)] font-mono">
+              Onboarding &amp; Hardware Activation Progress
+            </h3>
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-700 dark:text-amber-300 font-bold">
+              3 of 5 Steps Completed
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-5 gap-2">
+            {[
+              { label: '1. Account & Profile', done: true, current: false },
+              { label: `2. ${rooms.length} ${propType === 'home' ? 'Rooms' : 'Zones'} Mapped`, done: true, current: false },
+              { label: '3. Hardware Requested', done: true, current: false },
+              { label: '4. Panel Installation', done: false, current: true },
+              { label: '5. Live Telemetry', done: false, current: false },
+            ].map((st, i) => (
+              <div
+                key={i}
+                className={`p-2.5 rounded-xl border text-xs ${
+                  st.done
+                    ? 'bg-green-500/10 border-green-500/30 text-green-700 dark:text-green-300 font-bold'
+                    : st.current
+                    ? 'bg-[var(--color-accent-subtle)] border-[var(--color-accent)] text-[var(--color-accent)] font-bold animate-pulse'
+                    : 'bg-[var(--color-surface)] border-[var(--color-border)] text-[var(--color-text-muted)] opacity-60'
+                }`}
+              >
+                <div className="flex items-center gap-1.5">
+                  {st.done ? <CheckCircle2 size={13} /> : <Clock size={13} />}
+                  <span className="truncate">{st.label}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-[var(--color-text-secondary)] border-t border-[var(--color-border-subtle)]">
+            <span>
+              Real-time CT sensors require physical mounting in the breaker board. Want to preview calibrated baseline consumption graphs?
+            </span>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => setShowSimulatedPreview(!showSimulatedPreview)}
+              className="text-xs shrink-0"
+            >
+              {showSimulatedPreview ? 'Hide Baseline Preview' : 'Show Baseline Preview'}
+            </Button>
+          </div>
+        </Surface>
+      )}
+
+      {/* 3. Primary Consumption & Bill Metrics */}
+      {showSimulatedPreview ? (
+        <div className="space-y-6">
+          <div className="p-3 rounded-xl border bg-neutral-500/5 border-[var(--color-border)] text-[var(--color-text-secondary)] text-xs flex items-center justify-between gap-2 shadow-xs">
+            <div className="flex items-center gap-2">
+              <Info size={15} className="text-[var(--color-accent)] shrink-0" />
+              <span>
+                <strong>Simulated Baseline Mode:</strong> Displaying calibrated {property.sanctionedLoadKw || 5} kW telemetry profile under official {property.discom || 'UPPCL'} tariff slabs.
+              </span>
+            </div>
+            <Link to="/settings" className="font-bold text-xs underline text-[var(--color-accent)] shrink-0">
+              Settings →
+            </Link>
+          </div>
+
+          <EnergyOverview />
         </div>
-        <Link
-          to="/settings"
-          className="font-bold text-xs underline shrink-0 hover:opacity-80 text-[var(--color-accent)]"
-        >
-          Meter Settings →
-        </Link>
-      </div>
+      ) : (
+        <Surface variant="primary" padding="xl" className="border border-dashed border-[var(--color-border)] text-center space-y-3">
+          <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center mx-auto">
+            <Clock size={24} />
+          </div>
+          <h3 className="text-sm font-bold text-[var(--color-text)]">
+            Awaiting Physical Hardware Installation
+          </h3>
+          <p className="text-xs text-[var(--color-text-secondary)] max-w-md mx-auto">
+            Your live energy telemetry streams will activate once technician Rajesh Kumar mounts and calibrates your 5AMPERE EdgeCore gateway.
+          </p>
+          <div className="pt-2 flex justify-center gap-2">
+            <Button variant="secondary" size="sm" onClick={() => setShowSimulatedPreview(true)} className="text-xs">
+              Preview Calibrated Baseline
+            </Button>
+            <Link to="/installation">
+              <Button variant="primary" size="sm" className="text-xs font-bold">
+                View Appointment Schedule
+              </Button>
+            </Link>
+          </div>
+        </Surface>
+      )}
 
-      {/* 2. Primary Consumption & Bill Metrics */}
-      <EnergyOverview />
-
-
-      {/* 3. One Useful Electricity-Saving Suggestion (Requirement 4.4) */}
+      {/* 4. One Useful Electricity-Saving Suggestion */}
       <Surface variant="primary" padding="lg" className="border border-[var(--color-accent)] bg-[var(--color-accent-subtle)] space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-start gap-3.5">
@@ -132,177 +238,81 @@ export function OverviewPage() {
             <div>
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-[10px] font-mono uppercase tracking-wider font-bold px-2 py-0.5 rounded bg-[var(--color-surface)] text-[var(--color-accent)] border border-[var(--color-accent)]">
-                  Top Saving Tip For Today
+                  Top Recommendation
                 </span>
                 <span className="text-xs font-bold text-[var(--color-success)] bg-green-500/10 px-2 py-0.5 rounded">
-                  Save ~₹295 / month
+                  Save ~₹450 / month
                 </span>
               </div>
               <h3 className="text-sm sm:text-base font-bold text-[var(--color-text)] mt-1.5">
-                Set Air Conditioner Thermostat to 24°C (BEE Recommended)
+                {propType === 'home' && 'Set Air Conditioner Thermostat to 24°C (BEE Standard)'}
+                {propType === 'school' && 'Automate Science Lab & Classroom Idle Power Cutoff'}
+                {propType === 'office' && 'Enable After-Hours Cafeteria & Pantry Relay Shedding'}
+                {propType === 'industry' && 'Synchronize Compressor Unloader Cycles with Peak ToD Slabs'}
               </h3>
-              <p className="text-xs text-[var(--color-text-secondary)] mt-1 max-w-2xl">
-                Your 1.5 Ton AC is currently drawing 1.45 kW (the highest load in your home). Raising the setpoint from 20°C to 24°C reduces compressor power by ~24%, avoiding ~43 kWh/month while maintaining optimal room cooling.
+              <p className="text-xs text-[var(--color-text-secondary)] mt-1 max-w-2xl leading-relaxed">
+                {propType === 'home' && 'Raising AC setpoint from 20°C to 24°C reduces compressor draw by ~24%, avoiding high progressive tariff slab tiers.'}
+                {propType === 'school' && 'Centralizing automatic cutoff of lab sockets after 4 PM prevents continuous overnight standby phantom power waste.'}
+                {propType === 'office' && 'Pantry coolers and commercial coffee vending units draw up to 4.2 kW continuously on weekends if not shed.'}
+                {propType === 'industry' && 'Shifting rotary compressor unloading away from the 18:00–22:00 evening peak avoids maximum demand surcharge.'}
               </p>
             </div>
           </div>
           <Link to="/recommendations" className="shrink-0">
-            <Button variant="primary" size="sm">
-              <span>More Tips &amp; Simulator</span>
+            <Button variant="primary" size="sm" className="text-xs font-bold">
+              <span>View Simulator</span>
               <ArrowRight size={14} />
             </Button>
           </Link>
         </div>
       </Surface>
 
-      {/* 4. Appliance Status & Operational Summary (Requirement 4.3) */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Appliance Status Overview (2 columns on lg) */}
-        <div className="lg:col-span-2">
-          <Surface variant="primary" padding="md" className="border border-[var(--color-border)] space-y-3 h-full flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between border-b border-[var(--color-border)] pb-3">
-                <div>
-                  <h3 className="text-sm font-bold text-[var(--color-text)]">
-                    Appliance Status ({activeLoads.length} of {loads.length} Running)
-                  </h3>
-                  <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">
-                    Total current draw: <span className="font-mono font-bold text-[var(--color-accent)]">{totalActiveKw.toFixed(2)} kW</span> across active circuits.
-                  </p>
-                </div>
-                <Link
-                  to="/appliances"
-                  className="text-xs font-semibold text-[var(--color-accent)] hover:underline flex items-center gap-1 cursor-pointer shrink-0"
-                >
-                  <span>Manage All</span>
-                  <ArrowRight size={13} />
-                </Link>
-              </div>
+      {/* 5. Configured Rooms & Appliances Summary */}
+      <Surface variant="primary" padding="md" className="border border-[var(--color-border)] space-y-3">
+        <div className="flex items-center justify-between border-b border-[var(--color-border-subtle)] pb-2.5">
+          <div>
+            <h3 className="text-sm font-bold text-[var(--color-text)] flex items-center gap-2">
+              <Layers size={16} className="text-[var(--color-accent)]" />
+              <span>Configured {propType === 'home' ? 'Rooms & Appliances' : 'Zones & Circuits'} ({rooms.length})</span>
+            </h3>
+            <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">
+              Mapped topology for {property.propertyName || 'Property'}
+            </p>
+          </div>
+          <Link to="/rooms-appliances" className="text-xs font-semibold text-[var(--color-accent)] hover:underline flex items-center gap-1">
+            <span>Manage All {propType === 'home' ? 'Rooms' : 'Zones'} →</span>
+          </Link>
+        </div>
 
-              {/* Running Appliances Chips */}
-              <div className="pt-3 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                {activeLoads.map((l) => (
-                  <div
-                    key={l.id}
-                    className="p-2.5 rounded-xl bg-[var(--color-surface-secondary)] border border-[var(--color-border)] flex items-center justify-between gap-2"
-                  >
-                    <div className="flex items-center gap-2 truncate">
-                      <span className="w-2 h-2 rounded-full bg-[var(--color-success)] shrink-0" />
-                      <div className="truncate">
-                        <span className="text-xs font-semibold text-[var(--color-text)] block truncate">
-                          {l.name}
-                        </span>
-                        <span className="text-[10px] text-[var(--color-text-muted)] block">
-                          {l.location}
-                        </span>
-                      </div>
-                    </div>
-                    <span className="font-mono font-bold text-xs text-[var(--color-accent)] shrink-0">
-                      {l.drawKw.toFixed(2)} kW
-                    </span>
-                  </div>
-                ))}
-              </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {rooms.slice(0, 4).map((room) => {
+            const activeCount = (room.appliances || []).filter((a) => a.active).length;
+            const roomWatts = (room.appliances || [])
+              .filter((a) => a.active)
+              .reduce((sum, a) => sum + (a.drawKw || 0.1) * 1000, 0);
 
-              {inactiveLoads.length > 0 && (
-                <div className="pt-2 text-[11px] text-[var(--color-text-muted)] flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-text-muted)] shrink-0" />
-                  <span>
-                    Idle/Off: {inactiveLoads.map((l) => l.name.split(' ')[0]).join(', ')}
+            return (
+              <div
+                key={room.id}
+                className="p-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-secondary)] space-y-1.5"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-[var(--color-text)] truncate">{room.name}</span>
+                  <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-[var(--color-surface)] border font-semibold">
+                    {activeCount} active
                   </span>
                 </div>
-              )}
-            </div>
-
-            <div className="pt-2 border-t border-[var(--color-border-subtle)] flex items-center justify-between text-xs">
-              <span className="text-[var(--color-text-secondary)]">Need to turn off high loads?</span>
-              <Link to="/appliances" className="font-bold text-[var(--color-accent)] hover:underline">
-                Open Appliance Controls →
-              </Link>
-            </div>
-          </Surface>
-        </div>
-
-        {/* Quick Savings & Alerts Card (1 column on lg) */}
-        <div className="space-y-4 flex flex-col justify-between">
-          {/* Savings Mode Quick Card */}
-          <Surface variant="primary" padding="md" className="border border-[var(--color-border)] flex flex-col justify-between space-y-3 flex-1">
-            <div>
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-[var(--color-text-secondary)]">
-                  Savings Mode
-                </span>
-                <Leaf size={16} className={isSavingModeActive ? 'text-[var(--color-success)]' : 'text-[var(--color-text-muted)]'} />
+                <div className="flex items-center justify-between text-[11px] font-mono text-[var(--color-text-muted)]">
+                  <span>{(roomWatts / 1000).toFixed(2)} kW</span>
+                  <span className="text-[var(--color-accent)]">{(room.appliances || []).length} loads</span>
+                </div>
               </div>
-
-              <div className="pt-2">
-                <span className={`text-base font-bold ${isSavingModeActive ? 'text-[var(--color-success)]' : 'text-[var(--color-text)]'}`}>
-                  {isSavingModeActive ? 'Active (-15% Goal)' : 'Standard Baseline'}
-                </span>
-                <p className="text-xs text-[var(--color-text-secondary)] mt-1">
-                  {isSavingModeActive
-                    ? 'Non-essential loads are shed during peak hours to protect your budget.'
-                    : 'Turn on to automatically reduce peak consumption and save up to ₹800/month.'}
-                </p>
-              </div>
-            </div>
-
-            <div className="pt-2 border-t border-[var(--color-border-subtle)] flex items-center justify-between">
-              <Link
-                to="/saving-mode"
-                className="text-xs font-semibold text-[var(--color-accent)] hover:underline flex items-center gap-1 cursor-pointer"
-              >
-                <span>Configure Savings</span>
-                <ArrowRight size={13} />
-              </Link>
-
-              <button
-                type="button"
-                onClick={() => toggleSavingMode()}
-                className={`text-xs px-3 py-1 rounded-lg font-bold border cursor-pointer transition-all ${
-                  isSavingModeActive
-                    ? 'bg-[var(--color-accent-subtle)] text-[var(--color-accent)] border-[var(--color-accent)]'
-                    : 'bg-[var(--color-surface-secondary)] text-[var(--color-text)] border-[var(--color-border)] hover:border-[var(--color-accent)]'
-                }`}
-              >
-                {isSavingModeActive ? 'Turn OFF' : 'Turn ON'}
-              </button>
-            </div>
-          </Surface>
-
-          {/* Electricity Bill Quick Card */}
-          <Surface variant="primary" padding="md" className="border border-[var(--color-border)] flex flex-col justify-between space-y-2 flex-1">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-[var(--color-text-secondary)]">
-                Electricity Bill
-              </span>
-              <Receipt size={16} className="text-[var(--color-accent)]" />
-            </div>
-
-            <div>
-              <span className="text-xs text-[var(--color-text-muted)] block">Estimated for this month:</span>
-              <span className="text-lg font-bold font-mono text-[var(--color-text)]">
-                {formatINR(periodEstimate.allocatedTotal)}
-              </span>
-              <p className="text-[11px] text-[var(--color-text-secondary)] mt-0.5">
-                Official UPPCL progressive rates (0–100 to &gt;300 units).
-              </p>
-            </div>
-
-            <div className="pt-2 border-t border-[var(--color-border-subtle)]">
-              <Link
-                to="/billing"
-                className="text-xs font-semibold text-[var(--color-accent)] hover:underline flex items-center gap-1 cursor-pointer"
-              >
-                <span>View Full Bill Breakdown</span>
-                <ArrowRight size={13} />
-              </Link>
-            </div>
-          </Surface>
+            );
+          })}
         </div>
-      </div>
+      </Surface>
 
-      {/* 5. Installed Hardware & Ecosystem Section (Requirement 3 & 4) */}
+      {/* 6. Installed Hardware & Ecosystem Section */}
       <Surface variant="primary" padding="md" className="border border-[var(--color-border)] space-y-3.5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--color-border-subtle)] pb-3">
           <div>
@@ -329,7 +339,6 @@ export function OverviewPage() {
                 <span>Service Status</span>
               </Button>
             </Link>
-
             <Link to="/devices">
               <Button variant="primary" size="sm" className="text-xs font-bold shadow-xs">
                 <Package size={13} />
@@ -341,28 +350,34 @@ export function OverviewPage() {
         </div>
 
         {/* Installed Chips */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
-          {installedDevices.map((dev) => {
-            const hw = marketplaceHardware?.find((h) => h.id === dev.id);
-            return (
-              <div
-                key={dev.serial || dev.id}
-                className="p-2.5 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-secondary)] space-y-1"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-[var(--color-text)] truncate">
-                    {hw ? hw.name : dev.id}
-                  </span>
-                  <span className="w-2 h-2 rounded-full bg-[var(--color-success)] shrink-0" />
+        {installedDevices.length === 0 ? (
+          <div className="p-4 rounded-xl border border-dashed border-[var(--color-border)] text-xs text-[var(--color-text-muted)] text-center">
+            No hardware modules mounted yet. Technician Rajesh Kumar is assigned for site installation.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+            {installedDevices.map((dev) => {
+              const hw = marketplaceHardware?.find((h) => h.id === dev.id);
+              return (
+                <div
+                  key={dev.serial || dev.id}
+                  className="p-2.5 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-secondary)] space-y-1"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-[var(--color-text)] truncate">
+                      {hw ? hw.name : dev.id}
+                    </span>
+                    <span className="w-2 h-2 rounded-full bg-[var(--color-success)] shrink-0" />
+                  </div>
+                  <div className="flex items-center justify-between text-[10px] font-mono text-[var(--color-text-muted)]">
+                    <span>{dev.serial}</span>
+                    <span className="text-[var(--color-accent)]">{dev.location || 'Panel'}</span>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between text-[10px] font-mono text-[var(--color-text-muted)]">
-                  <span>{dev.serial}</span>
-                  <span className="text-[var(--color-accent)]">{dev.circuit || 'Panel'}</span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
 
         {requestedDevices.length > 0 && (
           <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs flex items-center justify-between gap-2 text-amber-900 dark:text-amber-200">
@@ -373,10 +388,7 @@ export function OverviewPage() {
                 {requestedDevices.map((r) => r.deviceName || r.deviceId).join(', ')} — Scheduled for {requestedDevices[0].preferredSlot}
               </span>
             </div>
-            <Link
-              to="/devices"
-              className="font-bold underline text-xs shrink-0 text-amber-700 dark:text-amber-300"
-            >
+            <Link to="/devices" className="font-bold underline text-xs shrink-0 text-amber-700 dark:text-amber-300">
               View Queue →
             </Link>
           </div>
@@ -385,6 +397,5 @@ export function OverviewPage() {
     </div>
   );
 }
-
 
 export default OverviewPage;

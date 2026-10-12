@@ -6,23 +6,19 @@ import {
   ClipboardList,
   Cpu,
   Sliders,
-  Shield,
-  LogOut,
-  Sparkles,
-  ArrowRight,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 export function TechnicianSidebar({ isOpen, onClose }) {
-  const { currentUser, switchRole } = useAuth();
+  const { currentUser } = useAuth();
 
   const navigation = [
     { to: '/technician', label: 'Operations Overview', icon: LayoutDashboard, exact: true },
-    { to: '/technician/customers', label: 'Customers & Homes', icon: Users },
+    { to: '/technician/customers', label: 'Customers & Properties', icon: Users },
     { to: '/technician/appointments', label: 'Field Appointments', icon: Calendar },
     { to: '/technician/service-requests', label: 'Service Requests', icon: ClipboardList },
     { to: '/technician/catalogue', label: 'Hardware Catalogue', icon: Cpu },
-    { to: '/technician/configure', label: 'Home Configurator', icon: Sliders },
+    { to: '/technician/configure', label: 'Panel Configurator', icon: Sliders },
   ];
 
   return (
@@ -79,9 +75,8 @@ export function TechnicianSidebar({ isOpen, onClose }) {
           })}
         </div>
 
-        {/* Sidebar Footer with Technician Info & Quick Customer Switch */}
+        {/* Sidebar Footer with Technician Info */}
         <div className="p-3 border-t border-[var(--color-border)] space-y-2.5">
-          {/* Active Technician Profile */}
           <div className="p-2.5 rounded-xl border bg-[var(--color-surface-secondary)] border-[var(--color-border)]">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-lg bg-[var(--color-accent)] text-white flex items-center justify-center font-bold text-xs shrink-0">
@@ -89,7 +84,7 @@ export function TechnicianSidebar({ isOpen, onClose }) {
               </div>
               <div className="truncate">
                 <span className="text-[11px] font-bold block text-[var(--color-text)] truncate">
-                  Rajesh Kumar
+                  {currentUser?.name || 'Rajesh Kumar'}
                 </span>
                 <span className="text-[9px] font-mono text-[var(--color-text-muted)] block truncate">
                   5AMP-TECH-042 · Senior Tech
@@ -97,16 +92,6 @@ export function TechnicianSidebar({ isOpen, onClose }) {
               </div>
             </div>
           </div>
-
-          {/* Quick Demo Switcher Button to Customer View */}
-          <button
-            type="button"
-            onClick={() => switchRole('customer')}
-            className="w-full p-2 rounded-xl border border-[var(--color-accent)] bg-[var(--color-accent-subtle)] text-[var(--color-accent)] text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer hover:opacity-90 transition-opacity"
-          >
-            <Sparkles size={13} />
-            <span>Switch to Customer Portal</span>
-          </button>
         </div>
       </aside>
     </>

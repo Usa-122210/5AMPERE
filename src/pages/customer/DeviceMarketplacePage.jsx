@@ -20,13 +20,14 @@ import {
   ShieldCheck,
   Calendar,
   Sparkles,
+  Layers,
+  Package,
 } from 'lucide-react';
 import { Surface } from '../../components/ui/Surface';
 import { Button } from '../../components/ui/Button';
 import { PageHeader } from '../../components/common/PageHeader';
 import { useAuth } from '../../context/AuthContext';
 
-// Icon mapper for hardware cards
 const ICON_MAP = {
   Cpu: Cpu,
   Activity: Activity,
@@ -38,7 +39,7 @@ const ICON_MAP = {
 };
 
 const CATEGORIES = [
-  'All Products',
+  'All Hardware',
   'Energy Monitoring',
   'Heavy Appliance Contactor',
   'Smart Switches & Relays',
@@ -49,26 +50,35 @@ const CATEGORIES = [
 export function DeviceMarketplacePage() {
   const {
     marketplaceHardware,
-    activeCustomerHome,
+    activeCustomerProperty,
     requestDeviceInstallation,
   } = useAuth();
 
-  const [activeTab, setActiveTab] = useState('catalogue'); // 'catalogue' | 'my_devices'
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All Products');
+  const property = activeCustomerProperty || {};
+  const installedDevices = property.installedDevices || [];
+  const ownedPendingDevices = property.ownedPendingDevices || [];
+  const requestedDevices = property.requestedDevices || [];
+  const rooms = property.rooms || [];
 
-  // Modal states
+  const [activeTab, setActiveTab] = useState('catalogue'); // 'catalogue' | 'my_hardware'
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All Hardware');
+
+  // Specs Modal
   const [detailModalHardware, setDetailModalHardware] = useState(null);
+
+  // Request Hardware Modal
   const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
   const [targetHardware, setTargetHardware] = useState(null);
-  const [preferredSlot, setPreferredSlot] = useState('Weekend Morning (10:00 AM – 01:00 PM)');
+  const [targetAssignment, setTargetAssignment] = useState('Main Incomer (Busbar)');
+  const [preferredSlot, setPreferredSlot] = useState('Saturday Morning (10:00 AM – 01:00 PM)');
   const [requestNotes, setRequestNotes] = useState('');
   const [requestSuccess, setRequestSuccess] = useState(false);
+  const [deviceOwnership, setDeviceOwnership] = useState('new_request'); // 'new_request' | 'owned_unconfigured'
 
-  // Filter hardware list
   const filteredHardware = marketplaceHardware.filter((hw) => {
     const matchesCategory =
-      selectedCategory === 'All Products' || hw.category === selectedCategory;
+      selectedCategory === 'All Hardware' || hw.category === selectedCategory;
     const matchesSearch =
       hw.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       hw.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -76,14 +86,16 @@ export function DeviceMarketplacePage() {
     return matchesCategory && matchesSearch;
   });
 
-  // Customer's installed and pending lists
-  const installedDevices = activeCustomerHome?.installedDevices || [];
-  const requestedDevices = activeCustomerHome?.requestedDevices || [];
-
   const handleOpenRequest = (hw) => {
     setTargetHardware(hw);
+    setDeviceOwnership('new_request');
     setRequestSuccess(false);
     setRequestNotes('');
+    if (rooms.length > 0) {
+      setTargetAssignment(`${rooms[0].name} Circuit`);
+    } else {
+      setTargetAssignment('Main Incomer Panel');
+    }
     setIsRequestModalOpen(true);
   };
 
@@ -91,13 +103,21 @@ export function DeviceMarketplacePage() {
     e.preventDefault();
     if (!targetHardware) return;
 
-    requestDeviceInstallation(targetHardware.id, preferredSlot, requestNotes);
+    requestDeviceInstallation(
+      property.id,
+      targetHardware.id,
+      targetAssignment,
+      preferredSlot,
+      requestNotes,
+      deviceOwnership
+    );
+
     setRequestSuccess(true);
     setTimeout(() => {
       setIsRequestModalOpen(false);
       setRequestSuccess(false);
-      setActiveTab('my_devices'); // switch to My Devices tab to see the pending status
-    }, 1200);
+      setActiveTab('my_hardware');
+    }, 1000);
   };
 
   return (
@@ -108,33 +128,33 @@ export function DeviceMarketplacePage() {
         title="Smart Energy Device Catalogue"
         badge="Certified 5AMPERE Hardware"
         badgeColor="var(--color-accent)"
-        description="Browse certified smart energy hardware, CT clamps, contactor relays, and request professional on-site installation by a 5AMPERE electrical specialist."
+        description="Browse certified edge gateways, split-core CT sensors, DIN contactor relays, and request professional on-site electrical installation."
       >
         <Link to="/installation">
-          <Button variant="secondary" size="sm">
-            <Wrench size={14} />
-            <span>Installation Status ({requestedDevices.length} Pending)</span>
+          <Button variant="secondary" size="sm" className="text-xs">
+            <Wrench size={13} />
+            <span>Service Progress ({requestedDevices.length} Pending)</span>
           </Button>
         </Link>
       </PageHeader>
 
-      {/* Hardware Distinction Banner (Requirement 4 & 7) */}
+      {/* Safety & Protocol Banner */}
       <div className="p-3.5 rounded-xl border bg-emerald-500/10 border-emerald-500/30 text-emerald-950 dark:text-emerald-200 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
         <div className="flex items-start sm:items-center gap-2.5">
           <ShieldCheck size={18} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5 sm:mt-0" />
           <span>
-            <strong>Professional Installation Protocol:</strong> Adding smart hardware to your home requires physical panel wiring, breaker sizing, and calibration by an authorized 5AMPERE field technician. Submitting a request books a scheduled site visit.
+            <strong>Professional Electrical Installation Protocol:</strong> Main breaker and contactor hardware requires physical wiring by a certified field wireman. Submitting an item books a scheduled installation visit.
           </span>
         </div>
         <Link
           to="/installation"
           className="font-bold text-xs underline shrink-0 hover:opacity-80 text-emerald-700 dark:text-emerald-300"
         >
-          View Process →
+          View Installation Protocol →
         </Link>
       </div>
 
-      {/* Main Tabs (Catalogue vs My Devices) */}
+      {/* Main Tab Controls */}
       <div className="flex items-center justify-between border-b border-[var(--color-border)] pb-1">
         <div className="flex items-center gap-2">
           <button
@@ -151,27 +171,26 @@ export function DeviceMarketplacePage() {
 
           <button
             type="button"
-            onClick={() => setActiveTab('my_devices')}
+            onClick={() => setActiveTab('my_hardware')}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
-              activeTab === 'my_devices'
+              activeTab === 'my_hardware'
                 ? 'bg-[var(--color-accent-subtle)] text-[var(--color-accent)] border border-[var(--color-accent)]'
                 : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)]'
             }`}
           >
-            <span>My Installed &amp; Pending Devices</span>
+            <span>My Hardware Status</span>
             <span className="px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-[var(--color-surface-secondary)] border border-[var(--color-border)]">
-              {installedDevices.length + requestedDevices.length}
+              {installedDevices.length + requestedDevices.length + ownedPendingDevices.length}
             </span>
           </button>
         </div>
       </div>
 
-      {/* TAB 1: DEVICE CATALOGUE */}
+      {/* TAB 1: SEARCHABLE CATALOGUE */}
       {activeTab === 'catalogue' && (
         <div className="space-y-4">
-          {/* Search & Category Filter Controls */}
+          {/* Search & Category Pills */}
           <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
-            {/* Search Input */}
             <div className="relative flex-1 max-w-md">
               <Search
                 size={16}
@@ -186,7 +205,6 @@ export function DeviceMarketplacePage() {
               />
             </div>
 
-            {/* Category Pills */}
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
               {CATEGORIES.map((cat) => (
                 <button
@@ -209,18 +227,17 @@ export function DeviceMarketplacePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredHardware.map((hw) => {
               const IconComp = ICON_MAP[hw.icon] || Cpu;
-              const isAlreadyInstalled = installedDevices.some((d) => d.id === hw.id);
-              const isPendingRequest = requestedDevices.some((d) => d.deviceId === hw.id);
+              const isInstalled = installedDevices.some((d) => d.id === hw.id);
+              const isRequested = requestedDevices.some((d) => d.deviceId === hw.id);
 
               return (
                 <Surface
                   key={hw.id}
                   variant="primary"
                   padding="md"
-                  className="border border-[var(--color-border)] hover:border-[var(--color-accent)] transition-all flex flex-col justify-between space-y-3.5 group shadow-xs"
+                  className="border border-[var(--color-border)] hover:border-[var(--color-accent)] transition-all flex flex-col justify-between space-y-3 group shadow-xs"
                 >
                   <div>
-                    {/* Header: Icon, Category & Stock */}
                     <div className="flex items-start justify-between gap-2">
                       <div className="w-10 h-10 rounded-xl bg-[var(--color-accent-subtle)] border border-[var(--color-accent)]/20 text-[var(--color-accent)] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                         <IconComp size={20} />
@@ -235,7 +252,6 @@ export function DeviceMarketplacePage() {
                       </div>
                     </div>
 
-                    {/* Title & Description */}
                     <div className="mt-2.5">
                       <h3 className="text-sm font-bold text-[var(--color-text)] group-hover:text-[var(--color-accent)] transition-colors">
                         {hw.name}
@@ -245,19 +261,15 @@ export function DeviceMarketplacePage() {
                       </p>
                     </div>
 
-                    {/* Compatibility Info */}
                     <div className="mt-3 p-2 rounded-lg bg-[var(--color-surface-secondary)] border border-[var(--color-border-subtle)] text-[11px] text-[var(--color-text-secondary)] flex items-start gap-1.5">
                       <Info size={13} className="text-[var(--color-accent)] shrink-0 mt-0.5" />
                       <span className="line-clamp-2">{hw.compatibility}</span>
                     </div>
                   </div>
 
-                  {/* Pricing & Actions */}
                   <div className="pt-2 border-t border-[var(--color-border-subtle)] flex items-center justify-between gap-2">
                     <div>
-                      <span className="text-[10px] text-[var(--color-text-muted)] block">
-                        Hardware + Setup
-                      </span>
+                      <span className="text-[10px] text-[var(--color-text-muted)] block">Price (INR)</span>
                       <span className="text-sm font-mono font-bold text-[var(--color-text)]">
                         ₹{hw.priceINR.toLocaleString('en-IN')}
                       </span>
@@ -273,12 +285,12 @@ export function DeviceMarketplacePage() {
                         Specs
                       </Button>
 
-                      {isAlreadyInstalled ? (
+                      {isInstalled ? (
                         <span className="text-xs px-2.5 py-1.5 rounded-lg bg-green-500/10 text-green-700 dark:text-green-300 font-bold border border-green-500/30 flex items-center gap-1">
                           <CheckCircle2 size={13} />
                           <span>Installed</span>
                         </span>
-                      ) : isPendingRequest ? (
+                      ) : isRequested ? (
                         <span className="text-xs px-2.5 py-1.5 rounded-lg bg-amber-500/10 text-amber-700 dark:text-amber-300 font-bold border border-amber-500/30 flex items-center gap-1">
                           <Clock size={13} />
                           <span>Requested</span>
@@ -303,19 +315,109 @@ export function DeviceMarketplacePage() {
         </div>
       )}
 
-      {/* TAB 2: MY INSTALLED & PENDING DEVICES */}
-      {activeTab === 'my_devices' && (
+      {/* TAB 2: MY HARDWARE STATUS (4 CATEGORIES DISTINGUISHED) */}
+      {activeTab === 'my_hardware' && (
         <div className="space-y-6">
-          {/* Pending Installation Requests */}
-          <div>
-            <h3 className="text-sm font-bold text-[var(--color-text)] flex items-center gap-2 mb-3">
+          {/* 1. Installed & Commissioned */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-bold text-[var(--color-text)] flex items-center gap-2">
+              <CheckCircle2 size={16} className="text-[var(--color-success)]" />
+              <span>1. Configured &amp; Active Household Hardware ({installedDevices.length})</span>
+            </h3>
+
+            {installedDevices.length === 0 ? (
+              <div className="p-6 rounded-2xl border border-dashed border-[var(--color-border)] text-center text-xs text-[var(--color-text-muted)]">
+                No physical devices installed yet. Once a 5AMPERE technician completes your site visit, commissioned hardware will appear here.
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {installedDevices.map((dev) => {
+                  const hw = marketplaceHardware.find((h) => h.id === dev.id);
+                  return (
+                    <Surface
+                      key={dev.serial || dev.id}
+                      variant="primary"
+                      padding="md"
+                      className="border border-[var(--color-border)] space-y-2.5"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <span className="text-[10px] font-mono uppercase tracking-wider font-bold px-2 py-0.5 rounded bg-green-500/10 text-green-700 dark:text-green-300 border border-green-500/30">
+                            {dev.status || 'Active & Online'}
+                          </span>
+                          <h4 className="text-sm font-bold text-[var(--color-text)] mt-1.5">
+                            {hw ? hw.name : dev.id}
+                          </h4>
+                        </div>
+                        <span className="text-[11px] font-mono text-[var(--color-accent)] font-semibold">
+                          {dev.serial}
+                        </span>
+                      </div>
+
+                      <div className="text-xs text-[var(--color-text-secondary)] space-y-1">
+                        <div>
+                          <span className="text-[var(--color-text-muted)]">Location / Circuit: </span>
+                          <span className="font-semibold text-[var(--color-text)]">{dev.location || 'Main Panel'}</span>
+                        </div>
+                        <div>
+                          <span className="text-[var(--color-text-muted)]">Commissioned: </span>
+                          <span>{dev.installedDate}</span>
+                        </div>
+                      </div>
+                    </Surface>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* 2. Owned by Customer (Pending Configuration) */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-bold text-[var(--color-text)] flex items-center gap-2">
+              <Package size={16} className="text-purple-600 dark:text-purple-400" />
+              <span>2. Devices Owned by Customer (Pending On-Site Wiring) ({ownedPendingDevices.length})</span>
+            </h3>
+
+            {ownedPendingDevices.length === 0 ? (
+              <div className="p-4 rounded-xl border border-dashed border-[var(--color-border)] text-xs text-[var(--color-text-muted)]">
+                You do not have any unconfigured customer-owned devices.
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {ownedPendingDevices.map((dev, idx) => (
+                  <Surface
+                    key={idx}
+                    variant="primary"
+                    padding="md"
+                    className="border border-purple-500/30 bg-purple-500/5 space-y-2"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-[var(--color-text)]">
+                        {dev.name || dev.id}
+                      </span>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-700 dark:text-purple-300 font-bold">
+                        Owned - Unwired
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-[var(--color-text-secondary)]">
+                      Customer has procured this sensor. A technician will mount it in your distribution board during the next scheduled visit.
+                    </p>
+                  </Surface>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* 3. New Hardware Requests */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-bold text-[var(--color-text)] flex items-center gap-2">
               <Clock size={16} className="text-amber-500" />
-              <span>Pending Installation &amp; Service Requests ({requestedDevices.length})</span>
+              <span>3. New Hardware Requested (Pending Technician Visit) ({requestedDevices.length})</span>
             </h3>
 
             {requestedDevices.length === 0 ? (
               <div className="p-6 rounded-2xl border border-dashed border-[var(--color-border)] text-center text-xs text-[var(--color-text-muted)]">
-                No active device installation requests. Browse the catalogue to request additional smart contactors or sensors.
+                No pending requests. Browse the catalogue above to request additional contactor relays or CT sensors.
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -343,13 +445,13 @@ export function DeviceMarketplacePage() {
                       </div>
 
                       <div className="text-xs text-[var(--color-text-secondary)] space-y-1">
-                        <div className="flex items-center gap-2">
-                          <Calendar size={13} className="text-[var(--color-accent)]" />
-                          <span>Slot: {req.preferredSlot}</span>
+                        <div>
+                          <span className="text-[var(--color-text-muted)]">Assignment: </span>
+                          <span className="font-semibold text-[var(--color-text)]">{req.targetAssignment}</span>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Wrench size={13} className="text-[var(--color-accent)]" />
-                          <span>Assigned Tech: Rajesh Kumar (Field Specialist)</span>
+                        <div>
+                          <span className="text-[var(--color-text-muted)]">Preferred Slot: </span>
+                          <span>{req.preferredSlot}</span>
                         </div>
                         {req.notes && (
                           <p className="text-[11px] text-[var(--color-text-muted)] italic">
@@ -359,7 +461,7 @@ export function DeviceMarketplacePage() {
                       </div>
 
                       <div className="pt-2 border-t border-[var(--color-border-subtle)] flex items-center justify-between text-xs">
-                        <span className="text-[var(--color-text-muted)]">Site Assessment Required</span>
+                        <span className="text-[var(--color-text-muted)]">Technician Assigned: Rajesh Kumar</span>
                         <Link
                           to="/installation"
                           className="font-bold text-[var(--color-accent)] hover:underline flex items-center gap-1"
@@ -373,63 +475,10 @@ export function DeviceMarketplacePage() {
               </div>
             )}
           </div>
-
-          {/* Currently Configured & Active Devices */}
-          <div>
-            <h3 className="text-sm font-bold text-[var(--color-text)] flex items-center gap-2 mb-3">
-              <CheckCircle2 size={16} className="text-[var(--color-success)]" />
-              <span>Configured &amp; Active Household Hardware ({installedDevices.length})</span>
-            </h3>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {installedDevices.map((dev) => {
-                const hw = marketplaceHardware.find((h) => h.id === dev.id);
-                return (
-                  <Surface
-                    key={dev.serial || dev.id}
-                    variant="primary"
-                    padding="md"
-                    className="border border-[var(--color-border)] space-y-2.5"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <span className="text-[10px] font-mono uppercase tracking-wider font-bold px-2 py-0.5 rounded bg-green-500/10 text-green-700 dark:text-green-300 border border-green-500/30">
-                          {dev.status || 'Active & Online'}
-                        </span>
-                        <h4 className="text-sm font-bold text-[var(--color-text)] mt-1.5">
-                          {hw ? hw.name : dev.id}
-                        </h4>
-                      </div>
-                      <span className="text-[11px] font-mono text-[var(--color-accent)] font-semibold">
-                        {dev.serial}
-                      </span>
-                    </div>
-
-                    <div className="text-xs text-[var(--color-text-secondary)] space-y-1">
-                      {dev.circuit && (
-                        <div>
-                          <span className="text-[var(--color-text-muted)]">Circuit Assignment: </span>
-                          <span className="font-semibold text-[var(--color-text)]">{dev.circuit}</span>
-                        </div>
-                      )}
-                      <div>
-                        <span className="text-[var(--color-text-muted)]">Commissioned Date: </span>
-                        <span>{dev.installedDate}</span>
-                      </div>
-                      <div>
-                        <span className="text-[var(--color-text-muted)]">Telemetry Stream: </span>
-                        <span className="text-[var(--color-success)] font-medium">True RMS · Live 230V</span>
-                      </div>
-                    </div>
-                  </Surface>
-                );
-              })}
-            </div>
-          </div>
         </div>
       )}
 
-      {/* MODAL 1: HARDWARE TECHNICAL SPECIFICATIONS */}
+      {/* MODAL 1: SPECIFICATIONS */}
       {detailModalHardware && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
           <Surface
@@ -462,7 +511,6 @@ export function DeviceMarketplacePage() {
               {detailModalHardware.description}
             </p>
 
-            {/* Specifications Table */}
             <div>
               <h4 className="text-xs font-bold text-[var(--color-text)] mb-2 uppercase tracking-wider font-mono">
                 Technical Specifications:
@@ -470,39 +518,28 @@ export function DeviceMarketplacePage() {
               <div className="p-3 rounded-xl bg-[var(--color-surface-secondary)] border border-[var(--color-border)] space-y-1.5 text-xs">
                 {Object.entries(detailModalHardware.specs || {}).map(([key, value]) => (
                   <div key={key} className="flex justify-between">
-                    <span className="text-[var(--color-text-muted)] capitalize">
-                      {key.replace(/([A-Z])/g, ' $1')}:
-                    </span>
-                    <span className="font-mono font-semibold text-[var(--color-text)] text-right">
-                      {value}
-                    </span>
+                    <span className="text-[var(--color-text-muted)] capitalize">{key}:</span>
+                    <span className="font-mono font-semibold text-[var(--color-text)] text-right">{value}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Installation Requirements */}
             <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-900 dark:text-amber-200 text-xs space-y-1">
               <strong className="block font-semibold">Installation &amp; Safety Compliance:</strong>
               <p>{detailModalHardware.installationRequirement}</p>
             </div>
 
-            {/* Modal Actions */}
             <div className="pt-2 flex items-center justify-between">
               <div>
-                <span className="text-[10px] text-[var(--color-text-muted)] block">Estimated Cost</span>
+                <span className="text-[10px] text-[var(--color-text-muted)] block">Price (INR)</span>
                 <span className="text-base font-bold font-mono text-[var(--color-text)]">
                   ₹{detailModalHardware.priceINR.toLocaleString('en-IN')}
                 </span>
               </div>
 
               <div className="flex items-center gap-2">
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => setDetailModalHardware(null)}
-                  className="text-xs"
-                >
+                <Button variant="secondary" size="sm" onClick={() => setDetailModalHardware(null)} className="text-xs">
                   Close
                 </Button>
                 <Button
@@ -524,14 +561,10 @@ export function DeviceMarketplacePage() {
         </div>
       )}
 
-      {/* MODAL 2: REQUEST HARDWARE INSTALLATION DIALOG */}
+      {/* MODAL 2: REQUEST HARDWARE & SELECT ASSIGNMENT */}
       {isRequestModalOpen && targetHardware && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
-          <Surface
-            variant="primary"
-            padding="lg"
-            className="w-full max-w-md border border-[var(--color-border)] shadow-2xl space-y-4"
-          >
+          <Surface variant="primary" padding="lg" className="w-full max-w-md border border-[var(--color-border)] shadow-2xl space-y-4">
             <div className="flex items-start justify-between border-b border-[var(--color-border)] pb-3">
               <div>
                 <h3 className="text-sm font-bold text-[var(--color-text)] flex items-center gap-2">
@@ -545,7 +578,7 @@ export function DeviceMarketplacePage() {
               <button
                 type="button"
                 onClick={() => setIsRequestModalOpen(false)}
-                className="text-base font-bold text-[var(--color-text-muted)] hover:text-[var(--color-text)] cursor-pointer"
+                className="text-base font-bold text-[var(--color-text-muted)] cursor-pointer"
               >
                 ✕
               </button>
@@ -556,37 +589,72 @@ export function DeviceMarketplacePage() {
                 <div className="w-12 h-12 rounded-full bg-green-500/10 text-green-600 dark:text-green-400 flex items-center justify-center mx-auto">
                   <CheckCircle2 size={28} />
                 </div>
-                <h4 className="text-sm font-bold text-[var(--color-text)]">
-                  Installation Request Submitted!
-                </h4>
+                <h4 className="text-sm font-bold text-[var(--color-text)]">Installation Request Submitted!</h4>
                 <p className="text-xs text-[var(--color-text-secondary)] max-w-xs mx-auto">
-                  Your request has been routed to the 5AMPERE engineering queue. Lead technician Rajesh Kumar will confirm your slot.
+                  Your request has been routed to lead technician Rajesh Kumar. Scheduled slot: {preferredSlot}.
                 </p>
               </div>
             ) : (
               <form onSubmit={handleConfirmRequest} className="space-y-3.5">
-                <div className="p-3 rounded-xl bg-[var(--color-surface-secondary)] border border-[var(--color-border)] text-xs space-y-1">
-                  <div className="flex justify-between">
-                    <span className="text-[var(--color-text-muted)]">Device:</span>
-                    <span className="font-semibold text-[var(--color-text)]">{targetHardware.name}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[var(--color-text-muted)]">Destination:</span>
-                    <span className="font-semibold text-[var(--color-text)] truncate max-w-[200px]">
-                      {activeCustomerHome?.address || 'Noida Home'}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[var(--color-text-muted)]">Hardware Cost:</span>
-                    <span className="font-mono font-bold text-[var(--color-accent)]">
-                      ₹{targetHardware.priceINR.toLocaleString('en-IN')}
-                    </span>
+                {/* Ownership Type */}
+                <div>
+                  <label className="block text-xs font-semibold text-[var(--color-text)] mb-1">
+                    Device Ownership
+                  </label>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <button
+                      type="button"
+                      onClick={() => setDeviceOwnership('new_request')}
+                      className={`p-2 rounded-lg border text-left cursor-pointer transition-all ${
+                        deviceOwnership === 'new_request'
+                          ? 'bg-[var(--color-accent-subtle)] border-[var(--color-accent)] text-[var(--color-accent)] font-bold'
+                          : 'bg-[var(--color-surface)] border-[var(--color-border)] text-[var(--color-text-secondary)]'
+                      }`}
+                    >
+                      <span>New 5AMPERE Order</span>
+                      <span className="text-[10px] block opacity-75">Procure &amp; Install</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setDeviceOwnership('owned_unconfigured')}
+                      className={`p-2 rounded-lg border text-left cursor-pointer transition-all ${
+                        deviceOwnership === 'owned_unconfigured'
+                          ? 'bg-[var(--color-accent-subtle)] border-[var(--color-accent)] text-[var(--color-accent)] font-bold'
+                          : 'bg-[var(--color-surface)] border-[var(--color-border)] text-[var(--color-text-secondary)]'
+                      }`}
+                    >
+                      <span>Customer-Owned</span>
+                      <span className="text-[10px] block opacity-75">Wiring Only</span>
+                    </button>
                   </div>
                 </div>
 
+                {/* Assignment Target */}
                 <div>
                   <label className="block text-xs font-semibold text-[var(--color-text)] mb-1">
-                    Select Preferred Visit Slot
+                    Assign to Room / Circuit / Panel
+                  </label>
+                  <select
+                    value={targetAssignment}
+                    onChange={(e) => setTargetAssignment(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] text-xs text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent)]"
+                  >
+                    <option value="Main Incomer (Busbar)">Main Incomer (Busbar)</option>
+                    {rooms.map((r) => (
+                      <option key={r.id} value={`${r.name} Circuit`}>
+                        {r.name} Circuit
+                      </option>
+                    ))}
+                    <option value="Whole Property Sub-Panel">Whole Property Sub-Panel</option>
+                    <option value="Other Custom Circuit">Other Custom Circuit</option>
+                  </select>
+                </div>
+
+                {/* Preferred Slot */}
+                <div>
+                  <label className="block text-xs font-semibold text-[var(--color-text)] mb-1">
+                    Preferred Technician Visit Slot
                   </label>
                   <select
                     value={preferredSlot}
@@ -595,40 +663,30 @@ export function DeviceMarketplacePage() {
                   >
                     <option value="Tomorrow Morning (10:00 AM – 01:00 PM)">Tomorrow Morning (10:00 AM – 01:00 PM)</option>
                     <option value="Tomorrow Afternoon (02:00 PM – 05:00 PM)">Tomorrow Afternoon (02:00 PM – 05:00 PM)</option>
-                    <option value="Weekend Morning (10:00 AM – 01:00 PM)">Weekend Morning (10:00 AM – 01:00 PM)</option>
-                    <option value="Weekend Evening (04:00 PM – 07:00 PM)">Weekend Evening (04:00 PM – 07:00 PM)</option>
+                    <option value="Saturday Morning (10:00 AM – 01:00 PM)">Saturday Morning (10:00 AM – 01:00 PM)</option>
+                    <option value="Sunday Afternoon (02:00 PM – 05:00 PM)">Sunday Afternoon (02:00 PM – 05:00 PM)</option>
                   </select>
                 </div>
 
+                {/* Notes */}
                 <div>
                   <label className="block text-xs font-semibold text-[var(--color-text)] mb-1">
-                    Circuit / Appliance Notes for Technician
+                    Installation Notes for Technician
                   </label>
                   <textarea
                     rows={2}
                     value={requestNotes}
                     onChange={(e) => setRequestNotes(e.target.value)}
-                    placeholder="e.g. Please wire this contactor to the Living Room 1.5T AC circuit."
+                    placeholder="e.g. Please wire contactor on AC circuit breaker in the master distribution board."
                     className="w-full px-3 py-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] text-xs text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent)]"
                   />
                 </div>
 
                 <div className="flex items-center justify-end gap-2 pt-2">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setIsRequestModalOpen(false)}
-                    className="text-xs"
-                  >
+                  <Button type="button" variant="ghost" size="sm" onClick={() => setIsRequestModalOpen(false)} className="text-xs">
                     Cancel
                   </Button>
-                  <Button
-                    type="submit"
-                    variant="primary"
-                    size="sm"
-                    className="text-xs font-bold"
-                  >
+                  <Button type="submit" variant="primary" size="sm" className="text-xs font-bold">
                     Submit Installation Request
                   </Button>
                 </div>
