@@ -1,0 +1,107 @@
+/* ============================================================
+   5AMPERE Animations
+   ============================================================ */
+
+/* --- Energy flow line drift --- */
+@keyframes energy-drift {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -1200;
+  }
+}
+
+@keyframes energy-drift-reverse {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: 1200;
+  }
+}
+
+/* --- Moving dash flow along conduit cables --- */
+@keyframes flow-forward {
+  from {
+    stroke-dashoffset: 100;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes flow-forward-fast {
+  from {
+    stroke-dashoffset: 60;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* --- Concentric energy beacon ring pulse --- */
+@keyframes energy-beacon-ring {
+  0% {
+    r: 6px;
+    opacity: 0.8;
+  }
+  100% {
+    r: 22px;
+    opacity: 0;
+  }
+}
+
+/* --- Soft glow pulse --- */
+@keyframes glow-pulse {
+  0%, 100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+/* --- Power node breathing --- */
+@keyframes node-breath {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 2px var(--color-accent));
+  }
+  50% {
+    transform: scale(1.08);
+    filter: drop-shadow(0 0 8px var(--color-accent));
+  }
+}
+
+/* --- Splash screen --- */
+@keyframes splash-pulse {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+}
+
+@keyframes splash-progress {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+/* --- Reduced motion: disable animations --- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

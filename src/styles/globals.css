@@ -1,0 +1,61 @@
+@import "tailwindcss";
+@import "./tokens.css";
+@import "./animations.css";
+
+/* ============================================================
+   5AMPERE Global Styles
+   ============================================================ */
+
+/* --- Base --- */
+html {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  transition: background-color var(--transition-slow), color var(--transition-slow);
+}
+
+/* --- Scrollbar --- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: var(--radius-pill);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
+}
+
+/* --- Selection --- */
+::selection {
+  background-color: var(--color-accent-subtle);
+  color: var(--color-text);
+}
+
+/* --- Focus visible defaults --- */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* --- Theme transition for major surfaces --- */
+.theme-transition,
+.theme-transition *,
+.theme-transition *::before,
+.theme-transition *::after {
+  transition: background-color 300ms ease, color 300ms ease, border-color 300ms ease, box-shadow 300ms ease !important;
+}
+

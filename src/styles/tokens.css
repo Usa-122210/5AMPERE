@@ -1,0 +1,110 @@
+/* ============================================================
+   5AMPERE Design Tokens
+   ============================================================
+   All colour and spacing tokens are defined here.
+   Components reference these via var(--token-name).
+   ============================================================ */
+
+:root {
+  color-scheme: light;
+
+  /* ---- Light theme colours ---- */
+  --color-bg:                 #F4F6F2;
+  --color-surface:            #FFFFFF;
+  --color-surface-secondary:  #EDF1EB;
+  --color-surface-selected:   #DDE9DD;
+  --color-border:             #DCE3DA;
+  --color-border-subtle:      #E6EBE4;
+
+  --color-text:               #18221B;
+  --color-text-secondary:     #59665D;
+  --color-text-muted:         #758178;
+  --color-text-inverted:      #F1F5F2;
+
+  --color-accent:             #236B43;
+  --color-accent-hover:       #1B5735;
+  --color-accent-text:        #FFFFFF;
+  --color-accent-subtle:      #DDE9DD;
+
+  /* ---- Semantic colours (light) ---- */
+  --color-success:            #3B9A68;
+  --color-warning:            #D99A35;
+  --color-danger:             #D95757;
+  --color-neutral:            #87918A;
+
+  /* ---- Shadows (light) ---- */
+  --shadow-sm:   0 1px 2px rgba(24, 34, 27, 0.05);
+  --shadow-md:   0 2px 8px rgba(24, 34, 27, 0.08);
+  --shadow-lg:   0 4px 16px rgba(24, 34, 27, 0.10);
+
+  /* ---- Focus ring ---- */
+  --color-focus-ring:         #236B43;
+  --focus-ring:               0 0 0 2px var(--color-bg), 0 0 0 4px var(--color-focus-ring);
+
+  /* ---- Energy-flow background (light) ---- */
+  --energy-line-color:        rgba(35, 107, 67, 0.24);
+  --energy-line-glow:         rgba(35, 107, 67, 0.12);
+  --energy-glow-color:        rgba(35, 107, 67, 0.14);
+  --energy-particle-color:    #236B43;
+  --energy-particle-glow:     rgba(35, 107, 67, 0.45);
+
+  /* ---- Radii ---- */
+  --radius-sm:     8px;
+  --radius-md:     12px;
+  --radius-card:   14px;
+  --radius-lg:     16px;
+  --radius-xl:     20px;
+  --radius-pill:   9999px;
+
+  /* ---- Transitions ---- */
+  --transition-fast:    150ms ease;
+  --transition-normal:  200ms ease;
+  --transition-slow:    300ms ease;
+}
+
+/* ============================================================
+   Dark theme
+   ============================================================ */
+.dark {
+  color-scheme: dark;
+
+  --color-bg:                 #101513;
+  --color-surface:            #181F1B;
+  --color-surface-secondary:  #202923;
+  --color-surface-selected:   #283029;
+  --color-border:             #303B34;
+  --color-border-subtle:      #272F2A;
+
+  --color-text:               #F1F5F2;
+  --color-text-secondary:     #A7B3AA;
+  --color-text-muted:         #7F8B82;
+  --color-text-inverted:      #18221B;
+
+  --color-accent:             #A8E6B0;
+  --color-accent-hover:       #C0F0C5;
+  --color-accent-text:        #142118;
+  --color-accent-subtle:      #1E2E23;
+
+  /* ---- Semantic colours (dark) ---- */
+  --color-success:            #4CB878;
+  --color-warning:            #E5AB45;
+  --color-danger:             #E56B6B;
+  --color-neutral:            #87918A;
+
+  /* ---- Shadows (dark) ---- */
+  --shadow-sm:   0 1px 2px rgba(0, 0, 0, 0.20);
+  --shadow-md:   0 2px 8px rgba(0, 0, 0, 0.30);
+  --shadow-lg:   0 4px 16px rgba(0, 0, 0, 0.35);
+
+  /* ---- Focus ring ---- */
+  --color-focus-ring:         #A8E6B0;
+  --focus-ring:               0 0 0 2px var(--color-bg), 0 0 0 4px var(--color-focus-ring);
+
+  /* ---- Energy-flow background (dark) ---- */
+  --energy-line-color:        rgba(168, 230, 176, 0.28);
+  --energy-line-glow:         rgba(168, 230, 176, 0.15);
+  --energy-glow-color:        rgba(168, 230, 176, 0.16);
+  --energy-particle-color:    #A8E6B0;
+  --energy-particle-glow:     rgba(168, 230, 176, 0.65);
+}
+
