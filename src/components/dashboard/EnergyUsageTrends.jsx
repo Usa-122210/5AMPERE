@@ -127,7 +127,7 @@ export function EnergyUsageTrends() {
 
       {/* SVG Chart Viewport */}
       <div className="relative pt-2 pb-4 overflow-x-auto">
-        <div className="min-w-[680px]">
+        <div className="min-w-170">
           <svg viewBox={`0 0 ${chartWidth} ${chartHeight + 40}`} className="w-full overflow-visible" preserveAspectRatio="none">
             <defs>
               {/* Load Bar Gradient */}

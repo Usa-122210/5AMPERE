@@ -1,15 +1,15 @@
-import { ArrowUp } from 'lucide-react';
+import { ArrowUp, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { BrandWordmark } from '../brand/BrandWordmark';
 
 /**
- * Footer — Platform Specifications & Application Footer.
+ * Footer — Platform Specifications & Commercial Application Footer.
  *
  * Provides:
- *   - Direct section navigation for the energy platform
- *   - Hardware specifications (DIN-Rail, 230V, MQTT, Non-invasive CT)
- *   - Link to Design System reference
- *   - Platform status and copyright
+ *   - Commercial platform navigation
+ *   - Indian electrical grid specifications (230V · 50 Hz, CEA compliance, DIN-Rail)
+ *   - Links to Login, Sign Up, Hardware Sizing Calculator
+ *   - Copyright & legal notices
  */
 export function Footer({ onOpenSizing }) {
   const scrollToTop = () => {
@@ -18,64 +18,127 @@ export function Footer({ onOpenSizing }) {
 
   return (
     <footer
-      className="border-t transition-colors duration-200 mt-12 pt-8"
+      className="border-t transition-colors duration-200 mt-16 pt-12"
       style={{
         borderColor: 'var(--color-border)',
         backgroundColor: 'var(--color-surface)',
       }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pb-8">
-          
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 pb-10">
           {/* Brand Column */}
-          <div className="space-y-3 md:col-span-2">
+          <div className="space-y-3 lg:col-span-2">
             <BrandWordmark size="md" showBadge={true} badgeText="IoT Energy Hub" />
             <p className="text-xs sm:text-sm text-(--color-text-secondary) max-w-sm leading-relaxed">
               5AMPERE is a hardware-integrated smart energy management platform designed
-              for sub-circuit telemetry, continuous standby elimination, and automated
-              household load-shedding.
+              for sub-circuit telemetry, marginal slab bill reduction, and automated load control
+              across Indian homes, schools, offices, and industries.
             </p>
             <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-(--color-text-muted) pt-1">
-              <span>230V · 50/60 Hz Standard</span>
+              <span>230V AC Single/Three-Phase</span>
+              <span>·</span>
+              <span>50 Hz Nominal</span>
               <span>·</span>
               <span>DIN-Rail 35mm Mount</span>
-              <span>·</span>
-              <span>Local MQTT / REST Protocol</span>
             </div>
           </div>
 
-          {/* Platform Navigation */}
+          {/* Navigation Links */}
           <div className="space-y-2.5">
             <p className="text-xs font-mono uppercase tracking-wider font-bold text-(--color-text)">
-              Application Views
-            </p>
-            <ul className="space-y-1.5 text-xs text-(--color-text-secondary)">
-              <li><a href="#overview" className="hover:text-(--color-text) transition-colors">Energy Overview</a></li>
-              <li><a href="#usage-trends" className="hover:text-(--color-text) transition-colors">24-Hour Usage Profile</a></li>
-              <li><a href="#loads" className="hover:text-(--color-text) transition-colors">Household Loads &amp; Relays</a></li>
-              <li><a href="#topology" className="hover:text-(--color-text) transition-colors">Conduit Topology &amp; Flow</a></li>
-              <li><a href="#insights" className="hover:text-(--color-text) transition-colors">Insights &amp; Automations</a></li>
-            </ul>
-          </div>
-
-          {/* Tools & Hardware Config */}
-          <div className="space-y-2.5">
-            <p className="text-xs font-mono uppercase tracking-wider font-bold text-(--color-text)">
-              Hardware Tools
+              Platform
             </p>
             <ul className="space-y-1.5 text-xs text-(--color-text-secondary)">
               <li>
+                <a href="#features" className="hover:text-(--color-text) transition-colors">
+                  Features &amp; Capabilities
+                </a>
+              </li>
+              <li>
+                <a href="#how-it-works" className="hover:text-(--color-text) transition-colors">
+                  How It Works
+                </a>
+              </li>
+              <li>
+                <a href="#architecture" className="hover:text-(--color-text) transition-colors">
+                  Hardware Architecture
+                </a>
+              </li>
+              <li>
+                <a href="#pricing" className="hover:text-(--color-text) transition-colors">
+                  Plans &amp; Packages
+                </a>
+              </li>
+              <li>
+                <a href="#about" className="hover:text-(--color-text) transition-colors">
+                  Grid Compliance
+                </a>
+              </li>
+              <li>
+                <a href="#faq" className="hover:text-(--color-text) transition-colors">
+                  Frequently Asked Questions
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Solutions & Sectors */}
+          <div className="space-y-2.5">
+            <p className="text-xs font-mono uppercase tracking-wider font-bold text-(--color-text)">
+              Solutions
+            </p>
+            <ul className="space-y-1.5 text-xs text-(--color-text-secondary)">
+              <li>
+                <span className="text-(--color-text)">Residential Homes (3–10 kW)</span>
+              </li>
+              <li>
+                <span className="text-(--color-text)">Schools &amp; Campuses (50–150 kW)</span>
+              </li>
+              <li>
+                <span className="text-(--color-text)">Commercial Offices (25–100 kW)</span>
+              </li>
+              <li>
+                <span className="text-(--color-text)">Industrial Plants (100–500 kW)</span>
+              </li>
+              <li className="pt-2">
                 <button
                   type="button"
                   onClick={onOpenSizing}
-                  className="hover:text-(--color-text) transition-colors cursor-pointer text-left"
+                  className="font-semibold text-(--color-accent) hover:underline cursor-pointer"
                 >
-                  Panel Sizing Calculator
+                  Hardware Sizing Calculator →
                 </button>
               </li>
-              <li><Link to="/preview" className="hover:text-(--color-text) transition-colors">Design System Preview</Link></li>
-              <li><span className="text-(--color-text-muted) font-mono text-[11px]">Firmware: v0.3.0-prod</span></li>
-              <li><span className="text-(--color-text-muted) font-mono text-[11px]">CT Accuracy: ±0.5% RMS</span></li>
+            </ul>
+          </div>
+
+          {/* Portals & Access */}
+          <div className="space-y-2.5">
+            <p className="text-xs font-mono uppercase tracking-wider font-bold text-(--color-text)">
+              Access &amp; Security
+            </p>
+            <ul className="space-y-1.5 text-xs text-(--color-text-secondary)">
+              <li>
+                <Link to="/login" className="hover:text-(--color-text) transition-colors">
+                  Customer &amp; Team Login
+                </Link>
+              </li>
+              <li>
+                <Link to="/signup" className="hover:text-(--color-text) transition-colors">
+                  Create New Account
+                </Link>
+              </li>
+              <li>
+                <Link to="/preview" className="hover:text-(--color-text) transition-colors">
+                  Design System Preview
+                </Link>
+              </li>
+              <li className="pt-1">
+                <span className="inline-flex items-center gap-1 text-[11px] font-mono text-(--color-success)">
+                  <ShieldCheck size={12} />
+                  <span>CEA Certified Standard</span>
+                </span>
+              </li>
             </ul>
           </div>
         </div>
@@ -100,3 +163,5 @@ export function Footer({ onOpenSizing }) {
     </footer>
   );
 }
+
+export default Footer;

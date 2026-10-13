@@ -30,6 +30,11 @@ export function EvaluatorControls() {
     resetDemoData,
   } = useAuth();
 
+  // Evaluator controls must only be visible to logged-in users / evaluators, never to unauthenticated public visitors
+  if (!currentUser) {
+    return null;
+  }
+
   const handleSelectPersona = (personaKey) => {
     loginAsDemoUser(personaKey);
     setIsOpen(false);

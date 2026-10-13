@@ -191,7 +191,7 @@ export function AppliancesPage() {
                 </div>
 
                 {/* Draw in kW and Amps */}
-                <div className="text-right font-mono min-w-[70px]">
+                <div className="text-right font-mono min-w-17.5">
                   <p className="text-sm font-extrabold" style={{ color: item.active ? 'var(--color-accent)' : 'var(--color-text-muted)' }}>
                     {item.active ? `${item.drawKw.toFixed(2)} kW` : '0.00 kW'}
                   </p>

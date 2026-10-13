@@ -139,7 +139,7 @@ export function TechnicianCataloguePage() {
                   {Object.entries(hw.specs || {}).slice(0, 3).map(([k, v]) => (
                     <div key={k} className="flex justify-between">
                       <span className="text-(--color-text-muted) capitalize">{k}:</span>
-                      <span className="font-mono font-semibold text-(--color-text) truncate max-w-[170px] text-right">
+                      <span className="font-mono font-semibold text-(--color-text) truncate max-w-42.5 text-right">
                         {v}
                       </span>
                     </div>

@@ -682,7 +682,7 @@ export function AuthProvider({ children }) {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.USER);
       if (saved) return JSON.parse(saved);
-    } catch (e) {}
+    } catch {}
     return null;
   });
 
@@ -691,7 +691,7 @@ export function AuthProvider({ children }) {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.ACCOUNTS);
       if (saved) return mergePredefinedAccounts(JSON.parse(saved));
-    } catch (e) {}
+    } catch {}
     return INITIAL_ACCOUNTS;
   });
 
@@ -700,7 +700,7 @@ export function AuthProvider({ children }) {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.PROPERTIES);
       if (saved) return JSON.parse(saved);
-    } catch (e) {}
+    } catch {}
     return INITIAL_PROPERTIES;
   });
 
@@ -709,7 +709,7 @@ export function AuthProvider({ children }) {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.APPOINTMENTS);
       if (saved) return JSON.parse(saved);
-    } catch (e) {}
+    } catch {}
     return INITIAL_APPOINTMENTS;
   });
 
@@ -718,7 +718,7 @@ export function AuthProvider({ children }) {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.CONFIGURATIONS);
       if (saved) return JSON.parse(saved);
-    } catch (e) {}
+    } catch {}
     return INITIAL_SAVED_CONFIGURATIONS;
   });
 
@@ -727,7 +727,7 @@ export function AuthProvider({ children }) {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.CATALOGUE);
       if (saved) return JSON.parse(saved);
-    } catch (e) {}
+    } catch {}
     return HARDWARE_CATALOGUE;
   });
 
@@ -739,48 +739,48 @@ export function AuthProvider({ children }) {
       } else {
         localStorage.removeItem(STORAGE_KEYS.USER);
       }
-    } catch (e) {}
+    } catch {}
   }, [currentUser]);
 
   // Persist accounts
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEYS.ACCOUNTS, JSON.stringify(accounts));
-    } catch (e) {}
+    } catch {}
   }, [accounts]);
 
   // Persist properties
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEYS.PROPERTIES, JSON.stringify(customerProperties));
-    } catch (e) {}
+    } catch {}
   }, [customerProperties]);
 
   // Persist appointments
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEYS.APPOINTMENTS, JSON.stringify(appointments));
-    } catch (e) {}
+    } catch {}
   }, [appointments]);
 
   // Persist developer configurations
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEYS.CONFIGURATIONS, JSON.stringify(savedConfigurations));
-    } catch (e) {}
+    } catch {}
   }, [savedConfigurations]);
 
   // Persist hardware catalogue
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEYS.CATALOGUE, JSON.stringify(hardwareCatalogue));
-    } catch (e) {}
+    } catch {}
   }, [hardwareCatalogue]);
 
-  // Active Customer Property (synced with logged-in User, or falls back to default Home for public visitors)
+  // Active Customer Property (strictly scoped to authenticated User accounts; null when logged out)
   const activeCustomerProperty = useMemo(() => {
-    if (!currentUser) {
-      return customerProperties[0] || INITIAL_PROPERTIES[0];
+    if (!currentUser || (currentUser.role !== 'user' && currentUser.role !== 'customer')) {
+      return null;
     }
     const match = customerProperties.find(
       (p) =>

@@ -102,7 +102,7 @@ export function CustomerProfilesPage() {
             Matching Properties ({filteredHomes.length})
           </span>
 
-          <div className="space-y-2 max-h-[700px] overflow-y-auto pr-1">
+          <div className="space-y-2 max-h-175 overflow-y-auto pr-1">
             {filteredHomes.map((home) => {
               const isSelected = home.id === selectedHome?.id;
 

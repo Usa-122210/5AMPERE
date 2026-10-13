@@ -1,5 +1,10 @@
-import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { useState } from 'react';
+import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom';
 import { AppShell } from '../components/layout/AppShell';
+import { Navbar } from '../components/layout/Navbar';
+import { Footer } from '../components/home/Footer';
+import { SizingModal } from '../components/home/SizingModal';
+import { EnergyFlowBackground } from '../components/motion/EnergyFlowBackground';
 import { HomePage } from '../pages/HomePage';
 import { OverviewPage } from '../pages/OverviewPage';
 import { LiveMonitoringPage } from '../pages/LiveMonitoringPage';
@@ -38,21 +43,69 @@ import { AdminDashboardPage } from '../pages/admin/AdminDashboardPage';
 import { useAuth } from '../context/AuthContext';
 
 /**
+ * PublicLayout — Clean commercial website shell for the public landing page (/).
+ * Does NOT render AppSidebar, private household telemetry, or EvaluatorControls.
+ */
+function PublicLayout({ theme, onToggleTheme }) {
+  const [isSizingOpen, setIsSizingOpen] = useState(false);
+
+  return (
+    <div
+      id="top"
+      className="relative min-h-screen flex flex-col"
+      style={{ backgroundColor: 'var(--color-bg)' }}
+    >
+      <EnergyFlowBackground intensity="subtle" />
+      <Navbar theme={theme} onToggleTheme={onToggleTheme} />
+      <main className="relative z-10 flex-1 w-full min-w-0">
+        <Outlet context={{ openSizing: () => setIsSizingOpen(true) }} />
+      </main>
+      <Footer onOpenSizing={() => setIsSizingOpen(true)} />
+      <SizingModal isOpen={isSizingOpen} onClose={() => setIsSizingOpen(false)} />
+    </div>
+  );
+}
+
+/**
+ * UserAuthGuard — Protects User Portal routes (/dashboard, /appliances, /billing, etc.).
+ * Redirects unauthenticated visitors to /login.
+ * Redirects Developer to /developer and Admin to /admin.
+ */
+function UserAuthGuard({ theme, onToggleTheme }) {
+  const { currentUser } = useAuth();
+
+  if (!currentUser) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (currentUser.role === 'developer' || currentUser.role === 'technician') {
+    return <Navigate to="/developer" replace />;
+  }
+
+  if (currentUser.role === 'admin') {
+    return <Navigate to="/admin" replace />;
+  }
+
+  return <AppShell theme={theme} onToggleTheme={onToggleTheme} />;
+}
+
+/**
  * DeveloperAuthGuard — Protects /developer (and /technician alias).
- * Allows 'developer', 'technician', or 'admin' roles.
+ * Redirects unauthenticated visitors to /login.
+ * Redirects Admin to /admin and User to /dashboard.
  */
 function DeveloperAuthGuard({ theme, onToggleTheme }) {
   const { currentUser } = useAuth();
 
   if (!currentUser) {
-    return <LoginPage defaultRole="developer" />;
+    return <Navigate to="/login" replace />;
   }
 
-  if (
-    currentUser.role !== 'developer' &&
-    currentUser.role !== 'technician' &&
-    currentUser.role !== 'admin'
-  ) {
+  if (currentUser.role === 'admin') {
+    return <Navigate to="/admin" replace />;
+  }
+
+  if (currentUser.role !== 'developer' && currentUser.role !== 'technician') {
     return <Navigate to="/dashboard" replace />;
   }
 
@@ -61,93 +114,89 @@ function DeveloperAuthGuard({ theme, onToggleTheme }) {
 
 /**
  * AdminAuthGuard — Protects /admin.
- * Allows 'admin' role.
+ * Redirects unauthenticated visitors to /login.
+ * Redirects Developer to /developer and User to /dashboard.
  */
 function AdminAuthGuard() {
   const { currentUser } = useAuth();
 
   if (!currentUser) {
-    return <LoginPage defaultRole="admin" />;
+    return <Navigate to="/login" replace />;
+  }
+
+  if (currentUser.role === 'developer' || currentUser.role === 'technician') {
+    return <Navigate to="/developer" replace />;
   }
 
   if (currentUser.role !== 'admin') {
-    return (
-      <Navigate
-        to={currentUser.role === 'developer' || currentUser.role === 'technician' ? '/developer' : '/dashboard'}
-        replace
-      />
-    );
+    return <Navigate to="/dashboard" replace />;
   }
 
   return <AdminDashboardPage />;
 }
 
 /**
- * createAppRouter — Builds the React Router configuration.
- * Opens on the normal public homepage (/) without requiring login.
+ * createAppRouter — Builds the React Router configuration with strict
+ * public vs role-protected separation.
  */
 export function createAppRouter(options = {}) {
   const { theme, onToggleTheme } = options;
 
-  const publicAndUserRoutes = [
+  const userPortalRoutes = [
     {
-      index: true,
-      element: <HomePage />,
-    },
-    {
-      path: 'dashboard',
+      path: '/dashboard',
       element: <OverviewPage />,
     },
     {
-      path: 'monitoring',
+      path: '/monitoring',
       element: <LiveMonitoringPage />,
     },
     {
-      path: 'rooms-appliances',
+      path: '/rooms-appliances',
       element: <RoomsAppliancesPage />,
     },
     {
-      path: 'appliances',
+      path: '/appliances',
       element: <AppliancesPage />,
     },
     {
-      path: 'devices',
+      path: '/devices',
       element: <DeviceMarketplacePage />,
     },
     {
-      path: 'billing',
+      path: '/billing',
       element: <BillingTariffPage />,
     },
     {
-      path: 'saving-mode',
+      path: '/saving-mode',
       element: <SavingModePage />,
     },
     {
-      path: 'alerts',
+      path: '/alerts',
       element: <AlertsPage />,
     },
     {
-      path: 'installation',
+      path: '/installation',
       element: <InstallationSupportPage />,
     },
     {
-      path: 'analytics',
+      path: '/analytics',
       element: <AnalyticsPage />,
     },
     {
-      path: 'recommendations',
+      path: '/recommendations',
       element: <RecommendationsPage />,
     },
     {
-      path: 'settings',
+      path: '/settings',
       element: <SettingsPage />,
     },
     {
-      path: 'more',
+      path: '/more',
       element: <MorePage />,
     },
     {
-      path: 'preview',
+      path: '/preview',
       element: <FoundationPreview />,
     },
   ];
@@ -184,7 +233,29 @@ export function createAppRouter(options = {}) {
   ];
 
   return createBrowserRouter([
-    // Authentication Routes
+    // 1. Public Commercial Website (Accessible without login)
+    {
+      path: '/',
+      element: <PublicLayout theme={theme} onToggleTheme={onToggleTheme} />,
+      children: [
+        {
+          index: true,
+          element: <HomePage />,
+        },
+      ],
+    },
+    {
+      path: '/index.html',
+      element: <PublicLayout theme={theme} onToggleTheme={onToggleTheme} />,
+      children: [
+        {
+          index: true,
+          element: <HomePage />,
+        },
+      ],
+    },
+
+    // 2. Public Authentication Routes
     {
       path: '/login',
       element: <LoginPage />,
@@ -194,13 +265,13 @@ export function createAppRouter(options = {}) {
       element: <SignupOnboardingPage />,
     },
 
-    // Admin Dashboard Route
+    // 3. Protected Admin Dashboard Route
     {
       path: '/admin',
       element: <AdminAuthGuard />,
     },
 
-    // Developer Workspace Routes (/developer & /technician alias)
+    // 4. Protected Developer Workspace Routes (/developer & /technician)
     {
       path: '/developer',
       element: <DeveloperAuthGuard theme={theme} onToggleTheme={onToggleTheme} />,
@@ -212,26 +283,19 @@ export function createAppRouter(options = {}) {
       children: developerRoutes,
     },
 
-    // Normal Public Website & User Portal Routes (No forced login wall on /)
+    // 5. Protected User Portal Routes (/dashboard, /monitoring, /appliances, /billing, etc.)
     {
-      path: '/',
-      element: <AppShell theme={theme} onToggleTheme={onToggleTheme} />,
-      children: [
-        ...publicAndUserRoutes,
-        {
-          path: '*',
-          element: <Navigate to="/" replace />,
-        },
-      ],
+      element: <UserAuthGuard theme={theme} onToggleTheme={onToggleTheme} />,
+      children: userPortalRoutes,
     },
+
+    // 6. Catch-all fallback to public homepage
     {
-      path: '/index.html',
-      element: <AppShell theme={theme} onToggleTheme={onToggleTheme} />,
-      children: publicAndUserRoutes,
+      path: '*',
+      element: <Navigate to="/" replace />,
     },
   ]);
 }
 
 export const router = createAppRouter();
 export default router;
-

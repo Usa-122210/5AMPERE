@@ -45,7 +45,7 @@ export function HomeConfiguratorPage() {
     if (urlHomeId && urlHomeId !== selectedHomeId) {
       setSelectedHomeId(urlHomeId);
     }
-  }, [urlHomeId]);
+  }, [urlHomeId, selectedHomeId]);
 
   const activeHome =
     customerHomes.find((h) => h.id === selectedHomeId) || customerHomes[0];
@@ -68,7 +68,7 @@ export function HomeConfiguratorPage() {
           `Electrical inspection completed at ${activeHome.locality}. Panel breaker rating: 40A DP.`
       );
     }
-  }, [activeHome?.id]);
+  }, [activeHome]);
 
   // Component catalogue search in configurator
   const [catalogueSearch, setCatalogueSearch] = useState('');
@@ -364,7 +364,7 @@ export function HomeConfiguratorPage() {
             </div>
 
             {/* Catalogue Component Cards */}
-            <div className="space-y-2.5 max-h-[500px] overflow-y-auto pr-1">
+            <div className="space-y-2.5 max-h-125 overflow-y-auto pr-1">
               {filteredCatalogue.map((hw) => {
                 const isAlreadyAttached = (activeHome?.installedDevices || []).some(
                   (d) => d.id === hw.id
@@ -389,11 +389,11 @@ export function HomeConfiguratorPage() {
                           {hw.name}
                         </h4>
                         <span className="text-[10px] font-mono text-(--color-accent)">
-                          {hw.model}
+                          {hw.model || hw.sku}
                         </span>
                       </div>
                       <span className="text-xs font-mono font-bold text-(--color-text) shrink-0">
-                        ₹{hw.priceINR.toLocaleString('en-IN')}
+                        ₹{(hw.priceINR || hw.priceInr || 0).toLocaleString('en-IN')}
                       </span>
                     </div>
 
