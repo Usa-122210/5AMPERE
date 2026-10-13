@@ -1,25 +1,12 @@
 import { useState, useMemo } from 'react';
 import {
-  AlertTriangle,
-  ArrowRight,
   Calculator,
-  CheckCircle2,
   Clock,
-  Coins,
-  Cpu,
   Flame,
-  HelpCircle,
-  Info,
   Lightbulb,
-  ShieldCheck,
-  Sliders,
-  Sparkles,
-  TrendingDown,
   Wind,
-  Zap,
 } from 'lucide-react';
 import { Surface } from '../components/ui/Surface';
-import { Button } from '../components/ui/Button';
 import { PageHeader } from '../components/common/PageHeader';
 import { EnergyInsights } from '../components/dashboard/EnergyInsights';
 import { useEnergyData } from '../context/EnergyDataContext';
@@ -75,17 +62,17 @@ export function RecommendationsPage() {
       />
 
       {/* 1. What-If Interactive Savings Simulator */}
-      <Surface variant="primary" padding="lg" className="border border-[var(--color-border)] space-y-6">
-        <div className="border-b border-[var(--color-border)] pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <Surface variant="primary" padding="lg" className="border border-(--color-border) space-y-6">
+        <div className="border-b border-(--color-border) pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[var(--color-accent-subtle)] border border-[var(--color-accent)] flex items-center justify-center text-[var(--color-accent)]">
+            <div className="w-10 h-10 rounded-xl bg-(--color-accent-subtle) border border-(--color-accent) flex items-center justify-center text-(--color-accent)">
               <Calculator size={20} />
             </div>
             <div>
-              <h3 className="text-base font-bold text-[var(--color-text)]">
+              <h3 className="text-base font-bold text-(--color-text)">
                 Interactive "What-If" Savings Simulator
               </h3>
-              <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">
+              <p className="text-xs text-(--color-text-secondary) mt-0.5">
                 Simulate lifestyle adjustments to see exact marginal rupee savings under your top electricity slab.
               </p>
             </div>
@@ -93,8 +80,8 @@ export function RecommendationsPage() {
 
           <div className="flex items-center gap-3 self-start sm:self-auto">
             <div className="text-right">
-              <span className="text-[10px] font-mono text-[var(--color-text-muted)] block">Simulated Monthly Savings</span>
-              <span className="text-xl font-mono font-extrabold text-[var(--color-success)]">
+              <span className="text-[10px] font-mono text-(--color-text-muted) block">Simulated Monthly Savings</span>
+              <span className="text-xl font-mono font-extrabold text-(--color-success)">
                 {formatINR(simSavings.monthlyBillSavings)}
               </span>
             </div>
@@ -105,15 +92,15 @@ export function RecommendationsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           
           {/* Lever 1: AC Setpoint Shift */}
-          <div className="p-4 rounded-xl bg-[var(--color-surface-secondary)] border border-[var(--color-border)] space-y-3">
+          <div className="p-4 rounded-xl bg-(--color-surface-secondary) border border-(--color-border) space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Wind size={16} className="text-[var(--color-accent)]" />
-                <span className="text-xs font-bold text-[var(--color-text)]">
+                <Wind size={16} className="text-(--color-accent)" />
+                <span className="text-xs font-bold text-(--color-text)">
                   Inverter AC Thermostat Adjustment
                 </span>
               </div>
-              <span className="text-xs font-mono font-bold text-[var(--color-accent)]">
+              <span className="text-xs font-mono font-bold text-(--color-accent)">
                 +{acTempShift}°C ({20 + acTempShift}°C)
               </span>
             </div>
@@ -124,31 +111,31 @@ export function RecommendationsPage() {
               step="1"
               value={acTempShift}
               onChange={(e) => setAcTempShift(Number(e.target.value))}
-              className="w-full accent-[var(--color-accent)] cursor-pointer"
+              className="w-full accent-(--color-accent) cursor-pointer"
             />
-            <div className="flex items-center justify-between text-[11px] font-mono text-[var(--color-text-muted)]">
+            <div className="flex items-center justify-between text-[11px] font-mono text-(--color-text-muted)">
               <span>0°C (20°C cold)</span>
               <span>+4°C (24°C BEE Eco)</span>
               <span>+6°C (26°C Max)</span>
             </div>
-            <div className="flex items-center justify-between text-xs pt-2 border-t border-[var(--color-border)] font-mono">
-              <span className="text-[var(--color-text-secondary)]">Avoids ~{simAcKwh} kWh/mo</span>
-              <span className="text-[var(--color-success)] font-bold">
+            <div className="flex items-center justify-between text-xs pt-2 border-t border-(--color-border) font-mono">
+              <span className="text-(--color-text-secondary)">Avoids ~{simAcKwh} kWh/mo</span>
+              <span className="text-(--color-success) font-bold">
                 {formatINR(calculateMarginalSavings(projectedBillingCycleKwh, simAcKwh, activeTariff).monthlyBillSavings)}/mo
               </span>
             </div>
           </div>
 
           {/* Lever 2: Geyser Heating Reduction */}
-          <div className="p-4 rounded-xl bg-[var(--color-surface-secondary)] border border-[var(--color-border)] space-y-3">
+          <div className="p-4 rounded-xl bg-(--color-surface-secondary) border border-(--color-border) space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Flame size={16} className="text-[var(--color-warning)]" />
-                <span className="text-xs font-bold text-[var(--color-text)]">
+                <Flame size={16} className="text-(--color-warning)" />
+                <span className="text-xs font-bold text-(--color-text)">
                   Geyser Run Time Reduction
                 </span>
               </div>
-              <span className="text-xs font-mono font-bold text-[var(--color-warning)]">
+              <span className="text-xs font-mono font-bold text-(--color-warning)">
                 -{geyserMinsReduction} Mins/Day
               </span>
             </div>
@@ -159,32 +146,32 @@ export function RecommendationsPage() {
               step="15"
               value={geyserMinsReduction}
               onChange={(e) => setGeyserMinsReduction(Number(e.target.value))}
-              className="w-full accent-[var(--color-warning)] cursor-pointer"
+              className="w-full accent-(--color-warning) cursor-pointer"
             />
-            <div className="flex items-center justify-between text-[11px] font-mono text-[var(--color-text-muted)]">
+            <div className="flex items-center justify-between text-[11px] font-mono text-(--color-text-muted)">
               <span>0 min</span>
               <span>-30 min</span>
               <span>-60 min</span>
             </div>
-            <div className="flex items-center justify-between text-xs pt-2 border-t border-[var(--color-border)] font-mono">
-              <span className="text-[var(--color-text-secondary)]">Avoids ~{simGeyserKwh} kWh/mo</span>
-              <span className="text-[var(--color-success)] font-bold">
+            <div className="flex items-center justify-between text-xs pt-2 border-t border-(--color-border) font-mono">
+              <span className="text-(--color-text-secondary)">Avoids ~{simGeyserKwh} kWh/mo</span>
+              <span className="text-(--color-success) font-bold">
                 {formatINR(calculateMarginalSavings(projectedBillingCycleKwh, simGeyserKwh, activeTariff).monthlyBillSavings)}/mo
               </span>
             </div>
           </div>
 
           {/* Lever 3: Vampire Standby Cutoff */}
-          <div className="p-4 rounded-xl bg-[var(--color-surface-secondary)] border border-[var(--color-border)] flex items-center justify-between">
+          <div className="p-4 rounded-xl bg-(--color-surface-secondary) border border-(--color-border) flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-center text-[var(--color-accent)]">
+              <div className="w-8 h-8 rounded-lg bg-(--color-surface) border border-(--color-border) flex items-center justify-center text-(--color-accent)">
                 <Clock size={16} />
               </div>
               <div>
-                <span className="text-xs font-bold text-[var(--color-text)] block">
+                <span className="text-xs font-bold text-(--color-text) block">
                   Nighttime Vampire Cutoff (00:30–06:00)
                 </span>
-                <span className="text-[11px] font-mono text-[var(--color-text-muted)]">
+                <span className="text-[11px] font-mono text-(--color-text-muted)">
                   Avoids 15.7 kWh/mo idle 95W draw
                 </span>
               </div>
@@ -193,21 +180,21 @@ export function RecommendationsPage() {
               type="checkbox"
               checked={enableVampireCutoff}
               onChange={(e) => setEnableVampireCutoff(e.target.checked)}
-              className="w-4 h-4 accent-[var(--color-accent)] cursor-pointer"
+              className="w-4 h-4 accent-(--color-accent) cursor-pointer"
             />
           </div>
 
           {/* Lever 4: Lighting Upgrade to LED */}
-          <div className="p-4 rounded-xl bg-[var(--color-surface-secondary)] border border-[var(--color-border)] flex items-center justify-between">
+          <div className="p-4 rounded-xl bg-(--color-surface-secondary) border border-(--color-border) flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-center text-[var(--color-accent)]">
+              <div className="w-8 h-8 rounded-lg bg-(--color-surface) border border-(--color-border) flex items-center justify-center text-(--color-accent)">
                 <Lightbulb size={16} />
               </div>
               <div>
-                <span className="text-xs font-bold text-[var(--color-text)] block">
+                <span className="text-xs font-bold text-(--color-text) block">
                   Full LED Luminaire Retrofit
                 </span>
-                <span className="text-[11px] font-mono text-[var(--color-text-muted)]">
+                <span className="text-[11px] font-mono text-(--color-text-muted)">
                   Avoids 15.0 kWh/mo lighting energy
                 </span>
               </div>
@@ -216,24 +203,24 @@ export function RecommendationsPage() {
               type="checkbox"
               checked={enableLedUpgrade}
               onChange={(e) => setEnableLedUpgrade(e.target.checked)}
-              className="w-4 h-4 accent-[var(--color-accent)] cursor-pointer"
+              className="w-4 h-4 accent-(--color-accent) cursor-pointer"
             />
           </div>
 
         </div>
 
         {/* Simulator Results Footer */}
-        <div className="p-4 rounded-xl bg-[var(--color-accent-subtle)] border border-[var(--color-accent)] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+        <div className="p-4 rounded-xl bg-(--color-accent-subtle) border border-(--color-accent) flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
           <div>
-            <span className="font-bold text-[var(--color-text)]">
+            <span className="font-bold text-(--color-text)">
               Total Simulated Impact: {totalSimAvoidedKwh} kWh / month reduction
             </span>
-            <p className="text-[11px] text-[var(--color-text-secondary)] mt-0.5">
+            <p className="text-[11px] text-(--color-text-secondary) mt-0.5">
               Calculated at marginal tariff rate {formatINR(simSavings.marginalRate)}/kWh + {simSavings.dutyPercent}% state electricity duty.
             </p>
           </div>
           <div className="text-right">
-            <span className="font-mono font-extrabold text-base text-[var(--color-accent)]">
+            <span className="font-mono font-extrabold text-base text-(--color-accent)">
               {formatINR(simSavings.monthlyBillSavings)} / month saved
             </span>
           </div>

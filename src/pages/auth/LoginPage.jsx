@@ -1,23 +1,19 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import {
   Shield,
   User,
-  Wrench,
+  Code2,
   Eye,
   EyeOff,
   Lock,
   Mail,
   ArrowRight,
-  CheckCircle2,
   AlertCircle,
-  HelpCircle,
   Sparkles,
-  Building,
-  School,
-  Factory,
-  Home,
   RotateCcw,
+  KeyRound,
+  Home,
 } from 'lucide-react';
 import { BrandWordmark } from '../../components/brand/BrandWordmark';
 import { Surface } from '../../components/ui/Surface';
@@ -26,74 +22,126 @@ import { EnergyFlowBackground } from '../../components/motion/EnergyFlowBackgrou
 import { EvaluatorControls } from '../../components/common/EvaluatorControls';
 import { useAuth } from '../../context/AuthContext';
 
-export function LoginPage({ defaultTab = 'customer' }) {
+export function LoginPage({ defaultRole = 'user' }) {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const roleParam = searchParams.get('role');
+
   const {
     currentUser,
-    loginCustomer,
-    loginTechnician,
-    loginAsDemoUser,
+    loginWithCredentials,
     resetDemoData,
   } = useAuth();
 
-  // If already authenticated, redirect to their workspace
+  // Redirect already logged-in user to their role-specific dashboard
   useEffect(() => {
     if (currentUser) {
-      if (currentUser.role === 'technician') {
-        navigate('/technician');
+      if (currentUser.role === 'admin') {
+        navigate('/admin');
+      } else if (currentUser.role === 'developer' || currentUser.role === 'technician') {
+        navigate('/developer');
       } else {
-        navigate('/');
+        navigate('/dashboard');
       }
     }
   }, [currentUser, navigate]);
 
-  // Active tab: 'customer' | 'staff'
-  const [activeTab, setActiveTab] = useState(defaultTab);
+  const initialRole =
+    roleParam === 'admin' || roleParam === 'developer' || roleParam === 'user'
+      ? roleParam
+      : defaultRole === 'staff' || defaultRole === 'developer'
+      ? 'developer'
+      : defaultRole === 'admin'
+      ? 'admin'
+      : 'user';
 
-  // Form states
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [selectedRole, setSelectedRole] = useState(initialRole);
+  const [identifier, setIdentifier] = useState(
+    initialRole === 'admin' ? 'Admin' : initialRole === 'developer' ? 'Developer' : ''
+  );
+  const [password, setPassword] = useState(
+    initialRole === 'admin' ? 'Admin' : initialRole === 'developer' ? 'Developer' : ''
+  );
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(true);
   const [error, setError] = useState('');
+  const [autofillNotice, setAutofillNotice] = useState('');
 
-  // Forgot Password modal state
-  const [isForgotModalOpen, setIsForgotModalOpen] = useState(false);
-  const [forgotEmail, setForgotEmail] = useState('');
-  const [forgotSent, setForgotSent] = useState(false);
+  // Role selection handler: automatically prefills Admin/Admin or Developer/Developer
+  const handleSelectRole = (roleKey) => {
+    setSelectedRole(roleKey);
+    setError('');
+    if (roleKey === 'admin') {
+      setIdentifier('Admin');
+      setPassword('Admin');
+      setAutofillNotice('Predefined Admin credentials (Admin / Admin) prefilled. Click Login below.');
+    } else if (roleKey === 'developer') {
+      setIdentifier('Developer');
+      setPassword('Developer');
+      setAutofillNotice('Predefined Developer credentials (Developer / Developer) prefilled. Click Login below.');
+    } else {
+      if (identifier === 'Admin' || identifier === 'Developer') {
+        setIdentifier('');
+      }
+      if (password === 'Admin' || password === 'Developer') {
+        setPassword('');
+      }
+      setAutofillNotice('');
+    }
+  };
 
-  // Instant login handler (NO artificial timeouts or delays!)
+  // Autofill helper (fills the form fields without forcing login so user clicks Login)
+  const handleAutofill = (roleKey, nameVal, passVal) => {
+    setSelectedRole(roleKey);
+    setIdentifier(nameVal);
+    setPassword(passVal);
+    setError('');
+    setAutofillNotice(`Demo ${roleKey.toUpperCase()} credentials autofilled. Click Login below to continue.`);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setError('');
+    setAutofillNotice('');
 
-    if (!email || !email.includes('@')) {
-      setError('Please enter a valid email address.');
+    const result = loginWithCredentials({
+      identifier,
+      password,
+      role: selectedRole,
+    });
+
+    if (!result.success) {
+      setError(result.message);
       return;
     }
-    if (!password || password.length < 6) {
-      setError('Password must be at least 6 characters.');
-      return;
-    }
 
-    if (activeTab === 'customer') {
-      loginCustomer(email, password);
-      navigate('/');
-    } else {
-      loginTechnician(email, password);
-      navigate('/technician');
-    }
+    navigate(result.redirectTo);
   };
 
-  const handleDemoLogin = (demoKey) => {
-    setError('');
-    loginAsDemoUser(demoKey);
-    if (demoKey === 'technician') {
-      navigate('/technician');
-    } else {
-      navigate('/');
-    }
-  };
+  // Active Demo Suggestion based on selected role
+  const demoSuggestion =
+    selectedRole === 'admin'
+      ? {
+          roleLabel: 'Admin',
+          roleKey: 'admin',
+          name: 'Admin',
+          password: 'Admin',
+          note: 'Predefined system administrator demo account (no signup required).',
+        }
+      : selectedRole === 'developer'
+      ? {
+          roleLabel: 'Developer',
+          roleKey: 'developer',
+          name: 'Developer',
+          password: 'Developer',
+          note: 'Predefined Developer demo account with sample projects, catalogue & saved configurations.',
+        }
+      : {
+          roleLabel: 'Admin / Developer / User',
+          roleKey: 'user',
+          name: 'Aarav Sharma',
+          password: 'user123',
+          note: 'Sign up as a new User or autofill a demo account below.',
+        };
 
   return (
     <div
@@ -103,92 +151,213 @@ export function LoginPage({ defaultTab = 'customer' }) {
       <EnergyFlowBackground intensity="subtle" />
 
       {/* Top Application Header */}
-      <header className="relative z-10 w-full px-4 sm:px-6 py-3.5 flex items-center justify-between border-b border-[var(--color-border)] bg-[var(--color-surface)]/80 backdrop-blur-md">
+      <header className="relative z-10 w-full px-4 sm:px-6 py-3.5 flex items-center justify-between border-b border-(--color-border) bg-(--color-surface)/80 backdrop-blur-md">
         <Link to="/" className="flex items-center gap-2">
           <BrandWordmark size="sm" showBadge={true} badgeText="Smart Energy" />
         </Link>
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-[var(--color-text-secondary)] hidden sm:inline">
-            New to 5AMPERE?
-          </span>
+        <div className="flex items-center gap-2.5">
+          <Link to="/">
+            <Button variant="secondary" size="sm" className="text-xs font-semibold">
+              <Home size={13} />
+              <span>Public Homepage</span>
+            </Button>
+          </Link>
           <Link to="/signup">
             <Button variant="primary" size="sm" className="text-xs font-bold shadow-xs">
-              <span>Create Account &amp; Register Property</span>
+              <span>Sign Up</span>
               <ArrowRight size={13} />
             </Button>
           </Link>
         </div>
       </header>
 
-      {/* Main Container */}
+      {/* Main Login Form Container */}
       <main className="relative z-10 flex-1 flex items-center justify-center p-4 sm:p-6 my-4">
         <div className="w-full max-w-md space-y-4">
-          {/* Sign In vs Staff Tab Switcher */}
-          <div className="p-1 rounded-xl bg-[var(--color-surface-secondary)] border border-[var(--color-border)] grid grid-cols-2 gap-1">
-            <button
-              type="button"
-              onClick={() => {
-                setActiveTab('customer');
-                setError('');
-              }}
-              className={`py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
-                activeTab === 'customer'
-                  ? 'bg-[var(--color-surface)] text-[var(--color-accent)] shadow-xs'
-                  : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)]'
-              }`}
-            >
-              <User size={15} />
-              <span>Customer Sign In</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                setActiveTab('staff');
-                setError('');
-              }}
-              className={`py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
-                activeTab === 'staff'
-                  ? 'bg-[var(--color-surface)] text-[var(--color-accent)] shadow-xs'
-                  : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)]'
-              }`}
-            >
-              <Wrench size={15} />
-              <span>Staff &amp; Tech Access</span>
-            </button>
-          </div>
-
-          {/* Authentication Card */}
-          <Surface variant="primary" padding="lg" className="border border-[var(--color-border)] shadow-md space-y-4">
+          <Surface variant="primary" padding="lg" className="border border-(--color-border) shadow-md space-y-4">
+            {/* Title */}
             <div>
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-mono uppercase tracking-wider font-bold px-2 py-0.5 rounded bg-[var(--color-surface-secondary)] text-[var(--color-text-secondary)] border border-[var(--color-border)]">
-                  {activeTab === 'customer' ? 'Customer Authentication' : 'Staff Portal'}
+                <span className="text-[10px] font-mono uppercase tracking-wider font-bold px-2 py-0.5 rounded bg-(--color-surface-secondary) text-(--color-accent) border border-(--color-border)">
+                  Role-Based Access
                 </span>
-                <span className="text-[10px] font-mono text-[var(--color-text-muted)]">
-                  Simulated Demo
+                <span className="text-[10px] font-mono text-(--color-text-muted)">
+                  Demo Authentication
                 </span>
               </div>
-              <h1 className="text-xl font-bold text-[var(--color-text)] mt-2">
-                {activeTab === 'customer'
-                  ? 'Sign In to Your Workspace'
-                  : 'Company Technician Console'}
+              <h1 className="text-xl font-bold text-(--color-text) mt-2">
+                Log In to 5AMPERE
               </h1>
-              <p className="text-xs text-[var(--color-text-secondary)] mt-1">
-                {activeTab === 'customer'
-                  ? 'Monitor power draw, review electricity bills, and manage your property appliances.'
-                  : 'Authorized access for field engineers, electrical wiremen, and installation staff.'}
+              <p className="text-xs text-(--color-text-secondary) mt-1">
+                Select your role (Admin, Developer, or User) and click Login to open your workspace.
               </p>
             </div>
 
-            {/* Staff Restriction Notice */}
-            {activeTab === 'staff' && (
-              <div className="p-3 rounded-xl border bg-amber-500/10 border-amber-500/30 text-amber-900 dark:text-amber-200 text-xs flex items-start gap-2.5">
-                <Shield size={16} className="text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
-                <div>
-                  <strong className="block font-semibold">Managed Company Access:</strong>
-                  Public staff registration is restricted. Technician accounts are provisioned by 5AMPERE Systems Operations.
+            {/* Role Selection: Admin | Developer | User */}
+            <div>
+              <label className="block text-xs font-semibold text-(--color-text) mb-1.5">
+                Select Role
+              </label>
+              <div className="p-1 rounded-xl bg-(--color-surface-secondary) border border-(--color-border) grid grid-cols-3 gap-1">
+                {[
+                  { id: 'admin', label: 'Admin', icon: Shield },
+                  { id: 'developer', label: 'Developer', icon: Code2 },
+                  { id: 'user', label: 'User', icon: User },
+                ].map((r) => {
+                  const Icon = r.icon;
+                  const isActive = selectedRole === r.id;
+                  return (
+                    <button
+                      key={r.id}
+                      id={`role-btn-${r.id}`}
+                      type="button"
+                      onClick={() => handleSelectRole(r.id)}
+                      className={`py-2 px-2.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                        isActive
+                          ? 'bg-(--color-surface) text-(--color-accent) shadow-xs border border-(--color-accent)'
+                          : 'text-(--color-text-secondary) hover:text-(--color-text)'
+                      }`}
+                    >
+                      <Icon size={14} />
+                      <span>{r.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Clearly Visible Demo Credentials Suggestion Box */}
+            <div className="p-3 rounded-xl border border-(--color-accent)/40 bg-(--color-accent-subtle) space-y-2">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-(--color-accent) flex items-center gap-1.5">
+                  <KeyRound size={13} />
+                  <span>Demo Credentials Suggestion</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={resetDemoData}
+                  className="text-[10px] text-(--color-text-muted) hover:text-red-600 font-semibold flex items-center gap-1 cursor-pointer"
+                  title="Reset demo localStorage to baseline"
+                >
+                  <RotateCcw size={10} />
+                  <span>Reset</span>
+                </button>
+              </div>
+
+              {selectedRole === 'admin' && (
+                <div className="flex items-center justify-between gap-2 bg-(--color-surface) p-2.5 rounded-lg border border-(--color-border)">
+                  <div className="text-xs font-mono space-y-0.5">
+                    <div>
+                      <span className="text-(--color-text-muted)">Role: </span>
+                      <strong className="text-(--color-text)">Admin</strong>
+                    </div>
+                    <div>
+                      <span className="text-(--color-text-muted)">Name: </span>
+                      <strong className="text-(--color-accent)">Admin</strong>
+                      <span className="mx-2 text-(--color-text-muted)">|</span>
+                      <span className="text-(--color-text-muted)">Password: </span>
+                      <strong className="text-(--color-accent)">Admin</strong>
+                    </div>
+                  </div>
+                  <button
+                    id="autofill-admin-btn"
+                    type="button"
+                    onClick={() => handleAutofill('admin', 'Admin', 'Admin')}
+                    className="px-2.5 py-1.5 rounded-lg bg-(--color-accent) text-white text-[11px] font-bold cursor-pointer shrink-0 hover:opacity-90 transition-opacity"
+                  >
+                    Autofill Admin
+                  </button>
                 </div>
+              )}
+
+              {selectedRole === 'developer' && (
+                <div className="flex items-center justify-between gap-2 bg-(--color-surface) p-2.5 rounded-lg border border-(--color-border)">
+                  <div className="text-xs font-mono space-y-0.5">
+                    <div>
+                      <span className="text-(--color-text-muted)">Role: </span>
+                      <strong className="text-(--color-text)">Developer</strong>
+                    </div>
+                    <div>
+                      <span className="text-(--color-text-muted)">Name: </span>
+                      <strong className="text-(--color-accent)">Developer</strong>
+                      <span className="mx-2 text-(--color-text-muted)">|</span>
+                      <span className="text-(--color-text-muted)">Password: </span>
+                      <strong className="text-(--color-accent)">Developer</strong>
+                    </div>
+                  </div>
+                  <button
+                    id="autofill-developer-btn"
+                    type="button"
+                    onClick={() => handleAutofill('developer', 'Developer', 'Developer')}
+                    className="px-2.5 py-1.5 rounded-lg bg-(--color-accent) text-white text-[11px] font-bold cursor-pointer shrink-0 hover:opacity-90 transition-opacity"
+                  >
+                    Autofill Developer
+                  </button>
+                </div>
+              )}
+
+              {selectedRole === 'user' && (
+                <div className="space-y-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[11px] font-mono">
+                    <div className="p-2 rounded-lg bg-(--color-surface) border border-(--color-border) flex items-center justify-between gap-1">
+                      <div>
+                        <span className="text-[10px] text-(--color-text-muted) block">Admin Demo</span>
+                        <strong className="text-(--color-text)">Admin / Admin</strong>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleAutofill('admin', 'Admin', 'Admin')}
+                        className="px-2 py-1 rounded bg-(--color-accent-subtle) text-(--color-accent) border border-(--color-accent)/40 font-bold text-[10px] cursor-pointer"
+                      >
+                        Autofill
+                      </button>
+                    </div>
+
+                    <div className="p-2 rounded-lg bg-(--color-surface) border border-(--color-border) flex items-center justify-between gap-1">
+                      <div>
+                        <span className="text-[10px] text-(--color-text-muted) block">Developer Demo</span>
+                        <strong className="text-(--color-text)">Developer / Developer</strong>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleAutofill('developer', 'Developer', 'Developer')}
+                        className="px-2 py-1 rounded bg-(--color-accent-subtle) text-(--color-accent) border border-(--color-accent)/40 font-bold text-[10px] cursor-pointer"
+                      >
+                        Autofill
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="p-2 rounded-lg bg-(--color-surface) border border-(--color-border) flex items-center justify-between gap-2 text-[11px] font-mono">
+                    <div>
+                      <span className="text-[10px] text-(--color-text-muted) block">Sample User Account</span>
+                      <strong className="text-(--color-text)">aarav@example.com</strong>
+                      <span className="text-(--color-text-muted)"> (Pass: </span>
+                      <strong className="text-(--color-accent)">user123</strong>
+                      <span className="text-(--color-text-muted)">)</span>
+                    </div>
+                    <button
+                      id="autofill-user-btn"
+                      type="button"
+                      onClick={() => handleAutofill('user', 'aarav@example.com', 'user123')}
+                      className="px-2 py-1 rounded bg-(--color-accent) text-white font-bold text-[10px] cursor-pointer shrink-0"
+                    >
+                      Autofill User
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              <p className="text-[11px] text-(--color-text-secondary)">
+                {demoSuggestion.note}
+              </p>
+            </div>
+
+            {/* Autofill Confirmation Notice */}
+            {autofillNotice && (
+              <div className="p-2.5 rounded-xl border bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-xs flex items-center gap-2">
+                <Sparkles size={14} className="shrink-0" />
+                <span>{autofillNotice}</span>
               </div>
             )}
 
@@ -200,67 +369,69 @@ export function LoginPage({ defaultTab = 'customer' }) {
               </div>
             )}
 
-            {/* Form */}
+            {/* Login Form */}
             <form onSubmit={handleSubmit} className="space-y-3.5">
               <div>
-                <label className="block text-xs font-semibold text-[var(--color-text)] mb-1">
-                  {activeTab === 'customer' ? 'Registered Email Address' : 'Staff Email / Employee ID'}
+                <label
+                  htmlFor="login-identifier"
+                  className="block text-xs font-semibold text-(--color-text) mb-1"
+                >
+                  Name or Email
                 </label>
                 <div className="relative">
                   <Mail
                     size={16}
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-(--color-text-muted)"
                   />
                   <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    id="login-identifier"
+                    type="text"
+                    value={identifier}
+                    onChange={(e) => setIdentifier(e.target.value)}
                     placeholder={
-                      activeTab === 'customer'
-                        ? 'e.g. arpita@example.com'
-                        : 'e.g. rajesh.kumar@5ampere.com'
+                      selectedRole === 'admin'
+                        ? 'Enter Admin'
+                        : selectedRole === 'developer'
+                        ? 'Enter Developer or developer email'
+                        : 'Enter your Name or Email'
                     }
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] text-xs text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent)]"
+                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-(--color-border) bg-(--color-surface) text-xs text-(--color-text) focus:outline-none focus:border-(--color-accent)"
                     required
                   />
                 </div>
               </div>
 
               <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label className="block text-xs font-semibold text-[var(--color-text)]">
-                    Password
-                  </label>
-                  {activeTab === 'customer' && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setForgotSent(false);
-                        setIsForgotModalOpen(true);
-                      }}
-                      className="text-[11px] text-[var(--color-accent)] hover:underline font-medium cursor-pointer"
-                    >
-                      Forgot password?
-                    </button>
-                  )}
-                </div>
+                <label
+                  htmlFor="login-password"
+                  className="block text-xs font-semibold text-(--color-text) mb-1"
+                >
+                  Password
+                </label>
                 <div className="relative">
                   <Lock
                     size={16}
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-(--color-text-muted)"
                   />
                   <input
+                    id="login-password"
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter your password"
-                    className="w-full pl-9 pr-10 py-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] text-xs text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent)]"
+                    placeholder={
+                      selectedRole === 'admin'
+                        ? 'Enter Admin'
+                        : selectedRole === 'developer'
+                        ? 'Enter Developer or your password'
+                        : 'Enter your password'
+                    }
+                    className="w-full pl-9 pr-10 py-2 rounded-xl border border-(--color-border) bg-(--color-surface) text-xs text-(--color-text) focus:outline-none focus:border-(--color-accent)"
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] hover:text-[var(--color-text)] cursor-pointer"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-(--color-text-muted) hover:text-(--color-text) cursor-pointer"
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
                     {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
@@ -268,207 +439,39 @@ export function LoginPage({ defaultTab = 'customer' }) {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between text-xs">
-                <label className="flex items-center gap-2 cursor-pointer text-[var(--color-text-secondary)]">
-                  <input
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                    className="rounded border-[var(--color-border)] text-[var(--color-accent)]"
-                  />
-                  <span>Remember this session</span>
-                </label>
-              </div>
-
               <Button
+                id="login-submit-btn"
                 type="submit"
                 variant="primary"
                 size="md"
                 className="w-full shadow-xs justify-center font-bold text-xs"
               >
                 <span>
-                  {activeTab === 'customer' ? 'Sign In to Workspace' : 'Sign In as Technician'}
+                  Log In as {selectedRole === 'admin' ? 'Admin' : selectedRole === 'developer' ? 'Developer' : 'User'}
                 </span>
                 <ArrowRight size={14} />
               </Button>
             </form>
 
-            {/* Create Account Link for Customers */}
-            {activeTab === 'customer' && (
-              <div className="pt-2 text-center text-xs text-[var(--color-text-secondary)]">
-                Don&apos;t have an energy profile yet?{' '}
-                <Link
-                  to="/signup"
-                  className="font-bold text-[var(--color-accent)] hover:underline inline-flex items-center gap-1"
-                >
-                  <span>Register a New Property →</span>
-                </Link>
-              </div>
-            )}
-          </Surface>
-
-          {/* Evaluator Instant Demo Accounts Box */}
-          <Surface variant="primary" padding="md" className="border border-[var(--color-border)] bg-[var(--color-surface-secondary)] space-y-2.5">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono text-[var(--color-text-muted)] uppercase tracking-wider font-bold flex items-center gap-1.5">
-                <Sparkles size={12} className="text-[var(--color-accent)]" />
-                <span>Simulated Demo Accounts (1-Click Test)</span>
-              </span>
-              <button
-                type="button"
-                onClick={resetDemoData}
-                className="text-[10px] text-[var(--color-text-muted)] hover:text-red-600 font-semibold flex items-center gap-1 cursor-pointer"
-                title="Reset all demo accounts and localStorage to original baseline"
+            {/* Link to Sign Up */}
+            <div className="pt-2 border-t border-(--color-border-subtle) text-center text-xs text-(--color-text-secondary)">
+              Don&apos;t have an account yet?{' '}
+              <Link
+                to="/signup"
+                className="font-bold text-(--color-accent) hover:underline inline-flex items-center gap-1"
               >
-                <RotateCcw size={11} />
-                <span>Reset Demo</span>
-              </button>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2 text-left">
-              <button
-                type="button"
-                onClick={() => handleDemoLogin('customer-home')}
-                className="p-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-accent)] cursor-pointer transition-colors text-left"
-              >
-                <div className="flex items-center gap-1.5 text-xs font-bold text-[var(--color-text)]">
-                  <Home size={13} className="text-[var(--color-accent)]" />
-                  <span>Home (3BHK)</span>
-                </div>
-                <span className="text-[10px] text-[var(--color-text-muted)] block truncate">
-                  Arpita Sharma · Active
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleDemoLogin('customer-school')}
-                className="p-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-accent)] cursor-pointer transition-colors text-left"
-              >
-                <div className="flex items-center gap-1.5 text-xs font-bold text-[var(--color-text)]">
-                  <School size={13} className="text-blue-600 dark:text-blue-400" />
-                  <span>School Campus</span>
-                </div>
-                <span className="text-[10px] text-[var(--color-text-muted)] block truncate">
-                  Greenwood · Scheduled
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleDemoLogin('customer-office')}
-                className="p-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-accent)] cursor-pointer transition-colors text-left"
-              >
-                <div className="flex items-center gap-1.5 text-xs font-bold text-[var(--color-text)]">
-                  <Building size={13} className="text-purple-600 dark:text-purple-400" />
-                  <span>Office Hub</span>
-                </div>
-                <span className="text-[10px] text-[var(--color-text-muted)] block truncate">
-                  TechCorp · Installing
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleDemoLogin('technician')}
-                className="p-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-accent)] cursor-pointer transition-colors text-left"
-              >
-                <div className="flex items-center gap-1.5 text-xs font-bold text-[var(--color-text)]">
-                  <Wrench size={13} className="text-amber-600 dark:text-amber-400" />
-                  <span>Lead Technician</span>
-                </div>
-                <span className="text-[10px] text-[var(--color-text-muted)] block truncate">
-                  Rajesh Kumar · Staff
-                </span>
-              </button>
+                <span>Sign Up as User or Developer →</span>
+              </Link>
             </div>
           </Surface>
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="relative z-10 py-3.5 text-center text-xs text-[var(--color-text-muted)] border-t border-[var(--color-border)]">
-        <span>5AMPERE Smart Energy Management Platform · Simulated Frontend Prototype</span>
+      <footer className="relative z-10 py-3.5 text-center text-xs text-(--color-text-muted) border-t border-(--color-border)">
+        <span>5AMPERE Smart Energy Management Platform · Frontend Demo Authentication</span>
       </footer>
 
-      {/* Forgot Password Modal (Mock) */}
-      {isForgotModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
-          <Surface variant="primary" padding="lg" className="w-full max-w-sm border border-[var(--color-border)] shadow-xl space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-sm font-bold text-[var(--color-text)] flex items-center gap-2">
-                <HelpCircle size={16} className="text-[var(--color-accent)]" />
-                <span>Simulated Password Recovery</span>
-              </h3>
-              <button
-                type="button"
-                onClick={() => setIsForgotModalOpen(false)}
-                className="text-[var(--color-text-muted)] hover:text-[var(--color-text)] cursor-pointer text-sm font-bold"
-              >
-                ✕
-              </button>
-            </div>
-
-            {forgotSent ? (
-              <div className="space-y-3 py-2">
-                <div className="p-3 rounded-xl bg-green-500/10 border border-green-500/30 text-green-800 dark:text-green-200 text-xs flex items-start gap-2.5">
-                  <CheckCircle2 size={16} className="text-green-600 dark:text-green-400 shrink-0 mt-0.5" />
-                  <div>
-                    <strong className="block font-semibold">Demo Recovery Link Dispatched:</strong>
-                    A simulated password reset token was routed to <code>{forgotEmail || 'your email'}</code>.
-                  </div>
-                </div>
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  className="w-full text-xs"
-                  onClick={() => setIsForgotModalOpen(false)}
-                >
-                  Return to Login
-                </Button>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                <p className="text-xs text-[var(--color-text-secondary)]">
-                  Enter your registered property email address. We will verify your DISCOM connection and simulate reset instructions.
-                </p>
-                <div>
-                  <label className="block text-[11px] font-semibold text-[var(--color-text)] mb-1">
-                    Registered Email
-                  </label>
-                  <input
-                    type="email"
-                    value={forgotEmail}
-                    onChange={(e) => setForgotEmail(e.target.value)}
-                    placeholder="e.g. arpita@example.com"
-                    className="w-full px-3 py-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] text-xs text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent)]"
-                  />
-                </div>
-                <div className="flex items-center justify-end gap-2 pt-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-xs"
-                    onClick={() => setIsForgotModalOpen(false)}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    className="text-xs font-bold"
-                    onClick={() => setForgotSent(true)}
-                  >
-                    Send Reset Link
-                  </Button>
-                </div>
-              </div>
-            )}
-          </Surface>
-        </div>
-      )}
-
-      {/* Isolated Evaluator Demo Drawer */}
       <EvaluatorControls />
     </div>
   );

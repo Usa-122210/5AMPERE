@@ -13,8 +13,8 @@ export function Surface({
   ...props
 }) {
   const variants = {
-    primary: 'bg-[var(--color-surface)] border border-[var(--color-border)]',
-    secondary: 'bg-[var(--color-surface-secondary)] border border-[var(--color-border-subtle)]',
+    primary: 'bg-(--color-surface) border border-(--color-border)',
+    secondary: 'bg-(--color-surface-secondary) border border-(--color-border-subtle)',
     flat: 'bg-transparent',
   };
 
@@ -29,7 +29,7 @@ export function Surface({
   return (
     <Component
       className={[
-        'rounded-[var(--radius-card)]',
+        'rounded-(--radius-card)',
         variants[variant] || variants.primary,
         paddings[padding] || paddings.md,
         className,

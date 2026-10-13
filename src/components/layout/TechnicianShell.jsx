@@ -43,24 +43,31 @@ export function TechnicianShell({ theme: propTheme, onToggleTheme: propToggleThe
         }}
       >
         <div className="w-full px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between gap-4">
-          {/* Left: Mobile Toggle & Staff Brand */}
+          {/* Left: Mobile Toggle & Developer Workspace Brand */}
           <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="p-2 rounded-lg text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-secondary)] lg:hidden transition-colors cursor-pointer"
+              className="p-2 rounded-lg text-(--color-text-secondary) hover:text-(--color-text) hover:bg-(--color-surface-secondary) lg:hidden transition-colors cursor-pointer"
               aria-label="Toggle navigation drawer"
             >
               {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
 
-            <Link to="/technician" className="flex items-center gap-2.5">
-              <BrandWordmark size="sm" showBadge={true} badgeText="Staff Operations" />
+            <Link to="/developer" className="flex items-center gap-2.5">
+              <BrandWordmark size="sm" showBadge={true} badgeText="Developer Workspace" />
             </Link>
           </div>
 
-          {/* Right: Zone Pill, Lead Tech Badge, Theme, Logout */}
+          {/* Right: Zone Pill, Developer Badge, Public Site Link, Theme, Logout */}
           <div className="flex items-center gap-2.5">
+            <Link
+              to="/"
+              className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-(--color-border) bg-(--color-surface) text-xs font-medium text-(--color-text-secondary) hover:text-(--color-text) hover:border-(--color-accent) transition-all"
+            >
+              <span>Public Website</span>
+            </Link>
+
             {/* Zone Tag */}
             <div
               className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-mono"
@@ -70,11 +77,11 @@ export function TechnicianShell({ theme: propTheme, onToggleTheme: propToggleThe
                 color: 'var(--color-text-secondary)',
               }}
             >
-              <MapPin size={13} className="text-[var(--color-accent)]" />
-              <span>Gautam Buddha Nagar (Noida)</span>
+              <MapPin size={13} className="text-(--color-accent)" />
+              <span>{currentUser?.zone || 'Gautam Buddha Nagar (Noida)'}</span>
             </div>
 
-            {/* Technician Identification */}
+            {/* Developer Identification */}
             <div
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-semibold"
               style={{
@@ -83,21 +90,22 @@ export function TechnicianShell({ theme: propTheme, onToggleTheme: propToggleThe
                 color: 'var(--color-text)',
               }}
             >
-              <span className="w-2 h-2 rounded-full bg-[var(--color-success)]" />
-              <span>{currentUser?.name || 'Rajesh Kumar'}</span>
-              <span className="text-[10px] font-mono text-[var(--color-text-muted)] hidden sm:inline">
-                (5AMP-TECH-042)
+              <span className="w-2 h-2 rounded-full bg-(--color-success)" />
+              <span>{currentUser?.name || 'Developer'}</span>
+              <span className="text-[10px] font-mono text-(--color-text-muted) hidden sm:inline">
+                ({currentUser?.staffId || '5AMP-DEV-001'})
               </span>
             </div>
 
             <button
               type="button"
               onClick={handleLogout}
-              className="p-1.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:text-red-600 hover:border-red-500/30 transition-all cursor-pointer"
-              title="Sign Out"
-              aria-label="Sign out"
+              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-(--color-border) bg-(--color-surface) text-xs font-medium text-(--color-text-secondary) hover:text-red-600 hover:border-red-500/30 transition-all cursor-pointer"
+              title="Logout"
+              aria-label="Logout"
             >
               <LogOut size={14} />
+              <span className="hidden sm:inline">Logout</span>
             </button>
 
             <ThemeToggle theme={theme} onToggle={onToggleTheme} />

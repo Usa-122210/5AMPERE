@@ -1,10 +1,6 @@
-import { createContext, useContext, useState, useMemo, useCallback } from 'react';
+import { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { TARIFF_REGISTRY, DEFAULT_TARIFF_ID } from '../services/tariffData';
-import {
-  DEMO_HOUSEHOLD_METADATA,
-  INITIAL_HOUSEHOLD_LOADS,
-  HOURLY_LOAD_CURVE,
-} from '../data/demoHouseholdData';
+import { DEMO_HOUSEHOLD_METADATA, INITIAL_HOUSEHOLD_LOADS } from '../data/demoHouseholdData';
 import {
   formatINR,
   wattsToKWh,
@@ -17,14 +13,19 @@ import {
   calculateCurrentEstimate,
   calculateApplianceCost,
 } from '../utils/energyMath';
+import { useAuth } from './AuthContext';
 
 const EnergyDataContext = createContext(null);
 
 export function EnergyDataProvider({ children }) {
+  const { activeCustomerProperty } = useAuth();
+
   // Tariff selection and custom tariff state
   const [selectedTariffId, setSelectedTariffId] = useState(DEFAULT_TARIFF_ID);
   const [customTariff, setCustomTariff] = useState(TARIFF_REGISTRY['custom']);
-  const [contractedLoadKw, setContractedLoadKw] = useState(DEMO_HOUSEHOLD_METADATA.contractedLoadKw);
+  const [contractedLoadKw, setContractedLoadKw] = useState(
+    activeCustomerProperty?.sanctionedLoadKw || DEMO_HOUSEHOLD_METADATA.contractedLoadKw
+  );
   const [isTariffModalOpen, setIsTariffModalOpen] = useState(false);
 
   // Time range selection: 'today' | 'week' | 'month'
@@ -40,7 +41,21 @@ export function EnergyDataProvider({ children }) {
   // Dedicated Saving Mode state
   const [isSavingModeActive, setIsSavingModeActive] = useState(false);
   const [savingModeTargetPercent, setSavingModeTargetPercent] = useState(15);
-  const [savingModeBudgetInr, setSavingModeBudgetInr] = useState(4500);
+  const [savingModeBudgetInr, setSavingModeBudgetInr] = useState(
+    activeCustomerProperty?.approxMonthlyBill || 4500
+  );
+
+  // Sync sanctioned load & budget when customer switches property persona
+  useEffect(() => {
+    if (activeCustomerProperty) {
+      if (activeCustomerProperty.sanctionedLoadKw) {
+        setContractedLoadKw(Number(activeCustomerProperty.sanctionedLoadKw));
+      }
+      if (activeCustomerProperty.approxMonthlyBill) {
+        setSavingModeBudgetInr(Number(activeCustomerProperty.approxMonthlyBill));
+      }
+    }
+  }, [activeCustomerProperty?.id]);
 
   // Safety Confirmation Modal state
   const [confirmationModal, setConfirmationModal] = useState({

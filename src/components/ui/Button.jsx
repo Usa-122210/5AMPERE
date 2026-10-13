@@ -35,32 +35,32 @@ export function Button({
 
   const variantStyles = {
     primary: [
-      'bg-[var(--color-accent)] text-[var(--color-accent-text)]',
-      'hover:bg-[var(--color-accent-hover)]',
+      'bg-(--color-accent) text-(--color-accent-text)',
+      'hover:bg-(--color-accent-hover)',
       'active:brightness-90',
-      'focus-visible:shadow-[var(--focus-ring)]',
+      'focus-visible:shadow-(--focus-ring)',
     ].join(' '),
 
     secondary: [
-      'border border-[var(--color-border)]',
-      'bg-[var(--color-surface)] text-[var(--color-text)]',
-      'hover:bg-[var(--color-surface-secondary)]',
-      'active:bg-[var(--color-surface-selected)]',
-      'focus-visible:shadow-[var(--focus-ring)]',
+      'border border-(--color-border)',
+      'bg-(--color-surface) text-(--color-text)',
+      'hover:bg-(--color-surface-secondary)',
+      'active:bg-(--color-surface-selected)',
+      'focus-visible:shadow-(--focus-ring)',
     ].join(' '),
 
     ghost: [
-      'bg-transparent text-[var(--color-text-secondary)]',
-      'hover:bg-[var(--color-surface-secondary)] hover:text-[var(--color-text)]',
-      'active:bg-[var(--color-surface-selected)]',
-      'focus-visible:shadow-[var(--focus-ring)]',
+      'bg-transparent text-(--color-text-secondary)',
+      'hover:bg-(--color-surface-secondary) hover:text-(--color-text)',
+      'active:bg-(--color-surface-selected)',
+      'focus-visible:shadow-(--focus-ring)',
     ].join(' '),
 
     destructive: [
-      'bg-[var(--color-danger)] text-white',
+      'bg-(--color-danger) text-white',
       'hover:brightness-110',
       'active:brightness-90',
-      'focus-visible:shadow-[var(--focus-ring)]',
+      'focus-visible:shadow-(--focus-ring)',
     ].join(' '),
   };
 

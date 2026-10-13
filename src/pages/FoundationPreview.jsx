@@ -14,8 +14,6 @@ import {
 import { Button } from '../components/ui/Button';
 import { Surface } from '../components/ui/Surface';
 import { IconButton } from '../components/ui/IconButton';
-import { BrandWordmark } from '../components/brand/BrandWordmark';
-import { BrandMark } from '../components/brand/BrandMark';
 import { LogoConcepts } from '../components/brand/LogoConcepts';
 import { EnergyFlowVisualizer } from '../components/motion/EnergyFlowVisualizer';
 

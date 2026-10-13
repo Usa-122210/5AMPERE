@@ -2,21 +2,18 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Sparkles,
-  User,
   Wrench,
   RotateCcw,
   LogOut,
   X,
-  ChevronRight,
   Home,
   School,
   Building,
   Factory,
   CheckCircle2,
   Sliders,
-  Shield,
+  ShieldCheck,
 } from 'lucide-react';
-import { Surface } from '../ui/Surface';
 import { Button } from '../ui/Button';
 import { useAuth } from '../../context/AuthContext';
 
@@ -36,10 +33,12 @@ export function EvaluatorControls() {
   const handleSelectPersona = (personaKey) => {
     loginAsDemoUser(personaKey);
     setIsOpen(false);
-    if (personaKey === 'technician') {
-      navigate('/technician');
+    if (personaKey === 'admin') {
+      navigate('/admin');
+    } else if (personaKey === 'developer' || personaKey === 'technician') {
+      navigate('/developer');
     } else {
-      navigate('/');
+      navigate('/dashboard');
     }
   };
 
@@ -61,54 +60,70 @@ export function EvaluatorControls() {
 
   const personas = [
     {
-      key: 'home_arpita',
-      name: 'Arpita Sharma',
+      key: 'admin',
+      propertyType: null,
+      name: 'Admin (Admin / Admin)',
+      property: 'Platform Control Center',
+      type: 'Predefined Admin Account',
+      icon: ShieldCheck,
+      tag: 'Role: Admin',
+      tagColor: '#F59E0B',
+      role: 'admin',
+    },
+    {
+      key: 'developer',
+      propertyType: null,
+      name: 'Developer (Developer / Developer)',
+      property: 'Developer & Commissioning Workspace',
+      type: 'Predefined Developer Account',
+      icon: Wrench,
+      tag: 'Role: Developer',
+      tagColor: '#3B82F6',
+      role: 'developer',
+    },
+    {
+      key: 'customer-home',
+      propertyType: 'home',
+      name: 'Aarav Sharma',
       property: '3BHK Apartment (Noida)',
-      type: 'Residential Home',
+      type: 'Residential Home User',
       icon: Home,
       tag: '5 kW · Active',
       tagColor: 'var(--color-success)',
-      role: 'customer',
+      role: 'user',
     },
     {
-      key: 'school_greenwood',
+      key: 'customer-school',
+      propertyType: 'school',
       name: 'Greenwood High School',
-      property: 'Educational Campus (Sec 62)',
-      type: 'School / Institution',
+      property: 'Educational Campus (Greater Noida)',
+      type: 'School / Institution User',
       icon: School,
-      tag: '25 kW · Pending',
+      tag: '120 kW · Scheduled',
       tagColor: 'var(--color-warning)',
-      role: 'customer',
+      role: 'user',
     },
     {
-      key: 'office_techcorp',
-      name: 'TechCorp India HQ',
-      property: 'IT Tower 4 (Expressway)',
-      type: 'Commercial Office',
+      key: 'customer-office',
+      propertyType: 'office',
+      name: 'TechCorp Innovation Hub',
+      property: 'Commercial Floor (Cyber City)',
+      type: 'Commercial Office User',
       icon: Building,
-      tag: '40 kW · Configured',
+      tag: '75 kW · Installing',
       tagColor: 'var(--color-accent)',
-      role: 'customer',
+      role: 'user',
     },
     {
-      key: 'industry_apex',
-      name: 'Apex Industrial Plant',
-      property: 'Heavy Machining Unit (Gr. Noida)',
-      type: 'Industrial Facility',
+      key: 'customer-industry',
+      propertyType: 'industry',
+      name: 'Apex Precision Components',
+      property: 'Heavy Machining Unit (IMT Manesar)',
+      type: 'Industrial Facility User',
       icon: Factory,
-      tag: '120 kW · 3-Phase',
+      tag: '250 kW · Active',
       tagColor: 'var(--color-accent)',
-      role: 'customer',
-    },
-    {
-      key: 'technician',
-      name: 'Rajesh Kumar',
-      property: 'Operations Division (Noida Zone)',
-      type: 'Field Operations Specialist',
-      icon: Wrench,
-      tag: 'Lead Technician',
-      tagColor: '#3B82F6',
-      role: 'technician',
+      role: 'user',
     },
   ];
 
@@ -117,7 +132,7 @@ export function EvaluatorControls() {
       {/* Floating Pill Trigger */}
       <aside
         aria-label="Evaluator Controls"
-        className="fixed bottom-4 right-4 z-[999]"
+        className="fixed bottom-4 right-4 z-999"
       >
         <button
           type="button"
@@ -131,13 +146,13 @@ export function EvaluatorControls() {
           }}
           title="Open Evaluator Demo Controller (Simulated Personas & Data Reset)"
         >
-          <div className="w-2 h-2 rounded-full bg-[var(--color-accent)] animate-pulse" />
+          <div className="w-2 h-2 rounded-full bg-(--color-accent) animate-pulse" />
           <span className="flex items-center gap-1.5">
-            <Sparkles size={13} className="text-[var(--color-accent)]" />
+            <Sparkles size={13} className="text-(--color-accent)" />
             <span className="hidden sm:inline">Evaluator Demo Tools</span>
             <span className="sm:hidden">Demo</span>
           </span>
-          <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 rounded bg-[var(--color-accent-subtle)] text-[var(--color-accent)] font-bold">
+          <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 rounded bg-(--color-accent-subtle) text-(--color-accent) font-bold">
             Simulated
           </span>
         </button>
@@ -146,7 +161,7 @@ export function EvaluatorControls() {
       {/* Slide-in Modal Drawer */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-[1000] flex items-center justify-center sm:justify-end p-4 sm:p-6 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150"
+          className="fixed inset-0 z-1000 flex items-center justify-center sm:justify-end p-4 sm:p-6 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150"
           onClick={() => setIsOpen(false)}
         >
           <div
@@ -158,16 +173,16 @@ export function EvaluatorControls() {
             onClick={(e) => e.stopPropagation()}
           >
             {/* Drawer Header */}
-            <div className="flex items-center justify-between border-b border-[var(--color-border)] pb-3">
+            <div className="flex items-center justify-between border-b border-(--color-border) pb-3">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-[var(--color-accent-subtle)] text-[var(--color-accent)] flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-(--color-accent-subtle) text-(--color-accent) flex items-center justify-center">
                   <Sliders size={17} />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-[var(--color-text)]">
+                  <h3 className="text-sm font-bold text-(--color-text)">
                     Evaluator Demo Controller
                   </h3>
-                  <span className="text-[10px] text-[var(--color-text-secondary)] font-mono">
+                  <span className="text-[10px] text-(--color-text-secondary) font-mono">
                     Audit Multi-Persona Workspaces
                   </span>
                 </div>
@@ -175,7 +190,7 @@ export function EvaluatorControls() {
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="p-1 rounded-lg text-[var(--color-text-muted)] hover:text-[var(--color-text)] cursor-pointer"
+                className="p-1 rounded-lg text-(--color-text-muted) hover:text-(--color-text) cursor-pointer"
                 aria-label="Close evaluator controls"
               >
                 <X size={18} />
@@ -183,20 +198,22 @@ export function EvaluatorControls() {
             </div>
 
             {/* Current Active User Status */}
-            <div className="p-3 rounded-xl border bg-[var(--color-surface-secondary)] border-[var(--color-border)] space-y-1">
-              <span className="text-[10px] font-mono uppercase tracking-wider text-[var(--color-text-muted)] font-bold">
+            <div className="p-3 rounded-xl border bg-(--color-surface-secondary) border-(--color-border) space-y-1">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-(--color-text-muted) font-bold">
                 Active Session
               </span>
               {currentUser ? (
                 <div className="flex items-center justify-between">
                   <div className="truncate">
-                    <span className="text-xs font-bold text-[var(--color-text)] block truncate">
+                    <span className="text-xs font-bold text-(--color-text) block truncate">
                       {currentUser.name}
                     </span>
-                    <span className="text-[11px] text-[var(--color-accent)] font-mono block truncate">
-                      {currentUser.role === 'technician'
-                        ? 'Company Technician Workspace'
-                        : `${activeCustomerProperty?.propertyName || 'Customer Portal'} (${activeCustomerProperty?.propertyType?.toUpperCase() || 'HOME'})`}
+                    <span className="text-[11px] text-(--color-accent) font-mono block truncate">
+                      {currentUser.role === 'admin'
+                        ? 'Admin Control Center'
+                        : currentUser.role === 'developer' || currentUser.role === 'technician'
+                        ? 'Developer Workspace'
+                        : `${activeCustomerProperty?.propertyName || 'User Portal'} (${activeCustomerProperty?.propertyType?.toUpperCase() || 'HOME'})`}
                     </span>
                   </div>
                   <button
@@ -212,10 +229,10 @@ export function EvaluatorControls() {
               ) : (
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-semibold text-amber-600 dark:text-amber-400">
-                    Not Signed In (Login Page Active)
+                    Public Visitor (Not Signed In)
                   </span>
                   <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-700 dark:text-amber-300 font-bold">
-                    Root Entry
+                    Public Mode
                   </span>
                 </div>
               )}
@@ -223,7 +240,7 @@ export function EvaluatorControls() {
 
             {/* Persona Switcher List */}
             <div className="space-y-2">
-              <span className="text-[10px] font-mono uppercase tracking-wider text-[var(--color-text-muted)] font-bold block">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-(--color-text-muted) font-bold block">
                 Instant 1-Click Persona Switch
               </span>
 
@@ -232,10 +249,12 @@ export function EvaluatorControls() {
                   const Icon = p.icon;
                   const isCurrent =
                     currentUser &&
-                    ((p.role === 'technician' && currentUser.role === 'technician') ||
-                      (p.role === 'customer' &&
-                        currentUser.role === 'customer' &&
-                        currentUser.name === p.name));
+                    ((p.role === 'admin' && currentUser.role === 'admin') ||
+                      (p.role === 'developer' &&
+                        (currentUser.role === 'developer' || currentUser.role === 'technician')) ||
+                      (p.role === 'user' &&
+                        (currentUser.role === 'user' || currentUser.role === 'customer') &&
+                        (activeCustomerProperty?.propertyType || currentUser.propertyType) === p.propertyType));
 
                   return (
                     <button
@@ -244,8 +263,8 @@ export function EvaluatorControls() {
                       onClick={() => handleSelectPersona(p.key)}
                       className={`w-full p-2.5 rounded-xl border text-left flex items-center justify-between gap-3 cursor-pointer transition-all ${
                         isCurrent
-                          ? 'bg-[var(--color-accent-subtle)] border-[var(--color-accent)] shadow-xs'
-                          : 'bg-[var(--color-surface)] border-[var(--color-border)] hover:border-[var(--color-accent)] hover:bg-[var(--color-surface-secondary)]'
+                          ? 'bg-(--color-accent-subtle) border-(--color-accent) shadow-xs'
+                          : 'bg-(--color-surface) border-(--color-border) hover:border-(--color-accent) hover:bg-(--color-surface-secondary)'
                       }`}
                     >
                       <div className="flex items-center gap-2.5 min-w-0">
@@ -261,14 +280,14 @@ export function EvaluatorControls() {
                         </div>
                         <div className="min-w-0">
                           <div className="flex items-center gap-1.5">
-                            <span className="text-xs font-bold text-[var(--color-text)] truncate">
+                            <span className="text-xs font-bold text-(--color-text) truncate">
                               {p.name}
                             </span>
                             {isCurrent && (
-                              <CheckCircle2 size={12} className="text-[var(--color-accent)] shrink-0" />
+                              <CheckCircle2 size={12} className="text-(--color-accent) shrink-0" />
                             )}
                           </div>
-                          <span className="text-[10px] text-[var(--color-text-secondary)] block truncate">
+                          <span className="text-[10px] text-(--color-text-secondary) block truncate">
                             {p.property}
                           </span>
                         </div>
@@ -291,11 +310,11 @@ export function EvaluatorControls() {
             </div>
 
             {/* Reset Demo Data Utility */}
-            <div className="pt-2 border-t border-[var(--color-border)] space-y-2">
-              <span className="text-[10px] font-mono uppercase tracking-wider text-[var(--color-text-muted)] font-bold block">
+            <div className="pt-2 border-t border-(--color-border) space-y-2">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-(--color-text-muted) font-bold block">
                 Reset Simulated Data
               </span>
-              <p className="text-[11px] text-[var(--color-text-secondary)] leading-relaxed">
+              <p className="text-[11px] text-(--color-text-secondary) leading-relaxed">
                 Clears localStorage modifications, restore original 4 properties, reset technician appointment statuses, and return to pristine baseline.
               </p>
 
@@ -309,7 +328,7 @@ export function EvaluatorControls() {
                   variant="secondary"
                   size="sm"
                   onClick={handleReset}
-                  className="w-full text-xs font-semibold text-[var(--color-text-secondary)] hover:text-red-600 hover:border-red-500/30"
+                  className="w-full text-xs font-semibold text-(--color-text-secondary) hover:text-red-600 hover:border-red-500/30"
                 >
                   <RotateCcw size={13} />
                   <span>Reset Demo Baseline &amp; Log Out</span>
@@ -318,7 +337,7 @@ export function EvaluatorControls() {
             </div>
 
             {/* Notice */}
-            <div className="text-[10px] text-[var(--color-text-muted)] text-center font-mono">
+            <div className="text-[10px] text-(--color-text-muted) text-center font-mono">
               5AMPERE Frontend Prototype · Offline Demo Simulator
             </div>
           </div>
@@ -329,3 +348,4 @@ export function EvaluatorControls() {
 }
 
 export default EvaluatorControls;
+

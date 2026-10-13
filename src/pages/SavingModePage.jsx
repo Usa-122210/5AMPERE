@@ -1,29 +1,17 @@
 import { useState } from 'react';
 import {
-  AlertTriangle,
   ArrowRight,
-  BatteryCharging,
-  CheckCircle2,
   Clock,
-  Cpu,
   Flame,
-  Info,
-  Layers,
   Leaf,
   Lock,
   Power,
   RotateCcw,
   ShieldAlert,
   ShieldCheck,
-  Sliders,
-  SlidersHorizontal,
-  Sparkles,
   ToggleLeft,
   ToggleRight,
-  Tv,
-  Waves,
   Wind,
-  Zap,
 } from 'lucide-react';
 import { Surface } from '../components/ui/Surface';
 import { Button } from '../components/ui/Button';
@@ -93,7 +81,7 @@ export function SavingModePage() {
       </PageHeader>
 
       {/* 1. Smart Demand Management Control Bar */}
-      <div className="p-4 rounded-2xl border bg-[var(--color-surface)] border-[var(--color-border)] shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-4 rounded-2xl border bg-(--color-surface) border-(--color-border) shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-start sm:items-center gap-3.5">
           <div
             className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border"
@@ -106,14 +94,14 @@ export function SavingModePage() {
           </div>
           <div>
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs font-bold uppercase tracking-wider text-[var(--color-text)]">
+              <span className="text-xs font-bold uppercase tracking-wider text-(--color-text)">
                 Smart Demand Response
               </span>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[var(--color-surface-secondary)] text-[var(--color-text-muted)] border border-[var(--color-border)]">
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-(--color-surface-secondary) text-(--color-text-muted) border border-(--color-border)">
                 Simulation Model
               </span>
             </div>
-            <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">
+            <p className="text-xs text-(--color-text-secondary) mt-0.5">
               Automates peak load reduction by shedding non-essential circuits (Geyser, EV Charger) while keeping critical refrigeration running.
             </p>
           </div>
@@ -135,25 +123,25 @@ export function SavingModePage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
         {/* Metric 1: Master Mode Status */}
-        <Surface variant="primary" padding="md" className="border border-[var(--color-border)] flex flex-col justify-between space-y-2">
+        <Surface variant="primary" padding="md" className="border border-(--color-border) flex flex-col justify-between space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-[var(--color-text-secondary)]">Master Status</span>
+            <span className="text-xs font-semibold text-(--color-text-secondary)">Master Status</span>
             <span
-              className={`w-2.5 h-2.5 rounded-full ${isSavingModeActive ? 'bg-[var(--color-success)] animate-pulse' : 'bg-[var(--color-text-muted)]'}`}
+              className={`w-2.5 h-2.5 rounded-full ${isSavingModeActive ? 'bg-(--color-success) animate-pulse' : 'bg-(--color-text-muted)'}`}
             />
           </div>
           <div>
-            <div className="text-xl font-mono font-bold text-[var(--color-text)]">
+            <div className="text-xl font-mono font-bold text-(--color-text)">
               {isSavingModeActive ? 'ACTIVE' : 'STANDBY'}
             </div>
-            <span className="text-[11px] text-[var(--color-text-muted)] block mt-0.5">
+            <span className="text-[11px] text-(--color-text-muted) block mt-0.5">
               {isSavingModeActive ? 'Discretionary circuits shed' : 'Full demand profile running'}
             </span>
           </div>
           <button
             type="button"
             onClick={() => toggleSavingMode()}
-            className="flex items-center gap-2 text-xs font-bold text-[var(--color-accent)] hover:underline self-start pt-1"
+            className="flex items-center gap-2 text-xs font-bold text-(--color-accent) hover:underline self-start pt-1"
           >
             <span>{isSavingModeActive ? 'Deactivate Mode' : 'Activate Mode'}</span>
             <ArrowRight size={12} />
@@ -161,29 +149,29 @@ export function SavingModePage() {
         </Surface>
 
         {/* Metric 2: Monthly Electricity Budget */}
-        <Surface variant="primary" padding="md" className="border border-[var(--color-border)] flex flex-col justify-between space-y-2">
+        <Surface variant="primary" padding="md" className="border border-(--color-border) flex flex-col justify-between space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-[var(--color-text-secondary)]">Configured Budget</span>
-            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[var(--color-surface-secondary)] text-[var(--color-text-muted)] border border-[var(--color-border)]">
+            <span className="text-xs font-semibold text-(--color-text-secondary)">Configured Budget</span>
+            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-(--color-surface-secondary) text-(--color-text-muted) border border-(--color-border)">
               Configurable Demo
             </span>
           </div>
           <div>
-            <div className="text-xl font-mono font-bold text-[var(--color-text)]">
+            <div className="text-xl font-mono font-bold text-(--color-text)">
               {formatINR(savingModeBudgetInr)}
             </div>
-            <span className="text-[11px] text-[var(--color-text-muted)] block mt-0.5">
+            <span className="text-[11px] text-(--color-text-muted) block mt-0.5">
               Household monthly ceiling
             </span>
           </div>
           <div className="pt-1">
             <div className="flex items-center justify-between text-[11px] font-mono mb-1">
-              <span className="text-[var(--color-text-secondary)]">Pacing</span>
-              <span className={budgetUtilizationPercent > 100 ? 'text-[var(--color-danger)] font-bold' : 'text-[var(--color-success)] font-bold'}>
+              <span className="text-(--color-text-secondary)">Pacing</span>
+              <span className={budgetUtilizationPercent > 100 ? 'text-(--color-danger) font-bold' : 'text-(--color-success) font-bold'}>
                 {budgetUtilizationPercent}% of limit
               </span>
             </div>
-            <div className="w-full h-1.5 rounded-full bg-[var(--color-surface-secondary)] overflow-hidden">
+            <div className="w-full h-1.5 rounded-full bg-(--color-surface-secondary) overflow-hidden">
               <div
                 className="h-full transition-all duration-300"
                 style={{
@@ -196,53 +184,53 @@ export function SavingModePage() {
         </Surface>
 
         {/* Metric 3: Target Reduction Goal */}
-        <Surface variant="primary" padding="md" className="border border-[var(--color-border)] flex flex-col justify-between space-y-2">
+        <Surface variant="primary" padding="md" className="border border-(--color-border) flex flex-col justify-between space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-[var(--color-text-secondary)]">Target Reduction</span>
-            <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-[var(--color-accent-subtle)] text-[var(--color-accent)] border border-[var(--color-accent)]">
+            <span className="text-xs font-semibold text-(--color-text-secondary)">Target Reduction</span>
+            <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-(--color-accent-subtle) text-(--color-accent) border border-(--color-accent)">
               -{savingModeTargetPercent}%
             </span>
           </div>
           <div>
-            <div className="text-xl font-mono font-bold text-[var(--color-accent)]">
+            <div className="text-xl font-mono font-bold text-(--color-accent)">
               {formatINR(targetSavingsInr)}
             </div>
-            <span className="text-[11px] text-[var(--color-text-muted)] block mt-0.5">
+            <span className="text-[11px] text-(--color-text-muted) block mt-0.5">
               Targeted monthly savings
             </span>
           </div>
-          <span className="text-[11px] text-[var(--color-text-secondary)] pt-1">
-            Goal bill: <span className="font-mono font-bold text-[var(--color-text)]">{formatINR(optimizedProjectedBill)}</span>
+          <span className="text-[11px] text-(--color-text-secondary) pt-1">
+            Goal bill: <span className="font-mono font-bold text-(--color-text)">{formatINR(optimizedProjectedBill)}</span>
           </span>
         </Surface>
 
         {/* Metric 4: Protected Circuits Count */}
-        <Surface variant="primary" padding="md" className="border border-[var(--color-border)] flex flex-col justify-between space-y-2">
+        <Surface variant="primary" padding="md" className="border border-(--color-border) flex flex-col justify-between space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-[var(--color-text-secondary)]">Circuit Protection</span>
-            <ShieldCheck size={16} className="text-[var(--color-success)]" />
+            <span className="text-xs font-semibold text-(--color-text-secondary)">Circuit Protection</span>
+            <ShieldCheck size={16} className="text-(--color-success)" />
           </div>
           <div>
-            <div className="text-xl font-mono font-bold text-[var(--color-text)]">
+            <div className="text-xl font-mono font-bold text-(--color-text)">
               1 Critical Lock
             </div>
-            <span className="text-[11px] text-[var(--color-text-muted)] block mt-0.5">
+            <span className="text-[11px] text-(--color-text-muted) block mt-0.5">
               Refrigerator circuit exempt
             </span>
           </div>
-          <span className="text-[11px] text-[var(--color-success)] font-medium pt-1">
+          <span className="text-[11px] text-(--color-success) font-medium pt-1">
             Food spoilage protection active
           </span>
         </Surface>
       </div>
 
       {/* 3. Budget & Target Goal Controls */}
-      <Surface variant="primary" padding="lg" className="border border-[var(--color-border)] space-y-6">
-        <div className="border-b border-[var(--color-border)] pb-4">
-          <h3 className="text-base font-bold text-[var(--color-text)]">
+      <Surface variant="primary" padding="lg" className="border border-(--color-border) space-y-6">
+        <div className="border-b border-(--color-border) pb-4">
+          <h3 className="text-base font-bold text-(--color-text)">
             Budget Ceiling &amp; Consumption Targets
           </h3>
-          <p className="text-xs text-[var(--color-text-secondary)] mt-1">
+          <p className="text-xs text-(--color-text-secondary) mt-1">
             Adjust your monthly electricity spend target. Note: ₹4,500 is an initial configurable demo baseline for a 3BHK Indian home under {activeTariff.discom.split(' ')[0]} tariffs.
           </p>
         </div>
@@ -250,11 +238,11 @@ export function SavingModePage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Control A: Monthly Budget Input */}
           <div className="space-y-2">
-            <label className="block text-xs font-bold uppercase tracking-wider text-[var(--color-text-secondary)]">
+            <label className="block text-xs font-bold uppercase tracking-wider text-(--color-text-secondary)">
               Monthly Electricity Budget (₹ INR)
             </label>
             <div className="relative">
-              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 font-mono font-bold text-sm text-[var(--color-text-secondary)]">
+              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 font-mono font-bold text-sm text-(--color-text-secondary)">
                 ₹
               </span>
               <input
@@ -264,10 +252,10 @@ export function SavingModePage() {
                 step="500"
                 value={savingModeBudgetInr}
                 onChange={(e) => setSavingModeBudgetInr(Number(e.target.value) || 0)}
-                className="w-full pl-8 pr-4 py-2.5 rounded-xl border font-mono font-bold text-base bg-[var(--color-surface-secondary)] border-[var(--color-border)] text-[var(--color-text)] focus:outline-hidden focus:border-[var(--color-accent)]"
+                className="w-full pl-8 pr-4 py-2.5 rounded-xl border font-mono font-bold text-base bg-(--color-surface-secondary) border-(--color-border) text-(--color-text) focus:outline-hidden focus:border-(--color-accent)"
               />
             </div>
-            <div className="flex items-center justify-between text-[11px] text-[var(--color-text-muted)] pt-1">
+            <div className="flex items-center justify-between text-[11px] text-(--color-text-muted) pt-1">
               <span>Current projection: {formatINR(currentProjectedBill)}</span>
               <span>Diff: {currentProjectedBill > savingModeBudgetInr ? `+${formatINR(currentProjectedBill - savingModeBudgetInr)} over` : `${formatINR(savingModeBudgetInr - currentProjectedBill)} within`}</span>
             </div>
@@ -276,10 +264,10 @@ export function SavingModePage() {
           {/* Control B: Target Reduction Percentage Slider */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-bold uppercase tracking-wider text-[var(--color-text-secondary)]">
+              <label className="text-xs font-bold uppercase tracking-wider text-(--color-text-secondary)">
                 Target Reduction Goal
               </label>
-              <span className="font-mono font-bold text-sm text-[var(--color-accent)]">
+              <span className="font-mono font-bold text-sm text-(--color-accent)">
                 {savingModeTargetPercent}%
               </span>
             </div>
@@ -290,9 +278,9 @@ export function SavingModePage() {
               step="1"
               value={savingModeTargetPercent}
               onChange={(e) => setSavingModeTargetPercent(Number(e.target.value))}
-              className="w-full accent-[var(--color-accent)] cursor-pointer"
+              className="w-full accent-(--color-accent) cursor-pointer"
             />
-            <div className="flex items-center justify-between text-[11px] text-[var(--color-text-muted)] font-mono pt-1">
+            <div className="flex items-center justify-between text-[11px] text-(--color-text-muted) font-mono pt-1">
               <span>5% (Conservative)</span>
               <span>15% (Recommended)</span>
               <span>30% (Aggressive)</span>
@@ -302,17 +290,17 @@ export function SavingModePage() {
       </Surface>
 
       {/* 4. Automated Energy Saving Rules & Schedules */}
-      <Surface variant="primary" padding="lg" className="border border-[var(--color-border)] space-y-6">
-        <div className="border-b border-[var(--color-border)] pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+      <Surface variant="primary" padding="lg" className="border border-(--color-border) space-y-6">
+        <div className="border-b border-(--color-border) pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <h3 className="text-base font-bold text-[var(--color-text)]">
+            <h3 className="text-base font-bold text-(--color-text)">
               Automated Schedule &amp; Shedding Rules
             </h3>
-            <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">
+            <p className="text-xs text-(--color-text-secondary) mt-0.5">
               Simulated rules applied when Saving Mode is enabled. Critical circuits remain locked.
             </p>
           </div>
-          <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-[var(--color-surface-secondary)] text-[var(--color-text-secondary)] border border-[var(--color-border)] self-start sm:self-auto">
+          <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-(--color-surface-secondary) text-(--color-text-secondary) border border-(--color-border) self-start sm:self-auto">
             {Object.values(activeRules).filter(Boolean).length} of 4 Rules Armed
           </span>
         </div>
@@ -320,17 +308,17 @@ export function SavingModePage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           
           {/* Rule 1: Overnight Vampire Standby */}
-          <div className="p-4 rounded-xl border bg-[var(--color-surface-secondary)] border-[var(--color-border)] space-y-3">
+          <div className="p-4 rounded-xl border bg-(--color-surface-secondary) border-(--color-border) space-y-3">
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-center text-[var(--color-accent)]">
+                <div className="w-8 h-8 rounded-lg bg-(--color-surface) border border-(--color-border) flex items-center justify-center text-(--color-accent)">
                   <Clock size={16} />
                 </div>
                 <div>
-                  <h4 className="text-xs font-bold text-[var(--color-text)]">
+                  <h4 className="text-xs font-bold text-(--color-text)">
                     Overnight Phantom Cutoff
                   </h4>
-                  <span className="text-[10px] font-mono text-[var(--color-text-muted)]">
+                  <span className="text-[10px] font-mono text-(--color-text-muted)">
                     00:30 – 06:00 Daily
                   </span>
                 </div>
@@ -338,32 +326,32 @@ export function SavingModePage() {
               <button
                 type="button"
                 onClick={() => toggleRule('vampireCutoff')}
-                className="text-[var(--color-accent)]"
+                className="text-(--color-accent)"
               >
-                {activeRules.vampireCutoff ? <ToggleRight size={26} /> : <ToggleLeft size={26} className="text-[var(--color-text-muted)]" />}
+                {activeRules.vampireCutoff ? <ToggleRight size={26} /> : <ToggleLeft size={26} className="text-(--color-text-muted)" />}
               </button>
             </div>
-            <p className="text-xs text-[var(--color-text-secondary)]">
+            <p className="text-xs text-(--color-text-secondary)">
               Cuts relay power to entertainment cluster and idle appliances during sleeping hours, eliminating continuous 95W standby draw.
             </p>
-            <div className="flex items-center justify-between text-[11px] font-mono pt-1 border-t border-[var(--color-border)]">
-              <span className="text-[var(--color-text-muted)]">Circuit #10 (Entertainment)</span>
-              <span className="text-[var(--color-success)] font-bold">~15.7 kWh / ~₹110/mo</span>
+            <div className="flex items-center justify-between text-[11px] font-mono pt-1 border-t border-(--color-border)">
+              <span className="text-(--color-text-muted)">Circuit #10 (Entertainment)</span>
+              <span className="text-(--color-success) font-bold">~15.7 kWh / ~₹110/mo</span>
             </div>
           </div>
 
           {/* Rule 2: Water Geyser Pre-Bath Timer */}
-          <div className="p-4 rounded-xl border bg-[var(--color-surface-secondary)] border-[var(--color-border)] space-y-3">
+          <div className="p-4 rounded-xl border bg-(--color-surface-secondary) border-(--color-border) space-y-3">
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-center text-[var(--color-warning)]">
+                <div className="w-8 h-8 rounded-lg bg-(--color-surface) border border-(--color-border) flex items-center justify-center text-(--color-warning)">
                   <Flame size={16} />
                 </div>
                 <div>
-                  <h4 className="text-xs font-bold text-[var(--color-text)]">
+                  <h4 className="text-xs font-bold text-(--color-text)">
                     Geyser Pre-Bath Window Timer
                   </h4>
-                  <span className="text-[10px] font-mono text-[var(--color-text-muted)]">
+                  <span className="text-[10px] font-mono text-(--color-text-muted)">
                     06:30 – 07:15 Morning Only
                   </span>
                 </div>
@@ -371,32 +359,32 @@ export function SavingModePage() {
               <button
                 type="button"
                 onClick={() => toggleRule('geyserTimer')}
-                className="text-[var(--color-accent)]"
+                className="text-(--color-accent)"
               >
-                {activeRules.geyserTimer ? <ToggleRight size={26} /> : <ToggleLeft size={26} className="text-[var(--color-text-muted)]" />}
+                {activeRules.geyserTimer ? <ToggleRight size={26} /> : <ToggleLeft size={26} className="text-(--color-text-muted)" />}
               </button>
             </div>
-            <p className="text-xs text-[var(--color-text-secondary)]">
+            <p className="text-xs text-(--color-text-secondary)">
               Restricts 2.0 kW storage geyser to 45 minutes before morning bathing, preventing continuous thermostat cycling and standing jacket thermal loss (BEE IS 2082).
             </p>
-            <div className="flex items-center justify-between text-[11px] font-mono pt-1 border-t border-[var(--color-border)]">
-              <span className="text-[var(--color-text-muted)]">Circuit #03 (Water Geyser)</span>
-              <span className="text-[var(--color-success)] font-bold">~15.0 kWh / ~₹105/mo</span>
+            <div className="flex items-center justify-between text-[11px] font-mono pt-1 border-t border-(--color-border)">
+              <span className="text-(--color-text-muted)">Circuit #03 (Water Geyser)</span>
+              <span className="text-(--color-success) font-bold">~15.0 kWh / ~₹105/mo</span>
             </div>
           </div>
 
           {/* Rule 3: AC Comfort Setpoint 24°C */}
-          <div className="p-4 rounded-xl border bg-[var(--color-surface-secondary)] border-[var(--color-border)] space-y-3">
+          <div className="p-4 rounded-xl border bg-(--color-surface-secondary) border-(--color-border) space-y-3">
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-center text-[var(--color-accent)]">
+                <div className="w-8 h-8 rounded-lg bg-(--color-surface) border border-(--color-border) flex items-center justify-center text-(--color-accent)">
                   <Wind size={16} />
                 </div>
                 <div>
-                  <h4 className="text-xs font-bold text-[var(--color-text)]">
+                  <h4 className="text-xs font-bold text-(--color-text)">
                     Inverter AC 24°C Comfort Setting
                   </h4>
-                  <span className="text-[10px] font-mono text-[var(--color-text-muted)]">
+                  <span className="text-[10px] font-mono text-(--color-text-muted)">
                     BEE Standard Guideline
                   </span>
                 </div>
@@ -404,32 +392,32 @@ export function SavingModePage() {
               <button
                 type="button"
                 onClick={() => toggleRule('acEcoSetpoint')}
-                className="text-[var(--color-accent)]"
+                className="text-(--color-accent)"
               >
-                {activeRules.acEcoSetpoint ? <ToggleRight size={26} /> : <ToggleLeft size={26} className="text-[var(--color-text-muted)]" />}
+                {activeRules.acEcoSetpoint ? <ToggleRight size={26} /> : <ToggleLeft size={26} className="text-(--color-text-muted)" />}
               </button>
             </div>
-            <p className="text-xs text-[var(--color-text-secondary)]">
+            <p className="text-xs text-(--color-text-secondary)">
               Recommends maintaining thermostat at 24°C instead of 20°C. Per BEE guidelines, every 1°C increase reduces compressor power consumption by approximately 6%.
             </p>
-            <div className="flex items-center justify-between text-[11px] font-mono pt-1 border-t border-[var(--color-border)]">
-              <span className="text-[var(--color-text-muted)]">Circuit #01 (Master AC)</span>
-              <span className="text-[var(--color-success)] font-bold">~43.2 kWh / ~₹302/mo</span>
+            <div className="flex items-center justify-between text-[11px] font-mono pt-1 border-t border-(--color-border)">
+              <span className="text-(--color-text-muted)">Circuit #01 (Master AC)</span>
+              <span className="text-(--color-success) font-bold">~43.2 kWh / ~₹302/mo</span>
             </div>
           </div>
 
           {/* Rule 4: Peak Demand Threshold Limiter */}
-          <div className="p-4 rounded-xl border bg-[var(--color-surface-secondary)] border-[var(--color-border)] space-y-3">
+          <div className="p-4 rounded-xl border bg-(--color-surface-secondary) border-(--color-border) space-y-3">
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-center text-[var(--color-danger)]">
+                <div className="w-8 h-8 rounded-lg bg-(--color-surface) border border-(--color-border) flex items-center justify-center text-(--color-danger)">
                   <ShieldAlert size={16} />
                 </div>
                 <div>
-                  <h4 className="text-xs font-bold text-[var(--color-text)]">
+                  <h4 className="text-xs font-bold text-(--color-text)">
                     Sanctioned Load Threshold Limiter
                   </h4>
-                  <span className="text-[10px] font-mono text-[var(--color-text-muted)]">
+                  <span className="text-[10px] font-mono text-(--color-text-muted)">
                     Trigger at &gt; 3.5 kW (70% of 5.0 kW)
                   </span>
                 </div>
@@ -437,17 +425,17 @@ export function SavingModePage() {
               <button
                 type="button"
                 onClick={() => toggleRule('peakLimiter')}
-                className="text-[var(--color-accent)]"
+                className="text-(--color-accent)"
               >
-                {activeRules.peakLimiter ? <ToggleRight size={26} /> : <ToggleLeft size={26} className="text-[var(--color-text-muted)]" />}
+                {activeRules.peakLimiter ? <ToggleRight size={26} /> : <ToggleLeft size={26} className="text-(--color-text-muted)" />}
               </button>
             </div>
-            <p className="text-xs text-[var(--color-text-secondary)]">
+            <p className="text-xs text-(--color-text-secondary)">
               Automatically sheds discretionary loads (EV charger, geyser) if total active demand approaches sanctioned capacity, avoiding utility peak penalty charges.
             </p>
-            <div className="flex items-center justify-between text-[11px] font-mono pt-1 border-t border-[var(--color-border)]">
-              <span className="text-[var(--color-text-muted)]">Prevents Sanctioned Overload</span>
-              <span className="text-[var(--color-text)] font-bold">Demand Protection</span>
+            <div className="flex items-center justify-between text-[11px] font-mono pt-1 border-t border-(--color-border)">
+              <span className="text-(--color-text-muted)">Prevents Sanctioned Overload</span>
+              <span className="text-(--color-text) font-bold">Demand Protection</span>
             </div>
           </div>
 
@@ -455,12 +443,12 @@ export function SavingModePage() {
       </Surface>
 
       {/* 5. Ranked Appliance Consumption & Savings Potential Table */}
-      <Surface variant="primary" padding="lg" className="border border-[var(--color-border)] space-y-4">
+      <Surface variant="primary" padding="lg" className="border border-(--color-border) space-y-4">
         <div>
-          <h3 className="text-base font-bold text-[var(--color-text)]">
+          <h3 className="text-base font-bold text-(--color-text)">
             Appliance Consumption Breakdown &amp; Critical Circuit Status
           </h3>
-          <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">
+          <p className="text-xs text-(--color-text-secondary) mt-0.5">
             Individual appliance cost is derived from daily operational hours multiplied by active tariff rate. Critical circuits are locked from automated shedding.
           </p>
         </div>
@@ -468,7 +456,7 @@ export function SavingModePage() {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="border-b border-[var(--color-border)] text-[var(--color-text-secondary)] uppercase font-mono text-[10px]">
+              <tr className="border-b border-(--color-border) text-(--color-text-secondary) uppercase font-mono text-[10px]">
                 <th className="py-2.5 px-3">Appliance Circuit</th>
                 <th className="py-2.5 px-3">Priority Class</th>
                 <th className="py-2.5 px-3">Draw</th>
@@ -478,57 +466,57 @@ export function SavingModePage() {
                 <th className="py-2.5 px-3 text-right">Saving Potential</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[var(--color-border)]">
+            <tbody className="divide-y divide-(--color-border)">
               {sortedLoads.map((item) => {
                 const isCritical = item.priority === 'Critical';
                 const isDiscretionary = item.priority === 'Discretionary';
 
                 return (
-                  <tr key={item.id} className="hover:bg-[var(--color-surface-secondary)] transition-colors">
+                  <tr key={item.id} className="hover:bg-(--color-surface-secondary) transition-colors">
                     <td className="py-2.5 px-3">
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold text-[var(--color-text)]">{item.name}</span>
+                        <span className="font-semibold text-(--color-text)">{item.name}</span>
                         {isCritical && (
-                          <span className="inline-flex items-center gap-1 text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-[var(--color-danger-subtle)] text-[var(--color-danger)] border border-[var(--color-danger)]">
+                          <span className="inline-flex items-center gap-1 text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-(--color-danger-subtle) text-(--color-danger) border border-(--color-danger)">
                             <Lock size={9} />
                             Locked
                           </span>
                         )}
                       </div>
-                      <span className="text-[10px] text-[var(--color-text-muted)]">{item.category}</span>
+                      <span className="text-[10px] text-(--color-text-muted)">{item.category}</span>
                     </td>
                     <td className="py-2.5 px-3 font-mono">
                       <span
                         className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
                           isCritical
-                            ? 'bg-[var(--color-danger-subtle)] text-[var(--color-danger)]'
+                            ? 'bg-(--color-danger-subtle) text-(--color-danger)'
                             : isDiscretionary
-                            ? 'bg-[var(--color-surface-secondary)] text-[var(--color-text-secondary)] border border-[var(--color-border)]'
-                            : 'bg-[var(--color-accent-subtle)] text-[var(--color-accent)]'
+                            ? 'bg-(--color-surface-secondary) text-(--color-text-secondary) border border-(--color-border)'
+                            : 'bg-(--color-accent-subtle) text-(--color-accent)'
                         }`}
                       >
                         {item.priority}
                       </span>
                     </td>
-                    <td className="py-2.5 px-3 font-mono text-[var(--color-text)]">
+                    <td className="py-2.5 px-3 font-mono text-(--color-text)">
                       {item.drawKw.toFixed(2)} kW
                     </td>
-                    <td className="py-2.5 px-3 font-mono text-[var(--color-text-secondary)]">
+                    <td className="py-2.5 px-3 font-mono text-(--color-text-secondary)">
                       {item.dailyRunHours}h / day
                     </td>
-                    <td className="py-2.5 px-3 font-mono text-[var(--color-text)]">
+                    <td className="py-2.5 px-3 font-mono text-(--color-text)">
                       {item.monthlyKwh} kWh
                     </td>
-                    <td className="py-2.5 px-3 font-mono font-bold text-[var(--color-text)]">
+                    <td className="py-2.5 px-3 font-mono font-bold text-(--color-text)">
                       {formatINR(item.monthlyCostInr)}
                     </td>
                     <td className="py-2.5 px-3 text-right font-mono">
                       {isCritical ? (
-                        <span className="text-[var(--color-text-muted)] text-[11px]">Exempt (Protected)</span>
+                        <span className="text-(--color-text-muted) text-[11px]">Exempt (Protected)</span>
                       ) : isDiscretionary ? (
-                        <span className="text-[var(--color-success)] font-bold">High (Sheddable)</span>
+                        <span className="text-(--color-success) font-bold">High (Sheddable)</span>
                       ) : (
-                        <span className="text-[var(--color-accent)] font-semibold">Moderate</span>
+                        <span className="text-(--color-accent) font-semibold">Moderate</span>
                       )}
                     </td>
                   </tr>

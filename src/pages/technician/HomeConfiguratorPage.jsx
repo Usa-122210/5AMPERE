@@ -1,22 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import {
-  Sliders,
   CheckCircle2,
-  Clock,
   Wrench,
   Cpu,
   Plus,
   Trash2,
-  MapPin,
   Save,
   Search,
-  Filter,
-  ShieldCheck,
-  AlertTriangle,
-  Info,
-  Check,
-  Zap,
 } from 'lucide-react';
 import { Surface } from '../../components/ui/Surface';
 import { Button } from '../../components/ui/Button';
@@ -122,7 +113,7 @@ export function HomeConfiguratorPage() {
       >
         <div className="flex items-center gap-2">
           {saveSuccess && (
-            <span className="text-xs text-[var(--color-success)] font-bold flex items-center gap-1 animate-in fade-in">
+            <span className="text-xs text-(--color-success) font-bold flex items-center gap-1 animate-in fade-in">
               <CheckCircle2 size={14} />
               <span>Saved!</span>
             </span>
@@ -140,18 +131,18 @@ export function HomeConfiguratorPage() {
       </PageHeader>
 
       {/* Customer Home Selector Bar */}
-      <Surface variant="primary" padding="md" className="border border-[var(--color-border)] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <Surface variant="primary" padding="md" className="border border-(--color-border) flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <span className="text-xs font-bold text-[var(--color-text)]">
+          <span className="text-xs font-bold text-(--color-text)">
             Active Property:
           </span>
           <select
             value={selectedHomeId}
             onChange={(e) => {
               setSelectedHomeId(e.target.value);
-              navigate(`/technician/configure/${e.target.value}`);
+              navigate(`/developer/configure/${e.target.value}`);
             }}
-            className="px-3 py-1.5 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] text-xs font-semibold text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent)]"
+            className="px-3 py-1.5 rounded-xl border border-(--color-border) bg-(--color-surface) text-xs font-semibold text-(--color-text) focus:outline-none focus:border-(--color-accent)"
           >
             {customerHomes.map((h) => (
               <option key={h.id} value={h.id}>
@@ -161,7 +152,7 @@ export function HomeConfiguratorPage() {
           </select>
         </div>
 
-        <div className="flex items-center gap-2 text-xs font-mono text-[var(--color-text-secondary)]">
+        <div className="flex items-center gap-2 text-xs font-mono text-(--color-text-secondary)">
           <span>Meter: <strong>{activeHome?.meterNumber}</strong></span>
           <span>·</span>
           <span>DISCOM: <strong>{activeHome?.discom?.split(' ')[0]}</strong></span>
@@ -173,19 +164,19 @@ export function HomeConfiguratorPage() {
         {/* LEFT COLUMN (7 Cols): Workflow Stage & Installed Hardware */}
         <div className="lg:col-span-7 space-y-5">
           {/* 1. Workflow Stage Selector */}
-          <Surface variant="primary" padding="lg" className="border border-[var(--color-border)] space-y-4">
+          <Surface variant="primary" padding="lg" className="border border-(--color-border) space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-bold text-[var(--color-text)] flex items-center gap-2">
-                  <Wrench size={16} className="text-[var(--color-accent)]" />
+                <h3 className="text-sm font-bold text-(--color-text) flex items-center gap-2">
+                  <Wrench size={16} className="text-(--color-accent)" />
                   <span>Commissioning Workflow Stage</span>
                 </h3>
-                <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">
+                <p className="text-xs text-(--color-text-secondary) mt-0.5">
                   Advance the customer&apos;s installation status across the 5 lifecycle phases:
                 </p>
               </div>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[var(--color-surface-secondary)] border border-[var(--color-border)] text-[var(--color-accent)] font-bold uppercase">
-                {currentStage.replace('_', ' ')}
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-(--color-surface-secondary) border border-(--color-border) text-(--color-accent) font-bold uppercase">
+                {currentStage.replaceAll('_', ' ')}
               </span>
             </div>
 
@@ -200,8 +191,8 @@ export function HomeConfiguratorPage() {
                     onClick={() => setCurrentStage(st.id)}
                     className={`p-2.5 rounded-xl border text-left cursor-pointer transition-all ${
                       isSelected
-                        ? 'bg-[var(--color-accent-subtle)] border-[var(--color-accent)] text-[var(--color-accent)] font-bold shadow-xs'
-                        : 'bg-[var(--color-surface)] border-[var(--color-border)] text-[var(--color-text-secondary)] hover:border-[var(--color-text-muted)]'
+                        ? 'bg-(--color-accent-subtle) border-(--color-accent) text-(--color-accent) font-bold shadow-xs'
+                        : 'bg-(--color-surface) border-(--color-border) text-(--color-text-secondary) hover:border-(--color-text-muted)'
                     }`}
                   >
                     <span className="text-[10px] font-mono block mb-1">Phase 0{i + 1}</span>
@@ -213,7 +204,7 @@ export function HomeConfiguratorPage() {
 
             {/* Technician Field Notes */}
             <div>
-              <label className="block text-xs font-semibold text-[var(--color-text)] mb-1">
+              <label className="block text-xs font-semibold text-(--color-text) mb-1">
                 Technician Field &amp; Calibration Notes
               </label>
               <textarea
@@ -221,30 +212,30 @@ export function HomeConfiguratorPage() {
                 value={technicianNotes}
                 onChange={(e) => setTechnicianNotes(e.target.value)}
                 placeholder="e.g. 100A CT clamps clamped onto incoming Phase lines. 32A DIN contactor wired to AC line."
-                className="w-full px-3 py-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] text-xs text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent)]"
+                className="w-full px-3 py-2 rounded-xl border border-(--color-border) bg-(--color-surface) text-xs text-(--color-text) focus:outline-none focus:border-(--color-accent)"
               />
             </div>
           </Surface>
 
           {/* 2. Attached / Configured Hardware on this Home */}
-          <Surface variant="primary" padding="lg" className="border border-[var(--color-border)] space-y-4">
-            <div className="flex items-center justify-between border-b border-[var(--color-border)] pb-3">
+          <Surface variant="primary" padding="lg" className="border border-(--color-border) space-y-4">
+            <div className="flex items-center justify-between border-b border-(--color-border) pb-3">
               <div>
-                <h3 className="text-sm font-bold text-[var(--color-text)] flex items-center gap-2">
-                  <Cpu size={16} className="text-[var(--color-accent)]" />
+                <h3 className="text-sm font-bold text-(--color-text) flex items-center gap-2">
+                  <Cpu size={16} className="text-(--color-accent)" />
                   <span>Configured Panel Hardware ({(activeHome?.installedDevices || []).length})</span>
                 </h3>
-                <span className="text-xs text-[var(--color-text-secondary)]">
+                <span className="text-xs text-(--color-text-secondary)">
                   Physical modules mounted in {activeHome?.customerName}&apos;s distribution board
                 </span>
               </div>
-              <span className="text-[10px] font-mono text-[var(--color-text-muted)]">
+              <span className="text-[10px] font-mono text-(--color-text-muted)">
                 Live DB Topology
               </span>
             </div>
 
             {(activeHome?.installedDevices || []).length === 0 ? (
-              <div className="p-6 rounded-2xl border border-dashed border-[var(--color-border)] text-center text-xs text-[var(--color-text-muted)] space-y-1">
+              <div className="p-6 rounded-2xl border border-dashed border-(--color-border) text-center text-xs text-(--color-text-muted) space-y-1">
                 <p className="font-semibold">No hardware attached to this property yet.</p>
                 <p>Select components from the catalogue on the right and click &ldquo;Attach to Panel Setup&rdquo;.</p>
               </div>
@@ -256,23 +247,23 @@ export function HomeConfiguratorPage() {
                   return (
                     <div
                       key={dev.serial || dev.id}
-                      className="p-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-secondary)] flex items-center justify-between gap-3 group"
+                      className="p-3 rounded-xl border border-(--color-border) bg-(--color-surface-secondary) flex items-center justify-between gap-3 group"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-accent)] flex items-center justify-center font-bold text-xs shrink-0">
+                        <div className="w-8 h-8 rounded-lg bg-(--color-surface) border border-(--color-border) text-(--color-accent) flex items-center justify-center font-bold text-xs shrink-0">
                           <Cpu size={15} />
                         </div>
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className="text-xs font-bold text-[var(--color-text)]">
+                            <span className="text-xs font-bold text-(--color-text)">
                               {hw ? hw.name : dev.id}
                             </span>
                             <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-green-500/10 text-green-700 dark:text-green-300 font-bold">
                               {dev.status || 'Active'}
                             </span>
                           </div>
-                          <div className="text-[11px] text-[var(--color-text-muted)] font-mono mt-0.5">
-                            Serial: <span className="text-[var(--color-accent)]">{dev.serial}</span> · Line: <span>{dev.circuit || 'Main Panel'}</span>
+                          <div className="text-[11px] text-(--color-text-muted) font-mono mt-0.5">
+                            Serial: <span className="text-(--color-accent)">{dev.serial}</span> · Line: <span>{dev.circuit || 'Main Panel'}</span>
                           </div>
                         </div>
                       </div>
@@ -280,7 +271,7 @@ export function HomeConfiguratorPage() {
                       <button
                         type="button"
                         onClick={() => handleDetachDevice(dev.serial || dev.id)}
-                        className="p-1.5 rounded-lg text-[var(--color-text-muted)] hover:text-red-600 hover:bg-red-500/10 transition-colors cursor-pointer"
+                        className="p-1.5 rounded-lg text-(--color-text-muted) hover:text-red-600 hover:bg-red-500/10 transition-colors cursor-pointer"
                         title="Remove from panel setup"
                       >
                         <Trash2 size={15} />
@@ -295,26 +286,26 @@ export function HomeConfiguratorPage() {
 
         {/* RIGHT COLUMN (5 Cols): Component Selector (Shopping-App Style) */}
         <div className="lg:col-span-5 space-y-4">
-          <Surface variant="primary" padding="md" className="border border-[var(--color-border)] space-y-3.5">
+          <Surface variant="primary" padding="md" className="border border-(--color-border) space-y-3.5">
             <div>
-              <h3 className="text-sm font-bold text-[var(--color-text)] flex items-center gap-2">
-                <Plus size={16} className="text-[var(--color-accent)]" />
+              <h3 className="text-sm font-bold text-(--color-text) flex items-center gap-2">
+                <Plus size={16} className="text-(--color-accent)" />
                 <span>Component Selector &amp; Attachment</span>
               </h3>
-              <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">
+              <p className="text-xs text-(--color-text-secondary) mt-0.5">
                 Browse certified hardware and attach to {activeHome?.customerName}&apos;s breaker setup:
               </p>
             </div>
 
             {/* Target Circuit Selector */}
-            <div className="p-2.5 rounded-xl bg-[var(--color-surface-secondary)] border border-[var(--color-border)] space-y-1">
-              <label className="block text-[11px] font-semibold text-[var(--color-text)]">
+            <div className="p-2.5 rounded-xl bg-(--color-surface-secondary) border border-(--color-border) space-y-1">
+              <label className="block text-[11px] font-semibold text-(--color-text)">
                 Assign Circuit / Appliance:
               </label>
               <select
                 value={circuitAssignment}
                 onChange={(e) => setCircuitAssignment(e.target.value)}
-                className="w-full px-2.5 py-1.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] text-xs text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent)]"
+                className="w-full px-2.5 py-1.5 rounded-lg border border-(--color-border) bg-(--color-surface) text-xs text-(--color-text) focus:outline-none focus:border-(--color-accent)"
               >
                 {activeHome?.rooms && activeHome.rooms.length > 0 && (
                   <optgroup label="Property Rooms &amp; Appliances">
@@ -361,14 +352,14 @@ export function HomeConfiguratorPage() {
             <div className="relative">
               <Search
                 size={14}
-                className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]"
+                className="absolute left-2.5 top-1/2 -translate-y-1/2 text-(--color-text-muted)"
               />
               <input
                 type="text"
                 value={catalogueSearch}
                 onChange={(e) => setCatalogueSearch(e.target.value)}
                 placeholder="Search modules..."
-                className="w-full pl-8 pr-3 py-1.5 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] text-xs text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent)]"
+                className="w-full pl-8 pr-3 py-1.5 rounded-xl border border-(--color-border) bg-(--color-surface) text-xs text-(--color-text) focus:outline-none focus:border-(--color-accent)"
               />
             </div>
 
@@ -378,35 +369,40 @@ export function HomeConfiguratorPage() {
                 const isAlreadyAttached = (activeHome?.installedDevices || []).some(
                   (d) => d.id === hw.id
                 );
+                const isPreselected = preselectedDevice === hw.id;
 
                 return (
                   <div
                     key={hw.id}
-                    className="p-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-accent)] transition-all space-y-2"
+                    className={`p-3 rounded-xl border transition-all space-y-2 ${
+                      isPreselected
+                        ? 'border-(--color-accent) bg-(--color-accent-subtle)'
+                        : 'border-(--color-border) bg-(--color-surface) hover:border-(--color-accent)'
+                    }`}
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <span className="text-[10px] font-mono text-[var(--color-text-muted)] block">
+                        <span className="text-[10px] font-mono text-(--color-text-muted) block">
                           {hw.category}
                         </span>
-                        <h4 className="text-xs font-bold text-[var(--color-text)]">
+                        <h4 className="text-xs font-bold text-(--color-text)">
                           {hw.name}
                         </h4>
-                        <span className="text-[10px] font-mono text-[var(--color-accent)]">
+                        <span className="text-[10px] font-mono text-(--color-accent)">
                           {hw.model}
                         </span>
                       </div>
-                      <span className="text-xs font-mono font-bold text-[var(--color-text)] shrink-0">
+                      <span className="text-xs font-mono font-bold text-(--color-text) shrink-0">
                         ₹{hw.priceINR.toLocaleString('en-IN')}
                       </span>
                     </div>
 
-                    <p className="text-[11px] text-[var(--color-text-secondary)] line-clamp-2">
+                    <p className="text-[11px] text-(--color-text-secondary) line-clamp-2">
                       {hw.description}
                     </p>
 
-                    <div className="pt-2 border-t border-[var(--color-border-subtle)] flex items-center justify-between">
-                      <span className="text-[10px] text-[var(--color-text-muted)]">
+                    <div className="pt-2 border-t border-(--color-border-subtle) flex items-center justify-between">
+                      <span className="text-[10px] text-(--color-text-muted)">
                         Certified DIN Module
                       </span>
 

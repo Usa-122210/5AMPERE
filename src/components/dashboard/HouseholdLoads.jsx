@@ -1,16 +1,11 @@
 import { useState } from 'react';
 import {
-  Airplay,
   BatteryCharging,
-  CheckCircle2,
-  Cpu,
   Flame,
-  HelpCircle,
   Lightbulb,
   Power,
   RotateCcw,
   ShieldAlert,
-  SlidersHorizontal,
   ToggleLeft,
   ToggleRight,
   Tv,
@@ -70,21 +65,21 @@ export function HouseholdLoads() {
   });
 
   return (
-    <Surface variant="primary" padding="lg" className="border border-[var(--color-border)] space-y-6">
+    <Surface variant="primary" padding="lg" className="border border-(--color-border) space-y-6">
       {/* Header and Control Toolbar */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-[var(--color-border)]">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-(--color-border)">
         <div>
           <div className="flex items-center gap-2">
-            <h3 className="text-base sm:text-lg font-bold tracking-tight text-[var(--color-text)]">
+            <h3 className="text-base sm:text-lg font-bold tracking-tight text-(--color-text)">
               Household Loads &amp; Circuit Relays
             </h3>
             <span
-              className="text-[11px] font-mono px-2 py-0.5 rounded border font-semibold bg-[var(--color-surface-secondary)] border-[var(--color-border)] text-[var(--color-accent)]"
+              className="text-[11px] font-mono px-2 py-0.5 rounded border font-semibold bg-(--color-surface-secondary) border-(--color-border) text-(--color-accent)"
             >
               {activeLoadCount} of {loads.length} Circuits Active
             </span>
           </div>
-          <p className="text-xs sm:text-sm mt-0.5 text-[var(--color-text-secondary)]">
+          <p className="text-xs sm:text-sm mt-0.5 text-(--color-text-secondary)">
             Sub-circuit DIN-rail contactors. Toggle switches to simulate hardware load shedding; totals propagate immediately.
           </p>
         </div>
@@ -97,7 +92,7 @@ export function HouseholdLoads() {
             onClick={shedPeakLoads}
             className="text-xs font-medium cursor-pointer"
           >
-            <ShieldAlert size={14} className="text-[var(--color-warning)]" />
+            <ShieldAlert size={14} className="text-(--color-warning)" />
             <span>Shed Heavy Loads</span>
           </Button>
 
@@ -105,7 +100,7 @@ export function HouseholdLoads() {
             variant="ghost"
             size="sm"
             onClick={restoreAllLoads}
-            className="text-xs text-[var(--color-text-secondary)] hover:text-[var(--color-text)] cursor-pointer"
+            className="text-xs text-(--color-text-secondary) hover:text-(--color-text) cursor-pointer"
           >
             <RotateCcw size={14} />
             <span>Restore All</span>
@@ -114,7 +109,7 @@ export function HouseholdLoads() {
       </div>
 
       {/* Filter Pills and Total Active Load Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-xl bg-[var(--color-surface-secondary)] border border-[var(--color-border)]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-xl bg-(--color-surface-secondary) border border-(--color-border)">
         {/* Category Filters */}
         <div className="flex items-center gap-1.5 flex-wrap">
           {[
@@ -128,8 +123,8 @@ export function HouseholdLoads() {
               onClick={() => setFilter(f.id)}
               className={`px-3 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                 filter === f.id
-                  ? 'bg-[var(--color-surface)] text-[var(--color-text)] shadow-xs font-semibold'
-                  : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)]'
+                  ? 'bg-(--color-surface) text-(--color-text) shadow-xs font-semibold'
+                  : 'text-(--color-text-secondary) hover:text-(--color-text)'
               }`}
             >
               {f.label}
@@ -139,11 +134,11 @@ export function HouseholdLoads() {
 
         {/* Active Power Summary */}
         <div className="flex items-center gap-3 text-xs font-mono self-end sm:self-auto">
-          <span className="text-[var(--color-text-muted)]">Active Circuit Power:</span>
-          <span className="text-sm font-extrabold text-[var(--color-accent)]">
+          <span className="text-(--color-text-muted)">Active Circuit Power:</span>
+          <span className="text-sm font-extrabold text-(--color-accent)">
             {totalActiveKw.toFixed(2)} kW
           </span>
-          <span className="text-[var(--color-text-muted)]">
+          <span className="text-(--color-text-muted)">
             ({currentAmps} A @ 230V)
           </span>
         </div>
@@ -160,8 +155,8 @@ export function HouseholdLoads() {
               key={item.id}
               className={`p-4 rounded-xl border transition-all duration-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
                 item.active
-                  ? 'bg-[var(--color-surface)] border-[var(--color-border)] shadow-xs'
-                  : 'bg-[var(--color-surface-secondary)] border-[var(--color-border-subtle)] opacity-60'
+                  ? 'bg-(--color-surface) border-(--color-border) shadow-xs'
+                  : 'bg-(--color-surface-secondary) border-(--color-border-subtle) opacity-60'
               }`}
             >
               {/* Circuit Info & Breaker */}
@@ -178,47 +173,47 @@ export function HouseholdLoads() {
 
                 <div className="space-y-0.5">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <h4 className="text-sm font-bold text-[var(--color-text)]">
+                    <h4 className="text-sm font-bold text-(--color-text)">
                       {item.name}
                     </h4>
                     <span
                       className={`text-[9px] font-mono px-1.5 py-0.2 rounded font-semibold uppercase ${
                         item.priority === 'Critical'
-                          ? 'bg-[var(--color-danger)] text-white'
+                          ? 'bg-(--color-danger) text-white'
                           : item.priority === 'Essential'
-                          ? 'bg-[var(--color-accent-subtle)] text-[var(--color-accent)]'
-                          : 'bg-[var(--color-surface-secondary)] text-[var(--color-text-secondary)] border border-[var(--color-border)]'
+                          ? 'bg-(--color-accent-subtle) text-(--color-accent)'
+                          : 'bg-(--color-surface-secondary) text-(--color-text-secondary) border border-(--color-border)'
                       }`}
                     >
                       {item.priority}
                     </span>
-                    <span className="text-[9px] font-mono px-1 py-0.2 rounded bg-[var(--color-surface-secondary)] text-[var(--color-text-muted)] border border-[var(--color-border)]">
+                    <span className="text-[9px] font-mono px-1 py-0.2 rounded bg-(--color-surface-secondary) text-(--color-text-muted) border border-(--color-border)">
                       {item.room}
                     </span>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-2 text-xs text-[var(--color-text-secondary)]">
-                    <span className="font-mono text-[11px] text-[var(--color-text-muted)]">{item.breaker}</span>
+                  <div className="flex flex-wrap items-center gap-2 text-xs text-(--color-text-secondary)">
+                    <span className="font-mono text-[11px] text-(--color-text-muted)">{item.breaker}</span>
                     <span>·</span>
                     <span>{item.category}</span>
                   </div>
 
                   {/* Automation rule note */}
-                  <p className="text-[11px] text-[var(--color-text-muted)] font-mono flex items-center gap-1 pt-0.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] shrink-0" />
+                  <p className="text-[11px] text-(--color-text-muted) font-mono flex items-center gap-1 pt-0.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-(--color-accent) shrink-0" />
                     <span>Rule: {item.automation}</span>
                   </p>
                 </div>
               </div>
 
               {/* Power Metrics & Interactive Contactor Switch */}
-              <div className="flex items-center justify-between sm:justify-end gap-6 pt-2 sm:pt-0 border-t sm:border-t-0 border-[var(--color-border-subtle)]">
+              <div className="flex items-center justify-between sm:justify-end gap-6 pt-2 sm:pt-0 border-t sm:border-t-0 border-(--color-border-subtle)">
                 {/* Wattage & Amperage */}
                 <div className="text-right font-mono">
                   <p className="text-base font-extrabold" style={{ color: item.active ? 'var(--color-text)' : 'var(--color-text-muted)' }}>
                     {item.active ? `${item.drawKw.toFixed(2)} kW` : '0.00 kW'}
                   </p>
-                  <p className="text-[11px] text-[var(--color-text-muted)]">
+                  <p className="text-[11px] text-(--color-text-muted)">
                     {item.active ? `${currentLoadAmps} A` : 'OFFLINE'}
                   </p>
                 </div>
@@ -229,18 +224,18 @@ export function HouseholdLoads() {
                   onClick={() => toggleLoad(item.id)}
                   className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all duration-150 ${
                     item.active
-                      ? 'bg-[var(--color-accent-subtle)] border-[var(--color-accent)] text-[var(--color-accent)] hover:bg-[var(--color-surface-selected)]'
-                      : 'bg-[var(--color-surface)] border-[var(--color-border)] text-[var(--color-text-muted)] hover:border-[var(--color-text-secondary)]'
+                      ? 'bg-(--color-accent-subtle) border-(--color-accent) text-(--color-accent) hover:bg-(--color-surface-selected)'
+                      : 'bg-(--color-surface) border-(--color-border) text-(--color-text-muted) hover:border-(--color-text-secondary)'
                   }`}
                   aria-label={`Toggle contactor relay for ${item.name}`}
                   title="Simulate contactor relay toggle (illustrative frontend state)"
                 >
-                  <Power size={14} className={item.active ? 'text-[var(--color-accent)]' : 'text-[var(--color-text-muted)]'} />
+                  <Power size={14} className={item.active ? 'text-(--color-accent)' : 'text-(--color-text-muted)'} />
                   <span>{item.active ? 'RELAY ON' : 'RELAY SHED'}</span>
                   {item.active ? (
-                    <ToggleRight size={18} className="text-[var(--color-accent)]" />
+                    <ToggleRight size={18} className="text-(--color-accent)" />
                   ) : (
-                    <ToggleLeft size={18} className="text-[var(--color-text-muted)]" />
+                    <ToggleLeft size={18} className="text-(--color-text-muted)" />
                   )}
                 </button>
               </div>
@@ -250,7 +245,7 @@ export function HouseholdLoads() {
       </div>
 
       {/* Integration readiness footer note */}
-      <div className="p-2.5 rounded-lg border bg-[var(--color-surface-secondary)] border-[var(--color-border)] text-[11px] text-[var(--color-text-muted)] flex items-center justify-between">
+      <div className="p-2.5 rounded-lg border bg-(--color-surface-secondary) border-(--color-border) text-[11px] text-(--color-text-muted) flex items-center justify-between">
         <span>
           <strong>Hardware Integration Notice:</strong> Relay switches currently toggle local illustrative state. Physical circuit switching will be managed via DIN-rail contactor drivers upon hardware onboarding.
         </span>

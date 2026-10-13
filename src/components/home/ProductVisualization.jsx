@@ -1,18 +1,13 @@
 import { useState } from 'react';
 import {
-  Activity,
-  Airplay,
-  BatteryCharging,
   Cpu,
   Flame,
-  Gauge,
   Lightbulb,
   Radio,
   Sliders,
   Sun,
   ToggleLeft,
   ToggleRight,
-  Waves,
   Wind,
   Zap,
 } from 'lucide-react';
@@ -70,25 +65,25 @@ export function ProductVisualization() {
       <div className="space-y-6">
         
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-4 border-b border-[var(--color-border)]">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-4 border-b border-(--color-border)">
           <div>
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-[var(--color-accent)] animate-pulse" />
-              <span className="text-xs font-mono uppercase tracking-widest text-[var(--color-accent)] font-semibold">
+              <span className="w-2.5 h-2.5 rounded-full bg-(--color-accent) animate-pulse" />
+              <span className="text-xs font-mono uppercase tracking-widest text-(--color-accent) font-semibold">
                 Physical Hardware Architecture
               </span>
             </div>
-            <h3 className="text-base sm:text-xl font-bold tracking-tight mt-1 text-[var(--color-text)]">
+            <h3 className="text-base sm:text-xl font-bold tracking-tight mt-1 text-(--color-text)">
               System Topology &amp; Conduit Telemetry
             </h3>
-            <p className="text-xs sm:text-sm mt-1 max-w-2xl text-[var(--color-text-secondary)]">
+            <p className="text-xs sm:text-sm mt-1 max-w-2xl text-(--color-text-secondary)">
               From breaker panel CT clamps to sub-circuit contactor relays—watch
               electrical current streaming through local hardware telemetry into your appliances.
             </p>
           </div>
 
           {/* Profile Switcher Controls */}
-          <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[var(--color-surface-secondary)] border border-[var(--color-border)] self-start md:self-auto">
+          <div className="flex items-center gap-1.5 p-1 rounded-xl bg-(--color-surface-secondary) border border-(--color-border) self-start md:self-auto">
             {[
               { id: 'normal', label: 'Balanced Grid' },
               { id: 'solar', label: 'Solar Priority' },
@@ -105,8 +100,8 @@ export function ProductVisualization() {
                 }}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                   profile === item.id
-                    ? 'bg-[var(--color-accent)] text-[var(--color-accent-text)] shadow-sm'
-                    : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)]'
+                    ? 'bg-(--color-accent) text-(--color-accent-text) shadow-sm'
+                    : 'text-(--color-text-secondary) hover:text-(--color-text)'
                 }`}
               >
                 {item.label}
@@ -116,22 +111,22 @@ export function ProductVisualization() {
         </div>
 
         {/* The Master Visual Topology Surface */}
-        <Surface variant="primary" padding="none" className="relative overflow-hidden border border-[var(--color-border)] p-6 sm:p-8">
+        <Surface variant="primary" padding="none" className="relative overflow-hidden border border-(--color-border) p-6 sm:p-8">
           
           {/* Top Telemetry Status Strip */}
-          <div className="flex flex-wrap items-center justify-between gap-3 pb-6 mb-6 border-b border-[var(--color-border)]">
-            <div className="flex items-center gap-2.5 text-xs text-[var(--color-text-secondary)]">
+          <div className="flex flex-wrap items-center justify-between gap-3 pb-6 mb-6 border-b border-(--color-border)">
+            <div className="flex items-center gap-2.5 text-xs text-(--color-text-secondary)">
               <Radio size={14} style={{ color: 'var(--color-accent)' }} className="animate-pulse" />
               <span>Conduit Telemetry: <strong>230V AC · 50 Hz Single-Phase</strong></span>
-              <span className="hidden sm:inline text-[var(--color-border)]">|</span>
-              <span className="hidden sm:inline">Active Profile: <strong className="uppercase font-mono text-[var(--color-accent)]">{profile}</strong></span>
-              <span className="hidden sm:inline text-[var(--color-border)]">|</span>
+              <span className="hidden sm:inline text-(--color-border)">|</span>
+              <span className="hidden sm:inline">Active Profile: <strong className="uppercase font-mono text-(--color-accent)">{profile}</strong></span>
+              <span className="hidden sm:inline text-(--color-border)">|</span>
               <span className="hidden sm:inline font-mono">DISCOM: <strong>{activeTariff.discom.split(' ')[0]}</strong></span>
             </div>
             
             <div className="flex items-center gap-2">
-              <span className="flex h-2 w-2 rounded-full bg-[var(--color-accent)] animate-ping" />
-              <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-[var(--color-surface-secondary)] text-[var(--color-accent)] border border-[var(--color-border)] font-medium">
+              <span className="flex h-2 w-2 rounded-full bg-(--color-accent) animate-ping" />
+              <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-(--color-surface-secondary) text-(--color-accent) border border-(--color-border) font-medium">
                 Live Dynamic Particles Active
               </span>
             </div>
@@ -143,60 +138,60 @@ export function ProductVisualization() {
             {/* STAGE 1: POWER SUPPLY (Col 1-3) */}
             <div className="lg:col-span-3 space-y-4 flex flex-col justify-between">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-mono font-semibold uppercase text-[var(--color-text-muted)] tracking-wider">
+                <span className="text-[11px] font-mono font-semibold uppercase text-(--color-text-muted) tracking-wider">
                   1. Power Sources
                 </span>
-                <span className="text-[10px] font-mono text-[var(--color-accent)]">Supply</span>
+                <span className="text-[10px] font-mono text-(--color-accent)">Supply</span>
               </div>
 
               {/* Utility Grid Feed Card */}
-              <div className="p-4 rounded-xl border space-y-2 bg-[var(--color-surface-secondary)] border-[var(--color-border)] transition-all">
+              <div className="p-4 rounded-xl border space-y-2 bg-(--color-surface-secondary) border-(--color-border) transition-all">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-[var(--color-accent-subtle)]">
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-(--color-accent-subtle)">
                       <Zap size={16} style={{ color: 'var(--color-accent)' }} />
                     </div>
                     <div>
-                      <p className="text-xs font-bold text-[var(--color-text)]">Utility Grid Feed</p>
-                      <p className="text-[10px] text-[var(--color-text-muted)]">{activeTariff.discom.split(' ')[0]} 230V Feeder</p>
+                      <p className="text-xs font-bold text-(--color-text)">Utility Grid Feed</p>
+                      <p className="text-[10px] text-(--color-text-muted)">{activeTariff.discom.split(' ')[0]} 230V Feeder</p>
                     </div>
                   </div>
-                  <span className="text-xs font-mono font-bold text-[var(--color-accent)]">
+                  <span className="text-xs font-mono font-bold text-(--color-accent)">
                     {displayGridKw} kW
                   </span>
                 </div>
-                <div className="flex items-center justify-between text-[11px] pt-2 border-t border-[var(--color-border)] text-[var(--color-text-secondary)]">
+                <div className="flex items-center justify-between text-[11px] pt-2 border-t border-(--color-border) text-(--color-text-secondary)">
                   <span>Current: <strong>{((parseFloat(displayGridKw) * 1000) / 230).toFixed(1)} A</strong></span>
-                  <span className="font-mono text-[10px] text-[var(--color-text-muted)]">50.0 Hz</span>
+                  <span className="font-mono text-[10px] text-(--color-text-muted)">50.0 Hz</span>
                 </div>
               </div>
 
               {/* Solar Array Inverter Card */}
-              <div className="p-4 rounded-xl border space-y-2 bg-[var(--color-surface-secondary)] border-[var(--color-border)] transition-all">
+              <div className="p-4 rounded-xl border space-y-2 bg-(--color-surface-secondary) border-(--color-border) transition-all">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-[var(--color-accent-subtle)]">
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-(--color-accent-subtle)">
                       <Sun size={16} style={{ color: 'var(--color-accent)' }} />
                     </div>
                     <div>
-                      <p className="text-xs font-bold text-[var(--color-text)]">Rooftop Solar PV</p>
-                      <p className="text-[10px] text-[var(--color-text-muted)]">{solarEnabled ? 'Micro-Inverter Array' : 'Optional / Standby'}</p>
+                      <p className="text-xs font-bold text-(--color-text)">Rooftop Solar PV</p>
+                      <p className="text-[10px] text-(--color-text-muted)">{solarEnabled ? 'Micro-Inverter Array' : 'Optional / Standby'}</p>
                     </div>
                   </div>
-                  <span className="text-xs font-mono font-bold text-[var(--color-accent)]">
+                  <span className="text-xs font-mono font-bold text-(--color-accent)">
                     {displaySolarKw.toFixed(1)} kW
                   </span>
                 </div>
-                <div className="flex items-center justify-between text-[11px] pt-2 border-t border-[var(--color-border)] text-[var(--color-text-secondary)]">
+                <div className="flex items-center justify-between text-[11px] pt-2 border-t border-(--color-border) text-(--color-text-secondary)">
                   <span>Offsetting: <strong>{solarEnabled ? `${selfSufficiency}%` : '0%'}</strong></span>
-                  <span className="font-mono text-[10px] text-[var(--color-accent)]">
+                  <span className="font-mono text-[10px] text-(--color-accent)">
                     {solarEnabled ? 'Generating' : 'Grid-Only Mode'}
                   </span>
                 </div>
               </div>
 
               {/* Mobile flow guide arrow */}
-              <div className="lg:hidden flex items-center justify-center py-2 text-[var(--color-accent)]">
+              <div className="lg:hidden flex items-center justify-center py-2 text-(--color-accent)">
                 <span className="text-xs font-mono">↓ Energy flows to 5AMPERE Core ↓</span>
               </div>
             </div>
@@ -211,10 +206,10 @@ export function ProductVisualization() {
             >
               <div className="space-y-3">
                 <div className="flex items-center justify-between text-left">
-                  <span className="text-[11px] font-mono font-semibold uppercase text-[var(--color-accent)] tracking-wider">
+                  <span className="text-[11px] font-mono font-semibold uppercase text-(--color-accent) tracking-wider">
                     2. 5AMPERE Core
                   </span>
-                  <span className="w-2 h-2 rounded-full bg-[var(--color-success)] animate-pulse" />
+                  <span className="w-2 h-2 rounded-full bg-(--color-success) animate-pulse" />
                 </div>
 
                 <div className="mx-auto w-14 h-14 rounded-2xl flex items-center justify-center border shadow-inner"
@@ -227,55 +222,55 @@ export function ProductVisualization() {
                 </div>
 
                 <div>
-                  <h4 className="text-sm font-bold text-[var(--color-text)]">5AMPERE Edge Hub</h4>
-                  <p className="text-[11px] text-[var(--color-text-secondary)] mt-0.5">DIN 35mm Sub-Panel Mount</p>
+                  <h4 className="text-sm font-bold text-(--color-text)">5AMPERE Edge Hub</h4>
+                  <p className="text-[11px] text-(--color-text-secondary) mt-0.5">DIN 35mm Sub-Panel Mount</p>
                 </div>
 
-                <div className="p-2.5 rounded-xl border text-[11px] font-mono space-y-1 text-left bg-[var(--color-surface-secondary)] border-[var(--color-border)]">
+                <div className="p-2.5 rounded-xl border text-[11px] font-mono space-y-1 text-left bg-(--color-surface-secondary) border-(--color-border)">
                   <div className="flex justify-between">
-                    <span className="text-[var(--color-text-muted)]">Sampling:</span>
-                    <span className="font-semibold text-[var(--color-text)]">1.2 kHz True-RMS</span>
+                    <span className="text-(--color-text-muted)">Sampling:</span>
+                    <span className="font-semibold text-(--color-text)">1.2 kHz True-RMS</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-[var(--color-text-muted)]">Channels:</span>
-                    <span className="font-semibold text-[var(--color-accent)]">6 CT Split-Core</span>
+                    <span className="text-(--color-text-muted)">Channels:</span>
+                    <span className="font-semibold text-(--color-accent)">6 CT Split-Core</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-[var(--color-text-muted)]">Max Bus:</span>
-                    <span className="font-semibold text-[var(--color-text)]">{metadata.mainBreakerAmps}A Continuous</span>
+                    <span className="text-(--color-text-muted)">Max Bus:</span>
+                    <span className="font-semibold text-(--color-text)">{metadata.mainBreakerAmps}A Continuous</span>
                   </div>
                 </div>
               </div>
 
               {/* Mobile flow guide arrow */}
-              <div className="lg:hidden flex items-center justify-center pt-3 text-[var(--color-accent)]">
+              <div className="lg:hidden flex items-center justify-center pt-3 text-(--color-accent)">
                 <span className="text-xs font-mono">↓ Live Telemetry ↓</span>
               </div>
             </div>
 
             {/* STAGE 3: USER TELEMETRY DASHBOARD DISPLAY (Col 7-9) */}
-            <div className="lg:col-span-3 flex flex-col justify-between p-5 rounded-2xl border bg-[var(--color-surface-secondary)] border-[var(--color-border)]">
+            <div className="lg:col-span-3 flex flex-col justify-between p-5 rounded-2xl border bg-(--color-surface-secondary) border-(--color-border)">
               <div>
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-mono font-semibold uppercase text-[var(--color-text-muted)] tracking-wider">
+                  <span className="text-[11px] font-mono font-semibold uppercase text-(--color-text-muted) tracking-wider">
                     3. Live Telemetry
                   </span>
-                  <span className="text-[10px] font-mono text-[var(--color-accent)]">Sub-Second</span>
+                  <span className="text-[10px] font-mono text-(--color-accent)">Sub-Second</span>
                 </div>
 
-                <div className="mt-3 p-3.5 rounded-xl border bg-[var(--color-surface)] border-[var(--color-border)]">
-                  <p className="text-[10px] uppercase font-semibold text-[var(--color-text-muted)]">
+                <div className="mt-3 p-3.5 rounded-xl border bg-(--color-surface) border-(--color-border)">
+                  <p className="text-[10px] uppercase font-semibold text-(--color-text-muted)">
                     Total Active Load
                   </p>
                   <div className="flex items-baseline gap-2 mt-1">
-                    <span className="text-3xl font-mono font-extrabold text-[var(--color-text)]">
+                    <span className="text-3xl font-mono font-extrabold text-(--color-text)">
                       {totalActiveKw.toFixed(2)}
                     </span>
-                    <span className="text-sm font-mono text-[var(--color-accent)] font-semibold">kW</span>
+                    <span className="text-sm font-mono text-(--color-accent) font-semibold">kW</span>
                   </div>
 
                   {/* Dynamic load bar */}
-                  <div className="w-full h-2 rounded-full bg-[var(--color-surface-secondary)] mt-3 overflow-hidden">
+                  <div className="w-full h-2 rounded-full bg-(--color-surface-secondary) mt-3 overflow-hidden">
                     <div
                       className="h-full rounded-full transition-all duration-500"
                       style={{
@@ -284,7 +279,7 @@ export function ProductVisualization() {
                       }}
                     />
                   </div>
-                  <div className="flex justify-between text-[10px] mt-1 text-[var(--color-text-muted)] font-mono">
+                  <div className="flex justify-between text-[10px] mt-1 text-(--color-text-muted) font-mono">
                     <span>0 kW</span>
                     <span>Sanctioned {metadata.contractedLoadKw.toFixed(1)} kW</span>
                   </div>
@@ -292,19 +287,19 @@ export function ProductVisualization() {
               </div>
 
               {/* Status details */}
-              <div className="pt-3 border-t border-[var(--color-border)] space-y-2 text-xs">
-                <div className="flex items-center justify-between text-[var(--color-text-secondary)]">
+              <div className="pt-3 border-t border-(--color-border) space-y-2 text-xs">
+                <div className="flex items-center justify-between text-(--color-text-secondary)">
                   <span>Current Draw:</span>
-                  <span className="font-mono font-semibold text-[var(--color-text)]">{currentAmps} A @ 230V</span>
+                  <span className="font-mono font-semibold text-(--color-text)">{currentAmps} A @ 230V</span>
                 </div>
-                <div className="flex items-center justify-between text-[var(--color-text-secondary)]">
+                <div className="flex items-center justify-between text-(--color-text-secondary)">
                   <span>Load Shedding Relays:</span>
-                  <span className="font-mono text-[var(--color-accent)] font-medium">Armed &amp; Ready</span>
+                  <span className="font-mono text-(--color-accent) font-medium">Armed &amp; Ready</span>
                 </div>
               </div>
 
               {/* Mobile flow guide arrow */}
-              <div className="lg:hidden flex items-center justify-center pt-3 text-[var(--color-accent)]">
+              <div className="lg:hidden flex items-center justify-center pt-3 text-(--color-accent)">
                 <span className="text-xs font-mono">↓ Distribution to Appliances ↓</span>
               </div>
             </div>
@@ -312,10 +307,10 @@ export function ProductVisualization() {
             {/* STAGE 4: CONNECTED APPLIANCES & RELAYS (Col 10-12) */}
             <div className="lg:col-span-3 space-y-2.5 flex flex-col justify-between">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-mono font-semibold uppercase text-[var(--color-text-muted)] tracking-wider">
+                <span className="text-[11px] font-mono font-semibold uppercase text-(--color-text-muted) tracking-wider">
                   4. Monitored Loads
                 </span>
-                <span className="text-[10px] font-mono text-[var(--color-accent)]">Click to Toggle</span>
+                <span className="text-[10px] font-mono text-(--color-accent)">Click to Toggle</span>
               </div>
 
               {/* 4 Representative Monitored Loads */}
@@ -330,8 +325,8 @@ export function ProductVisualization() {
                     onClick={() => toggleLoad(item.id)}
                     className={`w-full p-2.5 rounded-xl border flex items-center justify-between transition-all cursor-pointer text-left ${
                       item.active
-                        ? 'border-[var(--color-accent)] bg-[var(--color-surface)] shadow-xs'
-                        : 'border-[var(--color-border)] opacity-50 bg-[var(--color-surface-secondary)]'
+                        ? 'border-(--color-accent) bg-(--color-surface) shadow-xs'
+                        : 'border-(--color-border) opacity-50 bg-(--color-surface-secondary)'
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
@@ -345,23 +340,23 @@ export function ProductVisualization() {
                         <Icon size={14} style={{ color: item.active ? 'var(--color-accent)' : 'var(--color-text-muted)' }} />
                       </div>
                       <div>
-                        <p className="text-xs font-semibold text-[var(--color-text)]">
+                        <p className="text-xs font-semibold text-(--color-text)">
                           {item.name}
                         </p>
-                        <p className="text-[10px] text-[var(--color-text-muted)]">
+                        <p className="text-[10px] text-(--color-text-muted)">
                           {item.active ? `${itemAmps} A · ${item.drawKw.toFixed(2)} kW` : 'OFFLINE'}
                         </p>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] font-mono font-semibold text-[var(--color-accent)]">
+                      <span className="text-[10px] font-mono font-semibold text-(--color-accent)">
                         {item.active ? 'ON' : 'OFF'}
                       </span>
                       {item.active ? (
-                        <ToggleRight size={18} className="text-[var(--color-accent)]" />
+                        <ToggleRight size={18} className="text-(--color-accent)" />
                       ) : (
-                        <ToggleLeft size={18} className="text-[var(--color-text-muted)]" />
+                        <ToggleLeft size={18} className="text-(--color-text-muted)" />
                       )}
                     </div>
                   </button>
@@ -562,12 +557,12 @@ export function ProductVisualization() {
           </div>
 
           {/* Bottom Interactive Note & Accessibility Status */}
-          <div className="mt-6 pt-4 border-t border-[var(--color-border)] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[var(--color-text-muted)]">
+          <div className="mt-6 pt-4 border-t border-(--color-border) flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-(--color-text-muted)">
             <span className="flex items-center gap-1.5">
               <Sliders size={13} style={{ color: 'var(--color-accent)' }} />
               <span>Interactive Controls: Click any load to toggle its physical circuit relay and stop/resume energy particle flow.</span>
             </span>
-            <span className="font-mono text-[11px] text-[var(--color-accent)] font-semibold">
+            <span className="font-mono text-[11px] text-(--color-accent) font-semibold">
               {prefersReduced ? 'Reduced-motion active (static)' : 'Active 60fps GPU SVG Particle Engine'}
             </span>
           </div>

@@ -1,13 +1,5 @@
 import { useState } from 'react';
-import {
-  CheckCircle2,
-  Cpu,
-  Layers,
-  ShieldCheck,
-  Sparkles,
-  X,
-  Zap,
-} from 'lucide-react';
+import { CheckCircle2, Cpu, X } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { Surface } from '../ui/Surface';
 
@@ -68,7 +60,7 @@ export function SizingModal({ isOpen, onClose }) {
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-5 right-5 p-2 rounded-lg text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-secondary)] transition-colors cursor-pointer"
+          className="absolute top-5 right-5 p-2 rounded-lg text-(--color-text-secondary) hover:text-(--color-text) hover:bg-(--color-surface-secondary) transition-colors cursor-pointer"
           aria-label="Close modal"
         >
           <X size={20} />
@@ -124,7 +116,7 @@ export function SizingModal({ isOpen, onClose }) {
 
             {/* Step 1: Home Type */}
             <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
+              <label className="text-xs font-semibold uppercase tracking-wider text-(--color-text-muted)">
                 1. Property Profile
               </label>
               <div className="grid grid-cols-3 gap-2.5">
@@ -139,8 +131,8 @@ export function SizingModal({ isOpen, onClose }) {
                     onClick={() => setHomeType(item.id)}
                     className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
                       homeType === item.id
-                        ? 'border-[var(--color-accent)] bg-[var(--color-surface-secondary)] ring-1 ring-[var(--color-accent)]'
-                        : 'border-[var(--color-border)] hover:bg-[var(--color-surface-secondary)]'
+                        ? 'border-(--color-accent) bg-(--color-surface-secondary) ring-1 ring-(--color-accent)'
+                        : 'border-(--color-border) hover:bg-(--color-surface-secondary)'
                     }`}
                   >
                     <p className="text-xs font-semibold" style={{ color: 'var(--color-text)' }}>
@@ -156,7 +148,7 @@ export function SizingModal({ isOpen, onClose }) {
 
             {/* Step 2: Main Panel Capacity */}
             <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
+              <label className="text-xs font-semibold uppercase tracking-wider text-(--color-text-muted)">
                 2. Main Service Breaker Rating
               </label>
               <div className="grid grid-cols-3 gap-2.5">
@@ -171,8 +163,8 @@ export function SizingModal({ isOpen, onClose }) {
                     onClick={() => setPanelCapacity(item.id)}
                     className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
                       panelCapacity === item.id
-                        ? 'border-[var(--color-accent)] bg-[var(--color-surface-secondary)] ring-1 ring-[var(--color-accent)]'
-                        : 'border-[var(--color-border)] hover:bg-[var(--color-surface-secondary)]'
+                        ? 'border-(--color-accent) bg-(--color-surface-secondary) ring-1 ring-(--color-accent)'
+                        : 'border-(--color-border) hover:bg-(--color-surface-secondary)'
                     }`}
                   >
                     <p className="text-xs font-semibold" style={{ color: 'var(--color-text)' }}>
@@ -188,7 +180,7 @@ export function SizingModal({ isOpen, onClose }) {
 
             {/* Step 3: High-Draw Circuits */}
             <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
+              <label className="text-xs font-semibold uppercase tracking-wider text-(--color-text-muted)">
                 3. Dedicated High-Draw Circuits
               </label>
               <div className="grid grid-cols-3 gap-2.5">
@@ -197,8 +189,8 @@ export function SizingModal({ isOpen, onClose }) {
                   onClick={() => setHasSolar(!hasSolar)}
                   className={`p-2.5 rounded-xl border flex items-center justify-between transition-all cursor-pointer ${
                     hasSolar
-                      ? 'border-[var(--color-accent)] bg-[var(--color-surface-secondary)]'
-                      : 'border-[var(--color-border)] opacity-60'
+                      ? 'border-(--color-accent) bg-(--color-surface-secondary)'
+                      : 'border-(--color-border) opacity-60'
                   }`}
                 >
                   <span className="text-xs font-medium">Solar PV Inverter</span>
@@ -209,8 +201,8 @@ export function SizingModal({ isOpen, onClose }) {
                   onClick={() => setHasEV(!hasEV)}
                   className={`p-2.5 rounded-xl border flex items-center justify-between transition-all cursor-pointer ${
                     hasEV
-                      ? 'border-[var(--color-accent)] bg-[var(--color-surface-secondary)]'
-                      : 'border-[var(--color-border)] opacity-60'
+                      ? 'border-(--color-accent) bg-(--color-surface-secondary)'
+                      : 'border-(--color-border) opacity-60'
                   }`}
                 >
                   <span className="text-xs font-medium">EV Fast Charger</span>
@@ -221,8 +213,8 @@ export function SizingModal({ isOpen, onClose }) {
                   onClick={() => setHasHVAC(!hasHVAC)}
                   className={`p-2.5 rounded-xl border flex items-center justify-between transition-all cursor-pointer ${
                     hasHVAC
-                      ? 'border-[var(--color-accent)] bg-[var(--color-surface-secondary)]'
-                      : 'border-[var(--color-border)] opacity-60'
+                      ? 'border-(--color-accent) bg-(--color-surface-secondary)'
+                      : 'border-(--color-border) opacity-60'
                   }`}
                 >
                   <span className="text-xs font-medium">HVAC / Heat Pump</span>
@@ -232,15 +224,15 @@ export function SizingModal({ isOpen, onClose }) {
             </div>
 
             {/* Estimated BOM Output */}
-            <Surface variant="secondary" padding="md" className="border border-[var(--color-border)]">
-              <div className="flex items-center justify-between border-b border-[var(--color-border)] pb-2.5 mb-2.5">
+            <Surface variant="secondary" padding="md" className="border border-(--color-border)">
+              <div className="flex items-center justify-between border-b border-(--color-border) pb-2.5 mb-2.5">
                 <div className="flex items-center gap-2">
                   <Cpu size={16} style={{ color: 'var(--color-accent)' }} />
                   <span className="text-xs font-bold uppercase tracking-wider">
                     Recommended Hardware Specification
                   </span>
                 </div>
-                <span className="text-[11px] font-mono text-[var(--color-accent)]">
+                <span className="text-[11px] font-mono text-(--color-accent)">
                   Local Edge Ready
                 </span>
               </div>
@@ -249,19 +241,19 @@ export function SizingModal({ isOpen, onClose }) {
                   <p className="text-base font-mono font-bold" style={{ color: 'var(--color-text)' }}>
                     1x Core Hub
                   </p>
-                  <p className="text-[10px] text-[var(--color-text-muted)]">DIN-Rail Mounted</p>
+                  <p className="text-[10px] text-(--color-text-muted)">DIN-Rail Mounted</p>
                 </div>
                 <div>
                   <p className="text-base font-mono font-bold" style={{ color: 'var(--color-accent)' }}>
                     {circuitCount}x CT Clamps
                   </p>
-                  <p className="text-[10px] text-[var(--color-text-muted)]">5A Resolution Cores</p>
+                  <p className="text-[10px] text-(--color-text-muted)">5A Resolution Cores</p>
                 </div>
                 <div>
                   <p className="text-base font-mono font-bold" style={{ color: 'var(--color-text)' }}>
                     {relayCount}x Relays
                   </p>
-                  <p className="text-[10px] text-[var(--color-text-muted)]">Automated Cutoff</p>
+                  <p className="text-[10px] text-(--color-text-muted)">Automated Cutoff</p>
                 </div>
               </div>
             </Surface>

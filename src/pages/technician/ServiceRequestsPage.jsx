@@ -1,16 +1,6 @@
-import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import {
-  ClipboardList,
-  Clock,
-  CheckCircle2,
   Sliders,
-  Wrench,
-  Cpu,
-  User,
-  MapPin,
-  Calendar,
-  ArrowRight,
 } from 'lucide-react';
 import { Surface } from '../../components/ui/Surface';
 import { Button } from '../../components/ui/Button';
@@ -19,7 +9,7 @@ import { useAuth } from '../../context/AuthContext';
 
 export function ServiceRequestsPage() {
   const navigate = useNavigate();
-  const { customerHomes, marketplaceHardware, updateHomeWorkflowStage } = useAuth();
+  const { customerHomes, marketplaceHardware } = useAuth();
 
   // Aggregate all requested devices across all homes
   const allRequests = [];
@@ -46,7 +36,7 @@ export function ServiceRequestsPage() {
         badgeColor="var(--color-accent)"
         description="Review inbound device installation and maintenance requests submitted by homeowners across your service territory."
       >
-        <Link to="/technician/configure">
+        <Link to="/developer/configure">
           <Button variant="primary" size="sm">
             <Sliders size={14} />
             <span>Open Hardware Configurator</span>
@@ -57,16 +47,16 @@ export function ServiceRequestsPage() {
       {/* Requests Queue */}
       <div className="space-y-3.5">
         <div className="flex items-center justify-between">
-          <span className="text-xs font-bold text-[var(--color-text)]">
+          <span className="text-xs font-bold text-(--color-text)">
             Active Hardware Addition Requests ({allRequests.length})
           </span>
-          <span className="text-[11px] text-[var(--color-text-muted)] font-mono">
+          <span className="text-[11px] text-(--color-text-muted) font-mono">
             Auto-synced from Customer Portal
           </span>
         </div>
 
         {allRequests.length === 0 ? (
-          <div className="p-8 rounded-2xl border border-dashed border-[var(--color-border)] text-center text-xs text-[var(--color-text-muted)]">
+          <div className="p-8 rounded-2xl border border-dashed border-(--color-border) text-center text-xs text-(--color-text-muted)">
             No pending service requests in queue.
           </div>
         ) : (
@@ -78,18 +68,18 @@ export function ServiceRequestsPage() {
                 key={req.requestId}
                 variant="primary"
                 padding="md"
-                className="border border-[var(--color-border)] hover:border-[var(--color-accent)] transition-all space-y-3 shadow-xs"
+                className="border border-(--color-border) hover:border-(--color-accent) transition-all space-y-3 shadow-xs"
               >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[var(--color-border-subtle)] pb-2.5">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-(--color-border-subtle) pb-2.5">
                   <div className="flex items-center gap-2.5">
-                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-[var(--color-surface-secondary)] text-[var(--color-accent)] border border-[var(--color-border)]">
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-(--color-surface-secondary) text-(--color-accent) border border-(--color-border)">
                       {req.requestId}
                     </span>
                     <div>
-                      <h3 className="text-sm font-bold text-[var(--color-text)]">
+                      <h3 className="text-sm font-bold text-(--color-text)">
                         {hw ? hw.name : req.deviceName || req.deviceId}
                       </h3>
-                      <span className="text-xs text-[var(--color-text-secondary)] mt-0.5 block">
+                      <span className="text-xs text-(--color-text-secondary) mt-0.5 block">
                         Customer: <strong>{req.customerName}</strong> ({req.locality})
                       </span>
                     </div>
@@ -97,38 +87,38 @@ export function ServiceRequestsPage() {
 
                   <div className="flex items-center gap-2">
                     <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-700 dark:text-amber-300 font-bold uppercase">
-                      {req.status.replace('_', ' ')}
+                      {req.status.replaceAll('_', ' ')}
                     </span>
-                    <span className="text-xs font-mono font-bold text-[var(--color-accent)]">
+                    <span className="text-xs font-mono font-bold text-(--color-accent)">
                       {req.requestedDate}
                     </span>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-[var(--color-text-secondary)]">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-(--color-text-secondary)">
                   <div>
-                    <strong className="text-[var(--color-text)] block">Preferred Slot:</strong>
+                    <strong className="text-(--color-text) block">Preferred Slot:</strong>
                     <span>{req.preferredSlot}</span>
                   </div>
                   <div>
-                    <strong className="text-[var(--color-text)] block">Contact Phone:</strong>
+                    <strong className="text-(--color-text) block">Contact Phone:</strong>
                     <span>{req.phone}</span>
                   </div>
                   <div>
-                    <strong className="text-[var(--color-text)] block">Hardware Model:</strong>
+                    <strong className="text-(--color-text) block">Hardware Model:</strong>
                     <span className="font-mono">{hw?.model || 'Standard DIN Module'}</span>
                   </div>
                 </div>
 
                 {req.notes && (
-                  <div className="p-2.5 rounded-lg bg-[var(--color-surface-secondary)] border border-[var(--color-border-subtle)] text-xs text-[var(--color-text-secondary)]">
-                    <strong className="text-[var(--color-text)]">Customer Notes: </strong>
+                  <div className="p-2.5 rounded-lg bg-(--color-surface-secondary) border border-(--color-border-subtle) text-xs text-(--color-text-secondary)">
+                    <strong className="text-(--color-text)">Customer Notes: </strong>
                     <span>&ldquo;{req.notes}&rdquo;</span>
                   </div>
                 )}
 
-                <div className="pt-2 border-t border-[var(--color-border-subtle)] flex items-center justify-between">
-                  <span className="text-[11px] text-[var(--color-text-muted)]">
+                <div className="pt-2 border-t border-(--color-border-subtle) flex items-center justify-between">
+                  <span className="text-[11px] text-(--color-text-muted)">
                     Hardware Category: {hw?.category || 'Energy Monitoring'}
                   </span>
 
@@ -136,7 +126,7 @@ export function ServiceRequestsPage() {
                     <Button
                       variant="primary"
                       size="sm"
-                      onClick={() => navigate(`/technician/configure/${req.homeId}?attachDevice=${req.deviceId}`)}
+                      onClick={() => navigate(`/developer/configure/${req.homeId}?attachDevice=${req.deviceId}`)}
                       className="text-xs font-bold"
                     >
                       <Sliders size={13} />

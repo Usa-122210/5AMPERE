@@ -31,7 +31,7 @@ export function SplashScreen({ onComplete }) {
       {visible && (
         <motion.div
           key="splash"
-          className="fixed inset-0 z-[100] flex items-center justify-center"
+          className="fixed inset-0 z-100 flex items-center justify-center"
           style={{ backgroundColor: 'var(--color-bg)' }}
           initial={{ opacity: 1 }}
           exit={prefersReduced

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Activity, Menu, Settings2, Sliders, X, Zap } from 'lucide-react';
+import { Menu, X, Zap } from 'lucide-react';
 import { BrandWordmark } from '../brand/BrandWordmark';
 import { ThemeToggle } from './ThemeToggle';
 import { Button } from '../ui/Button';
@@ -58,7 +58,7 @@ export function Navbar({ theme, onToggleTheme, onOpenSizing }) {
         {/* Brand Left */}
         <Link
           to="/"
-          className="flex items-center gap-2.5 group cursor-pointer focus-visible:outline-none focus-visible:shadow-[var(--focus-ring)] rounded-lg shrink-0"
+          className="flex items-center gap-2.5 group cursor-pointer focus-visible:outline-none focus-visible:shadow-(--focus-ring) rounded-lg shrink-0"
         >
           <BrandWordmark size="sm" showBadge={true} badgeText="Smart Energy" />
         </Link>
@@ -70,7 +70,7 @@ export function Navbar({ theme, onToggleTheme, onOpenSizing }) {
               key={link.label}
               href={link.href}
               onClick={(e) => handleNavClick(e, link.href)}
-              className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-secondary)]"
+              className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer text-(--color-text-secondary) hover:text-(--color-text) hover:bg-(--color-surface-secondary)"
             >
               {link.label}
             </a>
@@ -83,7 +83,7 @@ export function Navbar({ theme, onToggleTheme, onOpenSizing }) {
           <button
             type="button"
             onClick={openTariffModal}
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-mono transition-all hover:border-[var(--color-accent)] cursor-pointer"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-mono transition-all hover:border-(--color-accent) cursor-pointer"
             style={{
               backgroundColor: 'var(--color-surface)',
               borderColor: 'var(--color-border)',
@@ -91,16 +91,16 @@ export function Navbar({ theme, onToggleTheme, onOpenSizing }) {
             }}
             title="Configure Indian State Electricity Tariff and DISCOM Slabs"
           >
-            <Zap size={13} className="text-[var(--color-accent)]" />
+            <Zap size={13} className="text-(--color-accent)" />
             <span className="font-semibold">{activeTariff.discom.split(' ')[0]}</span>
-            <span className="text-[var(--color-text-secondary)]">
+            <span className="text-(--color-text-secondary)">
               (₹{activeTariff.slabs[0]?.ratePerKWh.toFixed(2)}–₹{activeTariff.slabs[activeTariff.slabs.length - 1]?.ratePerKWh.toFixed(2)})
             </span>
             <span
               className={`text-[9px] uppercase font-bold px-1.5 py-0.2 rounded ${
                 activeTariff.verified
-                  ? 'bg-[var(--color-accent-subtle)] text-[var(--color-accent)]'
-                  : 'bg-[var(--color-surface-secondary)] text-[var(--color-text-secondary)]'
+                  ? 'bg-(--color-accent-subtle) text-(--color-accent)'
+                  : 'bg-(--color-surface-secondary) text-(--color-text-secondary)'
               }`}
             >
               {activeTariff.verified ? 'Verified' : 'Demo'}
@@ -116,7 +116,7 @@ export function Navbar({ theme, onToggleTheme, onOpenSizing }) {
               color: 'var(--color-text-secondary)',
             }}
           >
-            <span className="w-2 h-2 rounded-full bg-[var(--color-success)] animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-(--color-success) animate-pulse" />
             <span>230V · 50 Hz</span>
           </div>
 
@@ -134,7 +134,7 @@ export function Navbar({ theme, onToggleTheme, onOpenSizing }) {
           {/* Reference Design System link */}
           <Link
             to="/preview"
-            className="text-[11px] font-mono text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors px-1 py-1"
+            className="text-[11px] font-mono text-(--color-text-muted) hover:text-(--color-text) transition-colors px-1 py-1"
             title="Design System Reference"
           >
             DS
@@ -146,16 +146,16 @@ export function Navbar({ theme, onToggleTheme, onOpenSizing }) {
           <button
             type="button"
             onClick={openTariffModal}
-            className="px-2 py-1 rounded-lg border text-[11px] font-mono flex items-center gap-1 text-[var(--color-text)] border-[var(--color-border)]"
+            className="px-2 py-1 rounded-lg border text-[11px] font-mono flex items-center gap-1 text-(--color-text) border-(--color-border)"
           >
-            <Zap size={12} className="text-[var(--color-accent)]" />
+            <Zap size={12} className="text-(--color-accent)" />
             <span>{activeTariff.discom.split(' ')[0]}</span>
           </button>
           <ThemeToggle theme={theme} onToggle={onToggleTheme} />
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-lg text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-secondary)] transition-colors cursor-pointer"
+            className="p-2 rounded-lg text-(--color-text-secondary) hover:text-(--color-text) hover:bg-(--color-surface-secondary) transition-colors cursor-pointer"
             aria-label="Toggle navigation menu"
           >
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
@@ -179,26 +179,26 @@ export function Navbar({ theme, onToggleTheme, onOpenSizing }) {
               setMobileMenuOpen(false);
               openTariffModal();
             }}
-            className="w-full flex items-center justify-between p-2.5 rounded-xl border text-xs font-mono bg-[var(--color-surface-secondary)] border-[var(--color-border)] text-[var(--color-text)]"
+            className="w-full flex items-center justify-between p-2.5 rounded-xl border text-xs font-mono bg-(--color-surface-secondary) border-(--color-border) text-(--color-text)"
           >
             <div className="flex items-center gap-2">
-              <Zap size={14} className="text-[var(--color-accent)]" />
+              <Zap size={14} className="text-(--color-accent)" />
               <div className="text-left">
                 <span className="block font-bold">{activeTariff.name}</span>
-                <span className="text-[10px] text-[var(--color-text-secondary)]">
+                <span className="text-[10px] text-(--color-text-secondary)">
                   {activeTariff.state} · {activeTariff.verified ? 'Verified Tariff' : 'Editable Template'}
                 </span>
               </div>
             </div>
-            <span className="text-xs text-[var(--color-accent)] font-semibold">Change →</span>
+            <span className="text-xs text-(--color-accent) font-semibold">Change →</span>
           </button>
 
-          <div className="pb-1 border-b border-[var(--color-border-subtle)] flex items-center justify-between text-xs font-mono text-[var(--color-text-secondary)]">
+          <div className="pb-1 border-b border-(--color-border-subtle) flex items-center justify-between text-xs font-mono text-(--color-text-secondary)">
             <span className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[var(--color-success)] animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-(--color-success) animate-pulse" />
               <span>5AMPERE Hardware Telemetry</span>
             </span>
-            <span className="text-[var(--color-text-muted)]">230V AC</span>
+            <span className="text-(--color-text-muted)">230V AC</span>
           </div>
 
           {navLinks.map((link) => (
@@ -206,7 +206,7 @@ export function Navbar({ theme, onToggleTheme, onOpenSizing }) {
               key={link.label}
               href={link.href}
               onClick={(e) => handleNavClick(e, link.href)}
-              className="block px-3 py-2 rounded-lg text-sm font-medium text-[var(--color-text)] hover:bg-[var(--color-surface-secondary)]"
+              className="block px-3 py-2 rounded-lg text-sm font-medium text-(--color-text) hover:bg-(--color-surface-secondary)"
             >
               {link.label}
             </a>
@@ -227,7 +227,7 @@ export function Navbar({ theme, onToggleTheme, onOpenSizing }) {
             <Link
               to="/preview"
               onClick={() => setMobileMenuOpen(false)}
-              className="text-center text-xs font-mono text-[var(--color-text-muted)] py-1"
+              className="text-center text-xs font-mono text-(--color-text-muted) py-1"
             >
               Design System Foundation Preview →
             </Link>

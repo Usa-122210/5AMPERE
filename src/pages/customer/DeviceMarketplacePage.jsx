@@ -2,11 +2,9 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Search,
-  Filter,
   CheckCircle2,
   Clock,
   Wrench,
-  AlertTriangle,
   Info,
   Cpu,
   Activity,
@@ -16,11 +14,7 @@ import {
   Eye,
   Gauge,
   Plus,
-  ArrowRight,
   ShieldCheck,
-  Calendar,
-  Sparkles,
-  Layers,
   Package,
 } from 'lucide-react';
 import { Surface } from '../../components/ui/Surface';
@@ -155,15 +149,15 @@ export function DeviceMarketplacePage() {
       </div>
 
       {/* Main Tab Controls */}
-      <div className="flex items-center justify-between border-b border-[var(--color-border)] pb-1">
+      <div className="flex items-center justify-between border-b border-(--color-border) pb-1">
         <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={() => setActiveTab('catalogue')}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               activeTab === 'catalogue'
-                ? 'bg-[var(--color-accent-subtle)] text-[var(--color-accent)] border border-[var(--color-accent)]'
-                : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)]'
+                ? 'bg-(--color-accent-subtle) text-(--color-accent) border border-(--color-accent)'
+                : 'text-(--color-text-secondary) hover:text-(--color-text)'
             }`}
           >
             Hardware Catalogue ({marketplaceHardware.length})
@@ -174,12 +168,12 @@ export function DeviceMarketplacePage() {
             onClick={() => setActiveTab('my_hardware')}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
               activeTab === 'my_hardware'
-                ? 'bg-[var(--color-accent-subtle)] text-[var(--color-accent)] border border-[var(--color-accent)]'
-                : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)]'
+                ? 'bg-(--color-accent-subtle) text-(--color-accent) border border-(--color-accent)'
+                : 'text-(--color-text-secondary) hover:text-(--color-text)'
             }`}
           >
             <span>My Hardware Status</span>
-            <span className="px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-[var(--color-surface-secondary)] border border-[var(--color-border)]">
+            <span className="px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-(--color-surface-secondary) border border-(--color-border)">
               {installedDevices.length + requestedDevices.length + ownedPendingDevices.length}
             </span>
           </button>
@@ -194,14 +188,14 @@ export function DeviceMarketplacePage() {
             <div className="relative flex-1 max-w-md">
               <Search
                 size={16}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]"
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-(--color-text-muted)"
               />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search by hardware name, model, or specs..."
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] text-xs text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent)]"
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-(--color-border) bg-(--color-surface) text-xs text-(--color-text) focus:outline-none focus:border-(--color-accent)"
               />
             </div>
 
@@ -213,8 +207,8 @@ export function DeviceMarketplacePage() {
                   onClick={() => setSelectedCategory(cat)}
                   className={`px-2.5 py-1.5 rounded-lg text-[11px] font-semibold whitespace-nowrap cursor-pointer transition-all ${
                     selectedCategory === cat
-                      ? 'bg-[var(--color-surface-selected)] text-[var(--color-accent)] font-bold border border-[var(--color-accent)]'
-                      : 'bg-[var(--color-surface)] text-[var(--color-text-secondary)] border border-[var(--color-border)] hover:bg-[var(--color-surface-secondary)]'
+                      ? 'bg-(--color-surface-selected) text-(--color-accent) font-bold border border-(--color-accent)'
+                      : 'bg-(--color-surface) text-(--color-text-secondary) border border-(--color-border) hover:bg-(--color-surface-secondary)'
                   }`}
                 >
                   {cat}
@@ -235,42 +229,42 @@ export function DeviceMarketplacePage() {
                   key={hw.id}
                   variant="primary"
                   padding="md"
-                  className="border border-[var(--color-border)] hover:border-[var(--color-accent)] transition-all flex flex-col justify-between space-y-3 group shadow-xs"
+                  className="border border-(--color-border) hover:border-(--color-accent) transition-all flex flex-col justify-between space-y-3 group shadow-xs"
                 >
                   <div>
                     <div className="flex items-start justify-between gap-2">
-                      <div className="w-10 h-10 rounded-xl bg-[var(--color-accent-subtle)] border border-[var(--color-accent)]/20 text-[var(--color-accent)] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                      <div className="w-10 h-10 rounded-xl bg-(--color-accent-subtle) border border-(--color-accent)/20 text-(--color-accent) flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                         <IconComp size={20} />
                       </div>
                       <div className="text-right">
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[var(--color-surface-secondary)] border border-[var(--color-border)] text-[var(--color-text-muted)] block">
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-(--color-surface-secondary) border border-(--color-border) text-(--color-text-muted) block">
                           {hw.category}
                         </span>
-                        <span className="text-[10px] font-mono text-[var(--color-text-muted)] mt-0.5 block">
+                        <span className="text-[10px] font-mono text-(--color-text-muted) mt-0.5 block">
                           {hw.model}
                         </span>
                       </div>
                     </div>
 
                     <div className="mt-2.5">
-                      <h3 className="text-sm font-bold text-[var(--color-text)] group-hover:text-[var(--color-accent)] transition-colors">
+                      <h3 className="text-sm font-bold text-(--color-text) group-hover:text-(--color-accent) transition-colors">
                         {hw.name}
                       </h3>
-                      <p className="text-xs text-[var(--color-text-secondary)] mt-1 line-clamp-2 leading-relaxed">
+                      <p className="text-xs text-(--color-text-secondary) mt-1 line-clamp-2 leading-relaxed">
                         {hw.description}
                       </p>
                     </div>
 
-                    <div className="mt-3 p-2 rounded-lg bg-[var(--color-surface-secondary)] border border-[var(--color-border-subtle)] text-[11px] text-[var(--color-text-secondary)] flex items-start gap-1.5">
-                      <Info size={13} className="text-[var(--color-accent)] shrink-0 mt-0.5" />
+                    <div className="mt-3 p-2 rounded-lg bg-(--color-surface-secondary) border border-(--color-border-subtle) text-[11px] text-(--color-text-secondary) flex items-start gap-1.5">
+                      <Info size={13} className="text-(--color-accent) shrink-0 mt-0.5" />
                       <span className="line-clamp-2">{hw.compatibility}</span>
                     </div>
                   </div>
 
-                  <div className="pt-2 border-t border-[var(--color-border-subtle)] flex items-center justify-between gap-2">
+                  <div className="pt-2 border-t border-(--color-border-subtle) flex items-center justify-between gap-2">
                     <div>
-                      <span className="text-[10px] text-[var(--color-text-muted)] block">Price (INR)</span>
-                      <span className="text-sm font-mono font-bold text-[var(--color-text)]">
+                      <span className="text-[10px] text-(--color-text-muted) block">Price (INR)</span>
+                      <span className="text-sm font-mono font-bold text-(--color-text)">
                         ₹{hw.priceINR.toLocaleString('en-IN')}
                       </span>
                     </div>
@@ -320,13 +314,13 @@ export function DeviceMarketplacePage() {
         <div className="space-y-6">
           {/* 1. Installed & Commissioned */}
           <div className="space-y-3">
-            <h3 className="text-sm font-bold text-[var(--color-text)] flex items-center gap-2">
-              <CheckCircle2 size={16} className="text-[var(--color-success)]" />
+            <h3 className="text-sm font-bold text-(--color-text) flex items-center gap-2">
+              <CheckCircle2 size={16} className="text-(--color-success)" />
               <span>1. Configured &amp; Active Household Hardware ({installedDevices.length})</span>
             </h3>
 
             {installedDevices.length === 0 ? (
-              <div className="p-6 rounded-2xl border border-dashed border-[var(--color-border)] text-center text-xs text-[var(--color-text-muted)]">
+              <div className="p-6 rounded-2xl border border-dashed border-(--color-border) text-center text-xs text-(--color-text-muted)">
                 No physical devices installed yet. Once a 5AMPERE technician completes your site visit, commissioned hardware will appear here.
               </div>
             ) : (
@@ -338,29 +332,29 @@ export function DeviceMarketplacePage() {
                       key={dev.serial || dev.id}
                       variant="primary"
                       padding="md"
-                      className="border border-[var(--color-border)] space-y-2.5"
+                      className="border border-(--color-border) space-y-2.5"
                     >
                       <div className="flex items-start justify-between">
                         <div>
                           <span className="text-[10px] font-mono uppercase tracking-wider font-bold px-2 py-0.5 rounded bg-green-500/10 text-green-700 dark:text-green-300 border border-green-500/30">
                             {dev.status || 'Active & Online'}
                           </span>
-                          <h4 className="text-sm font-bold text-[var(--color-text)] mt-1.5">
+                          <h4 className="text-sm font-bold text-(--color-text) mt-1.5">
                             {hw ? hw.name : dev.id}
                           </h4>
                         </div>
-                        <span className="text-[11px] font-mono text-[var(--color-accent)] font-semibold">
+                        <span className="text-[11px] font-mono text-(--color-accent) font-semibold">
                           {dev.serial}
                         </span>
                       </div>
 
-                      <div className="text-xs text-[var(--color-text-secondary)] space-y-1">
+                      <div className="text-xs text-(--color-text-secondary) space-y-1">
                         <div>
-                          <span className="text-[var(--color-text-muted)]">Location / Circuit: </span>
-                          <span className="font-semibold text-[var(--color-text)]">{dev.location || 'Main Panel'}</span>
+                          <span className="text-(--color-text-muted)">Location / Circuit: </span>
+                          <span className="font-semibold text-(--color-text)">{dev.location || 'Main Panel'}</span>
                         </div>
                         <div>
-                          <span className="text-[var(--color-text-muted)]">Commissioned: </span>
+                          <span className="text-(--color-text-muted)">Commissioned: </span>
                           <span>{dev.installedDate}</span>
                         </div>
                       </div>
@@ -373,13 +367,13 @@ export function DeviceMarketplacePage() {
 
           {/* 2. Owned by Customer (Pending Configuration) */}
           <div className="space-y-3">
-            <h3 className="text-sm font-bold text-[var(--color-text)] flex items-center gap-2">
+            <h3 className="text-sm font-bold text-(--color-text) flex items-center gap-2">
               <Package size={16} className="text-purple-600 dark:text-purple-400" />
               <span>2. Devices Owned by Customer (Pending On-Site Wiring) ({ownedPendingDevices.length})</span>
             </h3>
 
             {ownedPendingDevices.length === 0 ? (
-              <div className="p-4 rounded-xl border border-dashed border-[var(--color-border)] text-xs text-[var(--color-text-muted)]">
+              <div className="p-4 rounded-xl border border-dashed border-(--color-border) text-xs text-(--color-text-muted)">
                 You do not have any unconfigured customer-owned devices.
               </div>
             ) : (
@@ -392,14 +386,14 @@ export function DeviceMarketplacePage() {
                     className="border border-purple-500/30 bg-purple-500/5 space-y-2"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-[var(--color-text)]">
+                      <span className="text-xs font-bold text-(--color-text)">
                         {dev.name || dev.id}
                       </span>
                       <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-700 dark:text-purple-300 font-bold">
                         Owned - Unwired
                       </span>
                     </div>
-                    <p className="text-[11px] text-[var(--color-text-secondary)]">
+                    <p className="text-[11px] text-(--color-text-secondary)">
                       Customer has procured this sensor. A technician will mount it in your distribution board during the next scheduled visit.
                     </p>
                   </Surface>
@@ -410,13 +404,13 @@ export function DeviceMarketplacePage() {
 
           {/* 3. New Hardware Requests */}
           <div className="space-y-3">
-            <h3 className="text-sm font-bold text-[var(--color-text)] flex items-center gap-2">
+            <h3 className="text-sm font-bold text-(--color-text) flex items-center gap-2">
               <Clock size={16} className="text-amber-500" />
               <span>3. New Hardware Requested (Pending Technician Visit) ({requestedDevices.length})</span>
             </h3>
 
             {requestedDevices.length === 0 ? (
-              <div className="p-6 rounded-2xl border border-dashed border-[var(--color-border)] text-center text-xs text-[var(--color-text-muted)]">
+              <div className="p-6 rounded-2xl border border-dashed border-(--color-border) text-center text-xs text-(--color-text-muted)">
                 No pending requests. Browse the catalogue above to request additional contactor relays or CT sensors.
               </div>
             ) : (
@@ -433,38 +427,38 @@ export function DeviceMarketplacePage() {
                       <div className="flex items-start justify-between">
                         <div>
                           <span className="text-[10px] font-mono uppercase tracking-wider font-bold px-2 py-0.5 rounded bg-amber-500/10 text-amber-800 dark:text-amber-300 border border-amber-500/30">
-                            {req.status.replace('_', ' ').toUpperCase()}
+                            {req.status.replaceAll('_', ' ').toUpperCase()}
                           </span>
-                          <h4 className="text-sm font-bold text-[var(--color-text)] mt-1.5">
+                          <h4 className="text-sm font-bold text-(--color-text) mt-1.5">
                             {hw ? hw.name : req.deviceName || req.deviceId}
                           </h4>
                         </div>
-                        <span className="text-[11px] font-mono text-[var(--color-text-muted)]">
+                        <span className="text-[11px] font-mono text-(--color-text-muted)">
                           {req.requestedDate}
                         </span>
                       </div>
 
-                      <div className="text-xs text-[var(--color-text-secondary)] space-y-1">
+                      <div className="text-xs text-(--color-text-secondary) space-y-1">
                         <div>
-                          <span className="text-[var(--color-text-muted)]">Assignment: </span>
-                          <span className="font-semibold text-[var(--color-text)]">{req.targetAssignment}</span>
+                          <span className="text-(--color-text-muted)">Assignment: </span>
+                          <span className="font-semibold text-(--color-text)">{req.targetAssignment}</span>
                         </div>
                         <div>
-                          <span className="text-[var(--color-text-muted)]">Preferred Slot: </span>
+                          <span className="text-(--color-text-muted)">Preferred Slot: </span>
                           <span>{req.preferredSlot}</span>
                         </div>
                         {req.notes && (
-                          <p className="text-[11px] text-[var(--color-text-muted)] italic">
+                          <p className="text-[11px] text-(--color-text-muted) italic">
                             &ldquo;{req.notes}&rdquo;
                           </p>
                         )}
                       </div>
 
-                      <div className="pt-2 border-t border-[var(--color-border-subtle)] flex items-center justify-between text-xs">
-                        <span className="text-[var(--color-text-muted)]">Technician Assigned: Rajesh Kumar</span>
+                      <div className="pt-2 border-t border-(--color-border-subtle) flex items-center justify-between text-xs">
+                        <span className="text-(--color-text-muted)">Technician Assigned: Rajesh Kumar</span>
                         <Link
                           to="/installation"
-                          className="font-bold text-[var(--color-accent)] hover:underline flex items-center gap-1"
+                          className="font-bold text-(--color-accent) hover:underline flex items-center gap-1"
                         >
                           <span>Track Visit →</span>
                         </Link>
@@ -484,42 +478,42 @@ export function DeviceMarketplacePage() {
           <Surface
             variant="primary"
             padding="lg"
-            className="w-full max-w-lg border border-[var(--color-border)] shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto"
+            className="w-full max-w-lg border border-(--color-border) shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto"
           >
-            <div className="flex items-start justify-between border-b border-[var(--color-border)] pb-3">
+            <div className="flex items-start justify-between border-b border-(--color-border) pb-3">
               <div>
-                <span className="text-[10px] font-mono uppercase tracking-wider font-bold text-[var(--color-accent)]">
+                <span className="text-[10px] font-mono uppercase tracking-wider font-bold text-(--color-accent)">
                   {detailModalHardware.category}
                 </span>
-                <h3 className="text-base font-bold text-[var(--color-text)] mt-1">
+                <h3 className="text-base font-bold text-(--color-text) mt-1">
                   {detailModalHardware.name}
                 </h3>
-                <span className="text-xs font-mono text-[var(--color-text-muted)]">
+                <span className="text-xs font-mono text-(--color-text-muted)">
                   Model: {detailModalHardware.model}
                 </span>
               </div>
               <button
                 type="button"
                 onClick={() => setDetailModalHardware(null)}
-                className="text-lg font-bold text-[var(--color-text-muted)] hover:text-[var(--color-text)] cursor-pointer"
+                className="text-lg font-bold text-(--color-text-muted) hover:text-(--color-text) cursor-pointer"
               >
                 ✕
               </button>
             </div>
 
-            <p className="text-xs text-[var(--color-text-secondary)] leading-relaxed">
+            <p className="text-xs text-(--color-text-secondary) leading-relaxed">
               {detailModalHardware.description}
             </p>
 
             <div>
-              <h4 className="text-xs font-bold text-[var(--color-text)] mb-2 uppercase tracking-wider font-mono">
+              <h4 className="text-xs font-bold text-(--color-text) mb-2 uppercase tracking-wider font-mono">
                 Technical Specifications:
               </h4>
-              <div className="p-3 rounded-xl bg-[var(--color-surface-secondary)] border border-[var(--color-border)] space-y-1.5 text-xs">
+              <div className="p-3 rounded-xl bg-(--color-surface-secondary) border border-(--color-border) space-y-1.5 text-xs">
                 {Object.entries(detailModalHardware.specs || {}).map(([key, value]) => (
                   <div key={key} className="flex justify-between">
-                    <span className="text-[var(--color-text-muted)] capitalize">{key}:</span>
-                    <span className="font-mono font-semibold text-[var(--color-text)] text-right">{value}</span>
+                    <span className="text-(--color-text-muted) capitalize">{key}:</span>
+                    <span className="font-mono font-semibold text-(--color-text) text-right">{value}</span>
                   </div>
                 ))}
               </div>
@@ -532,8 +526,8 @@ export function DeviceMarketplacePage() {
 
             <div className="pt-2 flex items-center justify-between">
               <div>
-                <span className="text-[10px] text-[var(--color-text-muted)] block">Price (INR)</span>
-                <span className="text-base font-bold font-mono text-[var(--color-text)]">
+                <span className="text-[10px] text-(--color-text-muted) block">Price (INR)</span>
+                <span className="text-base font-bold font-mono text-(--color-text)">
                   ₹{detailModalHardware.priceINR.toLocaleString('en-IN')}
                 </span>
               </div>
@@ -564,21 +558,21 @@ export function DeviceMarketplacePage() {
       {/* MODAL 2: REQUEST HARDWARE & SELECT ASSIGNMENT */}
       {isRequestModalOpen && targetHardware && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
-          <Surface variant="primary" padding="lg" className="w-full max-w-md border border-[var(--color-border)] shadow-2xl space-y-4">
-            <div className="flex items-start justify-between border-b border-[var(--color-border)] pb-3">
+          <Surface variant="primary" padding="lg" className="w-full max-w-md border border-(--color-border) shadow-2xl space-y-4">
+            <div className="flex items-start justify-between border-b border-(--color-border) pb-3">
               <div>
-                <h3 className="text-sm font-bold text-[var(--color-text)] flex items-center gap-2">
-                  <Wrench size={16} className="text-[var(--color-accent)]" />
+                <h3 className="text-sm font-bold text-(--color-text) flex items-center gap-2">
+                  <Wrench size={16} className="text-(--color-accent)" />
                   <span>Request Hardware Installation</span>
                 </h3>
-                <span className="text-xs text-[var(--color-text-secondary)] mt-0.5 block">
+                <span className="text-xs text-(--color-text-secondary) mt-0.5 block">
                   {targetHardware.name} ({targetHardware.model})
                 </span>
               </div>
               <button
                 type="button"
                 onClick={() => setIsRequestModalOpen(false)}
-                className="text-base font-bold text-[var(--color-text-muted)] cursor-pointer"
+                className="text-base font-bold text-(--color-text-muted) cursor-pointer"
               >
                 ✕
               </button>
@@ -589,8 +583,8 @@ export function DeviceMarketplacePage() {
                 <div className="w-12 h-12 rounded-full bg-green-500/10 text-green-600 dark:text-green-400 flex items-center justify-center mx-auto">
                   <CheckCircle2 size={28} />
                 </div>
-                <h4 className="text-sm font-bold text-[var(--color-text)]">Installation Request Submitted!</h4>
-                <p className="text-xs text-[var(--color-text-secondary)] max-w-xs mx-auto">
+                <h4 className="text-sm font-bold text-(--color-text)">Installation Request Submitted!</h4>
+                <p className="text-xs text-(--color-text-secondary) max-w-xs mx-auto">
                   Your request has been routed to lead technician Rajesh Kumar. Scheduled slot: {preferredSlot}.
                 </p>
               </div>
@@ -598,7 +592,7 @@ export function DeviceMarketplacePage() {
               <form onSubmit={handleConfirmRequest} className="space-y-3.5">
                 {/* Ownership Type */}
                 <div>
-                  <label className="block text-xs font-semibold text-[var(--color-text)] mb-1">
+                  <label className="block text-xs font-semibold text-(--color-text) mb-1">
                     Device Ownership
                   </label>
                   <div className="grid grid-cols-2 gap-2 text-xs">
@@ -607,8 +601,8 @@ export function DeviceMarketplacePage() {
                       onClick={() => setDeviceOwnership('new_request')}
                       className={`p-2 rounded-lg border text-left cursor-pointer transition-all ${
                         deviceOwnership === 'new_request'
-                          ? 'bg-[var(--color-accent-subtle)] border-[var(--color-accent)] text-[var(--color-accent)] font-bold'
-                          : 'bg-[var(--color-surface)] border-[var(--color-border)] text-[var(--color-text-secondary)]'
+                          ? 'bg-(--color-accent-subtle) border-(--color-accent) text-(--color-accent) font-bold'
+                          : 'bg-(--color-surface) border-(--color-border) text-(--color-text-secondary)'
                       }`}
                     >
                       <span>New 5AMPERE Order</span>
@@ -620,8 +614,8 @@ export function DeviceMarketplacePage() {
                       onClick={() => setDeviceOwnership('owned_unconfigured')}
                       className={`p-2 rounded-lg border text-left cursor-pointer transition-all ${
                         deviceOwnership === 'owned_unconfigured'
-                          ? 'bg-[var(--color-accent-subtle)] border-[var(--color-accent)] text-[var(--color-accent)] font-bold'
-                          : 'bg-[var(--color-surface)] border-[var(--color-border)] text-[var(--color-text-secondary)]'
+                          ? 'bg-(--color-accent-subtle) border-(--color-accent) text-(--color-accent) font-bold'
+                          : 'bg-(--color-surface) border-(--color-border) text-(--color-text-secondary)'
                       }`}
                     >
                       <span>Customer-Owned</span>
@@ -632,13 +626,13 @@ export function DeviceMarketplacePage() {
 
                 {/* Assignment Target */}
                 <div>
-                  <label className="block text-xs font-semibold text-[var(--color-text)] mb-1">
+                  <label className="block text-xs font-semibold text-(--color-text) mb-1">
                     Assign to Room / Circuit / Panel
                   </label>
                   <select
                     value={targetAssignment}
                     onChange={(e) => setTargetAssignment(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] text-xs text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent)]"
+                    className="w-full px-3 py-2 rounded-xl border border-(--color-border) bg-(--color-surface) text-xs text-(--color-text) focus:outline-none focus:border-(--color-accent)"
                   >
                     <option value="Main Incomer (Busbar)">Main Incomer (Busbar)</option>
                     {rooms.map((r) => (
@@ -653,13 +647,13 @@ export function DeviceMarketplacePage() {
 
                 {/* Preferred Slot */}
                 <div>
-                  <label className="block text-xs font-semibold text-[var(--color-text)] mb-1">
+                  <label className="block text-xs font-semibold text-(--color-text) mb-1">
                     Preferred Technician Visit Slot
                   </label>
                   <select
                     value={preferredSlot}
                     onChange={(e) => setPreferredSlot(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] text-xs text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent)]"
+                    className="w-full px-3 py-2 rounded-xl border border-(--color-border) bg-(--color-surface) text-xs text-(--color-text) focus:outline-none focus:border-(--color-accent)"
                   >
                     <option value="Tomorrow Morning (10:00 AM – 01:00 PM)">Tomorrow Morning (10:00 AM – 01:00 PM)</option>
                     <option value="Tomorrow Afternoon (02:00 PM – 05:00 PM)">Tomorrow Afternoon (02:00 PM – 05:00 PM)</option>
@@ -670,7 +664,7 @@ export function DeviceMarketplacePage() {
 
                 {/* Notes */}
                 <div>
-                  <label className="block text-xs font-semibold text-[var(--color-text)] mb-1">
+                  <label className="block text-xs font-semibold text-(--color-text) mb-1">
                     Installation Notes for Technician
                   </label>
                   <textarea
@@ -678,7 +672,7 @@ export function DeviceMarketplacePage() {
                     value={requestNotes}
                     onChange={(e) => setRequestNotes(e.target.value)}
                     placeholder="e.g. Please wire contactor on AC circuit breaker in the master distribution board."
-                    className="w-full px-3 py-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] text-xs text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent)]"
+                    className="w-full px-3 py-2 rounded-xl border border-(--color-border) bg-(--color-surface) text-xs text-(--color-text) focus:outline-none focus:border-(--color-accent)"
                   />
                 </div>
 

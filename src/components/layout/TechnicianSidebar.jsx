@@ -13,13 +13,20 @@ export function TechnicianSidebar({ isOpen, onClose }) {
   const { currentUser } = useAuth();
 
   const navigation = [
-    { to: '/technician', label: 'Operations Overview', icon: LayoutDashboard, exact: true },
-    { to: '/technician/customers', label: 'Customers & Properties', icon: Users },
-    { to: '/technician/appointments', label: 'Field Appointments', icon: Calendar },
-    { to: '/technician/service-requests', label: 'Service Requests', icon: ClipboardList },
-    { to: '/technician/catalogue', label: 'Hardware Catalogue', icon: Cpu },
-    { to: '/technician/configure', label: 'Panel Configurator', icon: Sliders },
+    { to: '/developer', label: 'Developer Dashboard', icon: LayoutDashboard, exact: true },
+    { to: '/developer/customers', label: 'Projects & Properties', icon: Users },
+    { to: '/developer/appointments', label: 'Installation Schedule', icon: Calendar },
+    { to: '/developer/service-requests', label: 'Installation Requests', icon: ClipboardList },
+    { to: '/developer/catalogue', label: 'Device & Product Catalogue', icon: Cpu },
+    { to: '/developer/configure', label: 'Panel & System Configurator', icon: Sliders },
   ];
+
+  const initials = (currentUser?.name || 'Developer')
+    .split(' ')
+    .map((part) => part[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
 
   return (
     <>
@@ -43,10 +50,10 @@ export function TechnicianSidebar({ isOpen, onClose }) {
         }}
       >
         <div className="p-3 space-y-1 overflow-y-auto flex-1">
-          <div className="px-3 py-1.5 text-[10px] font-mono uppercase font-bold tracking-wider text-[var(--color-text-muted)] flex items-center justify-between">
-            <span>Staff Operations</span>
+          <div className="px-3 py-1.5 text-[10px] font-mono uppercase font-bold tracking-wider text-(--color-text-muted) flex items-center justify-between">
+            <span>Developer Workspace</span>
             <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/30">
-              Staff Only
+              Developer
             </span>
           </div>
 
@@ -63,8 +70,8 @@ export function TechnicianSidebar({ isOpen, onClose }) {
                 className={({ isActive }) =>
                   `flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                     isActive
-                      ? 'bg-[var(--color-surface-selected)] text-[var(--color-accent)] font-bold shadow-xs'
-                      : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-secondary)]'
+                      ? 'bg-(--color-surface-selected) text-(--color-accent) font-bold shadow-xs'
+                      : 'text-(--color-text-secondary) hover:text-(--color-text) hover:bg-(--color-surface-secondary)'
                   }`
                 }
               >
@@ -75,19 +82,19 @@ export function TechnicianSidebar({ isOpen, onClose }) {
           })}
         </div>
 
-        {/* Sidebar Footer with Technician Info */}
-        <div className="p-3 border-t border-[var(--color-border)] space-y-2.5">
-          <div className="p-2.5 rounded-xl border bg-[var(--color-surface-secondary)] border-[var(--color-border)]">
+        {/* Sidebar Footer with Developer Info */}
+        <div className="p-3 border-t border-(--color-border) space-y-2.5">
+          <div className="p-2.5 rounded-xl border bg-(--color-surface-secondary) border-(--color-border)">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-[var(--color-accent)] text-white flex items-center justify-center font-bold text-xs shrink-0">
-                RK
+              <div className="w-8 h-8 rounded-lg bg-(--color-accent) text-white flex items-center justify-center font-bold text-xs shrink-0">
+                {initials}
               </div>
               <div className="truncate">
-                <span className="text-[11px] font-bold block text-[var(--color-text)] truncate">
-                  {currentUser?.name || 'Rajesh Kumar'}
+                <span className="text-[11px] font-bold block text-(--color-text) truncate">
+                  {currentUser?.name || 'Developer'}
                 </span>
-                <span className="text-[9px] font-mono text-[var(--color-text-muted)] block truncate">
-                  5AMP-TECH-042 · Senior Tech
+                <span className="text-[9px] font-mono text-(--color-text-muted) block truncate">
+                  {currentUser?.staffId || '5AMP-DEV-001'} · {currentUser?.specialization || 'Systems Developer'}
                 </span>
               </div>
             </div>

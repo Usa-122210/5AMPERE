@@ -19,15 +19,15 @@ export function IconButton({
 
   const variantStyles = {
     ghost: [
-      'bg-transparent text-[var(--color-text-secondary)]',
-      'hover:bg-[var(--color-surface-secondary)] hover:text-[var(--color-text)]',
-      'active:bg-[var(--color-surface-selected)]',
+      'bg-transparent text-(--color-text-secondary)',
+      'hover:bg-(--color-surface-secondary) hover:text-(--color-text)',
+      'active:bg-(--color-surface-selected)',
     ].join(' '),
 
     secondary: [
-      'border border-[var(--color-border)]',
-      'bg-[var(--color-surface)] text-[var(--color-text)]',
-      'hover:bg-[var(--color-surface-secondary)]',
+      'border border-(--color-border)',
+      'bg-(--color-surface) text-(--color-text)',
+      'hover:bg-(--color-surface-secondary)',
     ].join(' '),
   };
 
@@ -38,7 +38,7 @@ export function IconButton({
       className={[
         'inline-flex items-center justify-center',
         'transition-colors duration-200',
-        'focus-visible:outline-none focus-visible:shadow-[var(--focus-ring)]',
+        'focus-visible:outline-none focus-visible:shadow-(--focus-ring)',
         'disabled:opacity-50 disabled:pointer-events-none',
         'cursor-pointer select-none',
         sizeStyles[size] || sizeStyles.md,

@@ -3,17 +3,14 @@ import {
   Activity,
   Airplay,
   BatteryCharging,
-  CheckCircle2,
   Cpu,
   Flame,
-  Gauge,
   Lightbulb,
   Power,
   Sun,
   Zap,
 } from 'lucide-react';
 import { Surface } from '../ui/Surface';
-import { Button } from '../ui/Button';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 /**
@@ -62,17 +59,17 @@ export function EnergyFlowVisualizer() {
     .toFixed(1);
 
   return (
-    <Surface variant="primary" padding="lg" className="relative overflow-hidden border border-[var(--color-border)]">
+    <Surface variant="primary" padding="lg" className="relative overflow-hidden border border-(--color-border)">
       {/* Header bar with mode controls */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-[var(--color-border)]">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-(--color-border)">
         <div>
           <div className="flex items-center gap-2">
-            <span className="flex h-2.5 w-2.5 rounded-full bg-[var(--color-accent)] animate-pulse" />
+            <span className="flex h-2.5 w-2.5 rounded-full bg-(--color-accent) animate-pulse" />
             <h3 className="text-base sm:text-lg font-semibold tracking-tight" style={{ color: 'var(--color-text)' }}>
               Live Energy Flow Topology
             </h3>
             <span
-              className="text-[11px] font-mono px-2 py-0.5 rounded-full border border-[var(--color-border)]"
+              className="text-[11px] font-mono px-2 py-0.5 rounded-full border border-(--color-border)"
               style={{ color: 'var(--color-accent)', backgroundColor: 'var(--color-accent-subtle)' }}
             >
               5.0A RATED PLATFORM
@@ -84,7 +81,7 @@ export function EnergyFlowVisualizer() {
         </div>
 
         {/* Mode selector pills */}
-        <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[var(--color-surface-secondary)] border border-[var(--color-border)] self-start md:self-auto">
+        <div className="flex items-center gap-1.5 p-1 rounded-xl bg-(--color-surface-secondary) border border-(--color-border) self-start md:self-auto">
           {[
             { id: 'balanced', label: 'Balanced' },
             { id: 'peak', label: 'Peak Surge' },
@@ -96,8 +93,8 @@ export function EnergyFlowVisualizer() {
               onClick={() => setFlowMode(mode.id)}
               className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200 cursor-pointer ${
                 flowMode === mode.id
-                  ? 'bg-[var(--color-accent)] text-[var(--color-accent-text)] shadow-sm'
-                  : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)]'
+                  ? 'bg-(--color-accent) text-(--color-accent-text) shadow-sm'
+                  : 'text-(--color-text-secondary) hover:text-(--color-text)'
               }`}
             >
               {mode.label}
@@ -112,7 +109,7 @@ export function EnergyFlowVisualizer() {
           
           {/* COLUMN 1: Generation Sources */}
           <div className="space-y-4">
-            <span className="text-[11px] font-semibold tracking-wider uppercase text-[var(--color-text-muted)]">
+            <span className="text-[11px] font-semibold tracking-wider uppercase text-(--color-text-muted)">
               Power Generation
             </span>
 
@@ -197,7 +194,7 @@ export function EnergyFlowVisualizer() {
               {/* Concentric pulsing energy beacon */}
               {!prefersReduced && (
                 <div
-                  className="absolute inset-0 rounded-2xl border border-[var(--color-accent)] animate-ping opacity-25"
+                  className="absolute inset-0 rounded-2xl border border-(--color-accent) animate-ping opacity-25"
                   style={{ animationDuration: '2.5s' }}
                 />
               )}
@@ -211,16 +208,16 @@ export function EnergyFlowVisualizer() {
             </p>
 
             {/* Live Telemetry Pill */}
-            <div className="mt-4 pt-3 border-t border-[var(--color-border)] w-full flex items-center justify-around text-center">
+            <div className="mt-4 pt-3 border-t border-(--color-border) w-full flex items-center justify-around text-center">
               <div>
-                <p className="text-[10px] uppercase font-semibold text-[var(--color-text-muted)]">Active Load</p>
+                <p className="text-[10px] uppercase font-semibold text-(--color-text-muted)">Active Load</p>
                 <p className="text-sm font-mono font-bold" style={{ color: 'var(--color-accent)' }}>
                   {totalKw} kW
                 </p>
               </div>
-              <div className="h-6 w-px bg-[var(--color-border)]" />
+              <div className="h-6 w-px bg-(--color-border)" />
               <div>
-                <p className="text-[10px] uppercase font-semibold text-[var(--color-text-muted)]">Circuits</p>
+                <p className="text-[10px] uppercase font-semibold text-(--color-text-muted)">Circuits</p>
                 <p className="text-sm font-mono font-bold" style={{ color: 'var(--color-text)' }}>
                   {activeCount} / 4 On
                 </p>
@@ -230,7 +227,7 @@ export function EnergyFlowVisualizer() {
 
           {/* COLUMN 3: Connected Appliances with Interactive Toggles */}
           <div className="space-y-2.5">
-            <span className="text-[11px] font-semibold tracking-wider uppercase text-[var(--color-text-muted)]">
+            <span className="text-[11px] font-semibold tracking-wider uppercase text-(--color-text-muted)">
               Monitored Appliances (Click to Toggle)
             </span>
 
@@ -243,8 +240,8 @@ export function EnergyFlowVisualizer() {
                   onClick={() => toggleAppliance(key)}
                   className={`w-full p-2.5 rounded-xl border flex items-center justify-between transition-all cursor-pointer text-left ${
                     item.active
-                      ? 'border-[var(--color-accent)] bg-[var(--color-surface-secondary)]'
-                      : 'border-[var(--color-border)] opacity-50 bg-transparent'
+                      ? 'border-(--color-accent) bg-(--color-surface-secondary)'
+                      : 'border-(--color-border) opacity-50 bg-transparent'
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
@@ -273,8 +270,8 @@ export function EnergyFlowVisualizer() {
                     <div
                       className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${
                         item.active
-                          ? 'bg-[var(--color-accent)] text-[var(--color-accent-text)]'
-                          : 'bg-[var(--color-border)] text-transparent'
+                          ? 'bg-(--color-accent) text-(--color-accent-text)'
+                          : 'bg-(--color-border) text-transparent'
                       }`}
                     >
                       ✓
@@ -466,12 +463,12 @@ export function EnergyFlowVisualizer() {
       </div>
 
       {/* Footer metadata */}
-      <div className="pt-4 border-t border-[var(--color-border)] flex flex-wrap items-center justify-between text-xs text-[var(--color-text-secondary)] gap-2">
+      <div className="pt-4 border-t border-(--color-border) flex flex-wrap items-center justify-between text-xs text-(--color-text-secondary) gap-2">
         <div className="flex items-center gap-2">
           <Activity size={14} style={{ color: 'var(--color-accent)' }} />
           <span>Real-time particle telemetry rate: <strong>{flowMode.toUpperCase()}</strong></span>
         </div>
-        <p className="text-[11px] text-[var(--color-text-muted)]">
+        <p className="text-[11px] text-(--color-text-muted)">
           {prefersReduced ? 'Reduced-motion active (static flow vectors)' : 'Smooth GPU-accelerated SVG flow'}
         </p>
       </div>

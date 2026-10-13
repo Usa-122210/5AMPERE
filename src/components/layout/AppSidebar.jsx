@@ -6,6 +6,7 @@ import {
   ChevronDown,
   Cpu,
   Home,
+  LayoutDashboard,
   Leaf,
   Lightbulb,
   MoreHorizontal,
@@ -19,6 +20,8 @@ import {
   Building,
   School,
   Factory,
+  ShieldCheck,
+  Code2,
 } from 'lucide-react';
 import { useEnergyData } from '../../context/EnergyDataContext';
 import { useAuth } from '../../context/AuthContext';
@@ -26,7 +29,7 @@ import { useAuth } from '../../context/AuthContext';
 export function AppSidebar({ isOpen, onClose }) {
   const location = useLocation();
   const { isSavingModeActive, toggleSavingMode, unreadAlertCount } = useEnergyData();
-  const { activeCustomerProperty } = useAuth();
+  const { activeCustomerProperty, currentUser } = useAuth();
 
   // Determine if current route is part of "More"
   const moreRoutePaths = ['/more', '/appliances', '/analytics', '/recommendations', '/preview'];
@@ -38,9 +41,16 @@ export function AppSidebar({ isOpen, onClose }) {
 
   const pendingRequestsCount = activeCustomerProperty?.requestedDevices?.length || 0;
 
-  // Primary Navigation Sections (Standardized for Customer Experience)
+  // Primary Navigation Sections (Standardized for Public & User Experience)
   const primaryNavigation = [
-    { to: '/', label: 'Overview', icon: Home, exact: true },
+    { to: '/', label: 'Public Homepage', icon: Home, exact: true },
+    { to: '/dashboard', label: 'User Dashboard', icon: LayoutDashboard },
+    ...(currentUser?.role === 'developer' || currentUser?.role === 'technician'
+      ? [{ to: '/developer', label: 'Developer Portal', icon: Code2 }]
+      : []),
+    ...(currentUser?.role === 'admin'
+      ? [{ to: '/admin', label: 'Admin Portal', icon: ShieldCheck }]
+      : []),
     { to: '/monitoring', label: 'Energy Monitoring', icon: Activity },
     { to: '/rooms-appliances', label: 'Rooms & Appliances', icon: Layers },
     { to: '/devices', label: 'Devices & Hardware', icon: Package },
@@ -116,7 +126,7 @@ export function AppSidebar({ isOpen, onClose }) {
       >
         {/* Navigation Links List */}
         <div className="p-3 space-y-1 overflow-y-auto flex-1">
-          <div className="px-3 py-1.5 text-[10px] font-mono uppercase font-bold tracking-wider text-[var(--color-text-muted)]">
+          <div className="px-3 py-1.5 text-[10px] font-mono uppercase font-bold tracking-wider text-(--color-text-muted)">
             Workspace
           </div>
 
@@ -141,8 +151,8 @@ export function AppSidebar({ isOpen, onClose }) {
                   }}
                   className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
                     isItemActive
-                      ? 'bg-[var(--color-surface-selected)] text-[var(--color-accent)] font-bold shadow-xs'
-                      : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-secondary)]'
+                      ? 'bg-(--color-surface-selected) text-(--color-accent) font-bold shadow-xs'
+                      : 'text-(--color-text-secondary) hover:text-(--color-text) hover:bg-(--color-surface-secondary)'
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
@@ -172,7 +182,7 @@ export function AppSidebar({ isOpen, onClose }) {
                           e.stopPropagation();
                           setIsMoreExpanded(!isMoreExpanded);
                         }}
-                        className="p-1 rounded text-[var(--color-text-muted)] hover:text-[var(--color-text)] cursor-pointer"
+                        className="p-1 rounded text-(--color-text-muted) hover:text-(--color-text) cursor-pointer"
                         title={isMoreExpanded ? 'Collapse sub-menu' : 'Expand sub-menu'}
                         aria-label="Toggle More menu"
                       >
@@ -187,7 +197,7 @@ export function AppSidebar({ isOpen, onClose }) {
 
                 {/* Sub-items nested under "More" */}
                 {item.isMoreTrigger && isMoreExpanded && (
-                  <div className="pl-4 pr-1 py-1 space-y-0.5 border-l-2 border-[var(--color-border)] ml-4 mt-1">
+                  <div className="pl-4 pr-1 py-1 space-y-0.5 border-l-2 border-(--color-border) ml-4 mt-1">
                     {moreSubItems.map((sub) => {
                       const SubIcon = sub.icon;
                       return (
@@ -200,8 +210,8 @@ export function AppSidebar({ isOpen, onClose }) {
                           className={({ isActive }) =>
                             `flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
                               isActive
-                                ? 'bg-[var(--color-accent-subtle)] text-[var(--color-accent)] font-bold'
-                                : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-secondary)]'
+                                ? 'bg-(--color-accent-subtle) text-(--color-accent) font-bold'
+                                : 'text-(--color-text-secondary) hover:text-(--color-text) hover:bg-(--color-surface-secondary)'
                             }`
                           }
                         >
@@ -220,18 +230,18 @@ export function AppSidebar({ isOpen, onClose }) {
         </div>
 
         {/* Sidebar Footer — Property Info & Saving Mode Toggle */}
-        <div className="p-3 border-t border-[var(--color-border)] space-y-2.5">
+        <div className="p-3 border-t border-(--color-border) space-y-2.5">
           {/* Active Property Card */}
-          <div className="p-2.5 rounded-xl border bg-[var(--color-surface-secondary)] border-[var(--color-border)]">
+          <div className="p-2.5 rounded-xl border bg-(--color-surface-secondary) border-(--color-border)">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-[var(--color-accent-subtle)] text-[var(--color-accent)] flex items-center justify-center shrink-0 border border-[var(--color-accent)]/20">
+              <div className="w-8 h-8 rounded-lg bg-(--color-accent-subtle) text-(--color-accent) flex items-center justify-center shrink-0 border border-(--color-accent)/20">
                 <PropIcon size={16} />
               </div>
               <div className="min-w-0 flex-1">
-                <span className="text-[11px] font-bold block text-[var(--color-text)] truncate">
+                <span className="text-[11px] font-bold block text-(--color-text) truncate">
                   {activeCustomerProperty?.propertyName || 'Customer Property'}
                 </span>
-                <span className="text-[9px] font-mono text-[var(--color-text-muted)] block truncate uppercase">
+                <span className="text-[9px] font-mono text-(--color-text-muted) block truncate uppercase">
                   {propType} · {activeCustomerProperty?.sanctionedLoadKw || 5} kW Sanctioned
                 </span>
               </div>
@@ -239,15 +249,15 @@ export function AppSidebar({ isOpen, onClose }) {
           </div>
 
           {/* Quick Saving Mode Toggle Pill */}
-          <div className="p-2.5 rounded-xl border bg-[var(--color-surface-secondary)] border-[var(--color-border)] flex items-center justify-between gap-2">
+          <div className="p-2.5 rounded-xl border bg-(--color-surface-secondary) border-(--color-border) flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <Leaf
                 size={14}
-                className={isSavingModeActive ? 'text-[var(--color-success)]' : 'text-[var(--color-text-muted)]'}
+                className={isSavingModeActive ? 'text-(--color-success)' : 'text-(--color-text-muted)'}
               />
               <div>
-                <span className="text-[11px] font-bold block text-[var(--color-text)]">Savings Mode</span>
-                <span className="text-[9px] font-mono text-[var(--color-text-muted)]">
+                <span className="text-[11px] font-bold block text-(--color-text)">Savings Mode</span>
+                <span className="text-[9px] font-mono text-(--color-text-muted)">
                   {isSavingModeActive ? 'Active (-15%)' : 'Disabled'}
                 </span>
               </div>
@@ -258,8 +268,8 @@ export function AppSidebar({ isOpen, onClose }) {
               onClick={() => toggleSavingMode()}
               className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold cursor-pointer transition-all border ${
                 isSavingModeActive
-                  ? 'bg-[var(--color-accent-subtle)] text-[var(--color-accent)] border-[var(--color-accent)]'
-                  : 'bg-[var(--color-surface)] text-[var(--color-text-secondary)] border-[var(--color-border)] hover:border-[var(--color-accent)]'
+                  ? 'bg-(--color-accent-subtle) text-(--color-accent) border-(--color-accent)'
+                  : 'bg-(--color-surface) text-(--color-text-secondary) border-(--color-border) hover:border-(--color-accent)'
               }`}
             >
               {isSavingModeActive ? 'ON' : 'OFF'}

@@ -1,18 +1,12 @@
 import { Link } from 'react-router-dom';
 import {
   Activity,
-  AlertTriangle,
-  ArrowRight,
   Bell,
   ChevronRight,
-  Cpu,
-  Layers,
   Lightbulb,
   Palette,
-  Receipt,
   Settings,
   TrendingUp,
-  Zap,
   Package,
   Wrench,
 } from 'lucide-react';
@@ -120,7 +114,7 @@ export function MorePage() {
       {/* Sections List */}
       {sections.map((sec, secIdx) => (
         <div key={secIdx} className="space-y-3">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted)] px-1">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-(--color-text-muted) px-1">
             {sec.category}
           </h2>
 
@@ -133,12 +127,12 @@ export function MorePage() {
                   <Surface
                     variant="primary"
                     padding="md"
-                    className="h-full border border-[var(--color-border)] hover:border-[var(--color-accent)] transition-all duration-200 flex flex-col justify-between group-hover:shadow-xs"
+                    className="h-full border border-(--color-border) hover:border-(--color-accent) transition-all duration-200 flex flex-col justify-between group-hover:shadow-xs"
                   >
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
                         <div
-                          className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 border border-[var(--color-border)]"
+                          className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 border border-(--color-border)"
                           style={{ backgroundColor: 'var(--color-surface-secondary)' }}
                         >
                           <Icon size={18} style={{ color: item.iconColor }} />
@@ -159,16 +153,16 @@ export function MorePage() {
                       </div>
 
                       <div>
-                        <h3 className="text-sm font-bold text-[var(--color-text)] group-hover:text-[var(--color-accent)] transition-colors">
+                        <h3 className="text-sm font-bold text-(--color-text) group-hover:text-(--color-accent) transition-colors">
                           {item.title}
                         </h3>
-                        <p className="text-xs text-[var(--color-text-secondary)] mt-1 line-clamp-2">
+                        <p className="text-xs text-(--color-text-secondary) mt-1 line-clamp-2">
                           {item.description}
                         </p>
                       </div>
                     </div>
 
-                    <div className="pt-3 mt-3 border-t border-[var(--color-border-subtle)] flex items-center justify-between text-xs font-semibold text-[var(--color-accent)]">
+                    <div className="pt-3 mt-3 border-t border-(--color-border-subtle) flex items-center justify-between text-xs font-semibold text-(--color-accent)">
                       <span>Open Section</span>
                       <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
                     </div>

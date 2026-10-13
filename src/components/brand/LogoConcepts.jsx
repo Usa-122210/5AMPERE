@@ -1,4 +1,4 @@
-import { Check, Info, Sparkles, Layers, Sliders } from 'lucide-react';
+import { Check, Layers } from 'lucide-react';
 import { BrandMark } from './BrandMark';
 import { BrandWordmark } from './BrandWordmark';
 import { Surface } from '../ui/Surface';
@@ -69,7 +69,7 @@ export function LogoConcepts({ className = '', compact = false }) {
   return (
     <div className={`space-y-6 ${className}`}>
       {/* Top Banner / Selection Status */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl border bg-[var(--color-surface-secondary)] border-[var(--color-border)]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl border bg-(--color-surface-secondary) border-(--color-border)">
         <div className="flex items-center gap-3">
           <div
             className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
@@ -79,10 +79,10 @@ export function LogoConcepts({ className = '', compact = false }) {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-mono font-semibold uppercase text-[var(--color-accent)]">
+              <span className="text-xs font-mono font-semibold uppercase text-(--color-accent)">
                 Brand Identity Evaluation
               </span>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text-secondary)]">
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-(--color-surface) border border-(--color-border) text-(--color-text-secondary)">
                 Interactive Selector
               </span>
             </div>
@@ -93,7 +93,7 @@ export function LogoConcepts({ className = '', compact = false }) {
         </div>
 
         {/* Quick concept switcher pills */}
-        <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)] self-start sm:self-auto">
+        <div className="flex items-center gap-1.5 p-1 rounded-xl bg-(--color-surface) border border-(--color-border) self-start sm:self-auto">
           {concepts.map((c, idx) => (
             <button
               key={c.id}
@@ -101,8 +101,8 @@ export function LogoConcepts({ className = '', compact = false }) {
               onClick={() => setConcept(c.id)}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer flex items-center gap-1.5 ${
                 activeConcept === c.id
-                  ? 'bg-[var(--color-accent)] text-[var(--color-accent-text)] shadow-xs'
-                  : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-secondary)]'
+                  ? 'bg-(--color-accent) text-(--color-accent-text) shadow-xs'
+                  : 'text-(--color-text-secondary) hover:text-(--color-text) hover:bg-(--color-surface-secondary)'
               }`}
             >
               <span>Concept {idx + 1}</span>
@@ -124,8 +124,8 @@ export function LogoConcepts({ className = '', compact = false }) {
               padding="lg"
               className={`flex flex-col justify-between border transition-all duration-200 relative ${
                 isSelected
-                  ? 'border-[var(--color-accent)] shadow-md ring-2 ring-[var(--color-accent)] ring-opacity-20'
-                  : 'border-[var(--color-border)] hover:border-[var(--color-border-subtle)]'
+                  ? 'border-(--color-accent) shadow-md ring-2 ring-(--color-accent) ring-opacity-20'
+                  : 'border-(--color-border) hover:border-(--color-border-subtle)'
               }`}
             >
               {/* Active Badge */}
@@ -152,7 +152,7 @@ export function LogoConcepts({ className = '', compact = false }) {
                   }}
                 >
                   {/* High-Res Mark */}
-                  <div className="p-3 rounded-2xl bg-[var(--color-surface)] border border-[var(--color-border)] shadow-xs">
+                  <div className="p-3 rounded-2xl bg-(--color-surface) border border-(--color-border) shadow-xs">
                     <BrandMark size={56} concept={item.id} />
                   </div>
 
@@ -163,33 +163,33 @@ export function LogoConcepts({ className = '', compact = false }) {
                 {/* Concept Title & Description */}
                 <div>
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-[11px] font-mono font-semibold uppercase text-[var(--color-accent)]">
+                    <span className="text-[11px] font-mono font-semibold uppercase text-(--color-accent)">
                       {item.tag}
                     </span>
-                    <span className="text-[11px] font-mono text-[var(--color-text-muted)]">
+                    <span className="text-[11px] font-mono text-(--color-text-muted)">
                       Option 0{idx + 1}
                     </span>
                   </div>
                   <h3 className="text-base font-bold mt-1" style={{ color: 'var(--color-text)' }}>
                     {item.title}
                   </h3>
-                  <p className="text-xs text-[var(--color-text-secondary)] mt-1.5 leading-relaxed">
+                  <p className="text-xs text-(--color-text-secondary) mt-1.5 leading-relaxed">
                     {item.description}
                   </p>
                 </div>
 
                 {/* Technical Geometry Breakdown */}
-                <div className="pt-3 border-t border-[var(--color-border)] space-y-2">
-                  <p className="text-[11px] font-mono font-semibold uppercase text-[var(--color-text-muted)]">
+                <div className="pt-3 border-t border-(--color-border) space-y-2">
+                  <p className="text-[11px] font-mono font-semibold uppercase text-(--color-text-muted)">
                     Engineering Geometry:
                   </p>
                   <ul className="space-y-1.5">
                     {item.technicalDetails.map((detail) => (
                       <li
                         key={detail}
-                        className="text-xs text-[var(--color-text-secondary)] flex items-start gap-2"
+                        className="text-xs text-(--color-text-secondary) flex items-start gap-2"
                       >
-                        <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] mt-1.5 shrink-0" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-(--color-accent) mt-1.5 shrink-0" />
                         <span>{detail}</span>
                       </li>
                     ))}
@@ -198,13 +198,13 @@ export function LogoConcepts({ className = '', compact = false }) {
 
                 {/* Design Rationale */}
                 <div
-                  className="p-3 rounded-xl border text-xs text-[var(--color-text-secondary)] leading-relaxed"
+                  className="p-3 rounded-xl border text-xs text-(--color-text-secondary) leading-relaxed"
                   style={{
                     backgroundColor: 'var(--color-surface)',
                     borderColor: 'var(--color-border)',
                   }}
                 >
-                  <span className="font-semibold text-[var(--color-text)] block mb-1">
+                  <span className="font-semibold text-(--color-text) block mb-1">
                     Design Rationale:
                   </span>
                   {item.rationale}
@@ -212,7 +212,7 @@ export function LogoConcepts({ className = '', compact = false }) {
               </div>
 
               {/* Action Button */}
-              <div className="mt-6 pt-4 border-t border-[var(--color-border)]">
+              <div className="mt-6 pt-4 border-t border-(--color-border)">
                 <Button
                   variant={isSelected ? 'primary' : 'secondary'}
                   size="sm"
@@ -234,51 +234,51 @@ export function LogoConcepts({ className = '', compact = false }) {
       </div>
 
       {/* Multi-Size Scalability Preview Strip */}
-      <Surface variant="primary" padding="md" className="border border-[var(--color-border)]">
+      <Surface variant="primary" padding="md" className="border border-(--color-border)">
         <div className="space-y-3">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-            <span className="text-xs font-mono font-semibold uppercase text-[var(--color-text-muted)]">
+            <span className="text-xs font-mono font-semibold uppercase text-(--color-text-muted)">
               Scalability &amp; Legibility Verification (Active Concept: {activeConcept.toUpperCase()})
             </span>
-            <span className="text-[11px] text-[var(--color-text-secondary)]">
+            <span className="text-[11px] text-(--color-text-secondary)">
               Tested at standard icon resolutions (16px to 64px)
             </span>
           </div>
 
-          <div className="flex flex-wrap items-center justify-around gap-6 py-4 px-4 rounded-xl bg-[var(--color-surface-secondary)] border border-[var(--color-border)]">
+          <div className="flex flex-wrap items-center justify-around gap-6 py-4 px-4 rounded-xl bg-(--color-surface-secondary) border border-(--color-border)">
             <div className="flex flex-col items-center gap-1.5">
-              <div className="p-2 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)]">
+              <div className="p-2 rounded-lg bg-(--color-surface) border border-(--color-border)">
                 <BrandMark size={16} concept={activeConcept} />
               </div>
-              <span className="text-[10px] font-mono text-[var(--color-text-muted)]">16px (Favicon)</span>
+              <span className="text-[10px] font-mono text-(--color-text-muted)">16px (Favicon)</span>
             </div>
 
             <div className="flex flex-col items-center gap-1.5">
-              <div className="p-2 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)]">
+              <div className="p-2 rounded-lg bg-(--color-surface) border border-(--color-border)">
                 <BrandMark size={24} concept={activeConcept} />
               </div>
-              <span className="text-[10px] font-mono text-[var(--color-text-muted)]">24px (Mobile Bar)</span>
+              <span className="text-[10px] font-mono text-(--color-text-muted)">24px (Mobile Bar)</span>
             </div>
 
             <div className="flex flex-col items-center gap-1.5">
-              <div className="p-2.5 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)]">
+              <div className="p-2.5 rounded-lg bg-(--color-surface) border border-(--color-border)">
                 <BrandMark size={32} concept={activeConcept} />
               </div>
-              <span className="text-[10px] font-mono text-[var(--color-text-muted)]">32px (Desktop Nav)</span>
+              <span className="text-[10px] font-mono text-(--color-text-muted)">32px (Desktop Nav)</span>
             </div>
 
             <div className="flex flex-col items-center gap-1.5">
-              <div className="p-3 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)]">
+              <div className="p-3 rounded-lg bg-(--color-surface) border border-(--color-border)">
                 <BrandMark size={48} concept={activeConcept} />
               </div>
-              <span className="text-[10px] font-mono text-[var(--color-text-muted)]">48px (Hero Feature)</span>
+              <span className="text-[10px] font-mono text-(--color-text-muted)">48px (Hero Feature)</span>
             </div>
 
             <div className="flex flex-col items-center gap-1.5">
-              <div className="p-3.5 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)]">
+              <div className="p-3.5 rounded-lg bg-(--color-surface) border border-(--color-border)">
                 <BrandMark size={64} concept={activeConcept} />
               </div>
-              <span className="text-[10px] font-mono text-[var(--color-text-muted)]">64px (Enclosure Mark)</span>
+              <span className="text-[10px] font-mono text-(--color-text-muted)">64px (Enclosure Mark)</span>
             </div>
           </div>
         </div>

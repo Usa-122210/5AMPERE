@@ -1,22 +1,12 @@
-import { useState } from 'react';
 import {
   AlertTriangle,
-  ArrowRight,
-  CheckCircle2,
-  ChevronRight,
   Clock,
   Coins,
-  CreditCard,
   ExternalLink,
   FileText,
-  HelpCircle,
-  Info,
-  Layers,
   Receipt,
   Settings2,
   ShieldCheck,
-  TrendingUp,
-  Zap,
 } from 'lucide-react';
 import { Surface } from '../components/ui/Surface';
 import { Button } from '../components/ui/Button';
@@ -85,7 +75,7 @@ export function BillingTariffPage() {
 
       {/* 1. Official Tariff Verification Status Banner */}
       <div
-        className="p-4 rounded-2xl border bg-[var(--color-surface)] shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4"
+        className="p-4 rounded-2xl border bg-(--color-surface) shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4"
         style={{ borderColor: isTariffVerified ? 'var(--color-success)' : 'var(--color-warning)' }}
       >
         <div className="flex items-start sm:items-center gap-3.5">
@@ -97,27 +87,27 @@ export function BillingTariffPage() {
             }}
           >
             {isTariffVerified ? (
-              <ShieldCheck size={20} className="text-[var(--color-success)]" />
+              <ShieldCheck size={20} className="text-(--color-success)" />
             ) : (
-              <AlertTriangle size={20} className="text-[var(--color-warning)]" />
+              <AlertTriangle size={20} className="text-(--color-warning)" />
             )}
           </div>
           <div>
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs font-mono font-bold uppercase text-[var(--color-text)]">
+              <span className="text-xs font-mono font-bold uppercase text-(--color-text)">
                 {activeTariff.discom} · {activeTariff.consumerCategory || activeTariff.category || 'Domestic Light & Power'}
               </span>
               <span
                 className={`text-[10px] font-mono px-2 py-0.5 rounded border ${
                   isTariffVerified
-                    ? 'bg-[var(--color-success-subtle, rgba(34, 197, 94, 0.1))] text-[var(--color-success)] border-[var(--color-success)]'
-                    : 'bg-[var(--color-warning-subtle, rgba(234, 179, 8, 0.1))] text-[var(--color-warning)] border-[var(--color-warning)]'
+                    ? 'bg-[var(--color-success-subtle, rgba(34, 197, 94, 0.1))] text-(--color-success) border-(--color-success)'
+                    : 'bg-[var(--color-warning-subtle, rgba(234, 179, 8, 0.1))] text-(--color-warning) border-(--color-warning)'
                 }`}
               >
                 {isTariffVerified ? 'Verified Official Order' : 'Unverified — Demo Only'}
               </span>
             </div>
-            <p className="text-xs text-[var(--color-text-secondary)] mt-1">
+            <p className="text-xs text-(--color-text-secondary) mt-1">
               Effective: {activeTariff.effectiveFrom || activeTariff.effectiveDate || 'Active Schedule'}. Fixed charges: ₹{activeTariff.fixedChargeRate || 110}/kW/month. Electricity duty: {activeTariff.electricityDutyPercent}%.
             </p>
           </div>
@@ -129,7 +119,7 @@ export function BillingTariffPage() {
               href={activeTariff.sourceUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-[var(--color-accent)] hover:underline"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-(--color-accent) hover:underline"
             >
               <span>Regulatory Order</span>
               <ExternalLink size={12} />
@@ -142,77 +132,77 @@ export function BillingTariffPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
         {/* Card 1: 30-Day Projected Bill */}
-        <Surface variant="primary" padding="md" className="border border-[var(--color-border)] space-y-2">
+        <Surface variant="primary" padding="md" className="border border-(--color-border) space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-[var(--color-text-secondary)]">30-Day Projected Bill</span>
-            <Receipt size={16} className="text-[var(--color-accent)]" />
+            <span className="text-xs font-semibold text-(--color-text-secondary)">30-Day Projected Bill</span>
+            <Receipt size={16} className="text-(--color-accent)" />
           </div>
-          <div className="text-2xl font-mono font-bold text-[var(--color-text)]">
+          <div className="text-2xl font-mono font-bold text-(--color-text)">
             {formatINR(totalBill)}
           </div>
-          <div className="text-[11px] text-[var(--color-text-muted)] font-mono">
+          <div className="text-[11px] text-(--color-text-muted) font-mono">
             At {projectedBillingCycleKwh} kWh / billing cycle
           </div>
         </Surface>
 
         {/* Card 2: Average Effective Rate */}
-        <Surface variant="primary" padding="md" className="border border-[var(--color-border)] space-y-2">
+        <Surface variant="primary" padding="md" className="border border-(--color-border) space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-[var(--color-text-secondary)]">Effective Energy Rate</span>
-            <Coins size={16} className="text-[var(--color-accent)]" />
+            <span className="text-xs font-semibold text-(--color-text-secondary)">Effective Energy Rate</span>
+            <Coins size={16} className="text-(--color-accent)" />
           </div>
-          <div className="text-2xl font-mono font-bold text-[var(--color-accent)]">
+          <div className="text-2xl font-mono font-bold text-(--color-accent)">
             {formatINR(effectiveRate)}
-            <span className="text-xs font-normal text-[var(--color-text-secondary)]">/kWh</span>
+            <span className="text-xs font-normal text-(--color-text-secondary)">/kWh</span>
           </div>
-          <div className="text-[11px] text-[var(--color-text-muted)] font-mono">
+          <div className="text-[11px] text-(--color-text-muted) font-mono">
             Marginal top slab: {formatINR(marginalRate)}/kWh
           </div>
         </Surface>
 
         {/* Card 3: Fixed Demand Charge */}
-        <Surface variant="primary" padding="md" className="border border-[var(--color-border)] space-y-2">
+        <Surface variant="primary" padding="md" className="border border-(--color-border) space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-[var(--color-text-secondary)]">Sanctioned Demand Cost</span>
-            <FileText size={16} className="text-[var(--color-text-secondary)]" />
+            <span className="text-xs font-semibold text-(--color-text-secondary)">Sanctioned Demand Cost</span>
+            <FileText size={16} className="text-(--color-text-secondary)" />
           </div>
-          <div className="text-2xl font-mono font-bold text-[var(--color-text)]">
+          <div className="text-2xl font-mono font-bold text-(--color-text)">
             {formatINR(fixedCharges)}
-            <span className="text-xs font-normal text-[var(--color-text-secondary)]">/mo</span>
+            <span className="text-xs font-normal text-(--color-text-secondary)">/mo</span>
           </div>
-          <div className="text-[11px] text-[var(--color-text-muted)] font-mono">
+          <div className="text-[11px] text-(--color-text-muted) font-mono">
             {contractedLoadKw} kW @ ₹{activeTariff.fixedChargeRate || 110}/kW/mo
           </div>
         </Surface>
 
         {/* Card 4: Daily Energy Cost */}
-        <Surface variant="primary" padding="md" className="border border-[var(--color-border)] space-y-2">
+        <Surface variant="primary" padding="md" className="border border-(--color-border) space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-[var(--color-text-secondary)]">Estimated Daily Cost</span>
-            <Clock size={16} className="text-[var(--color-accent)]" />
+            <span className="text-xs font-semibold text-(--color-text-secondary)">Estimated Daily Cost</span>
+            <Clock size={16} className="text-(--color-accent)" />
           </div>
-          <div className="text-2xl font-mono font-bold text-[var(--color-text)]">
+          <div className="text-2xl font-mono font-bold text-(--color-text)">
             {formatINR(totalBill / 30)}
-            <span className="text-xs font-normal text-[var(--color-text-secondary)]">/day</span>
+            <span className="text-xs font-normal text-(--color-text-secondary)">/day</span>
           </div>
-          <div className="text-[11px] text-[var(--color-text-muted)] font-mono">
+          <div className="text-[11px] text-(--color-text-muted) font-mono">
             ~{dailyKwh} kWh daily consumption
           </div>
         </Surface>
       </div>
 
       {/* 3. Progressive Slab Visualizer */}
-      <Surface variant="primary" padding="lg" className="border border-[var(--color-border)] space-y-6">
-        <div className="border-b border-[var(--color-border)] pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+      <Surface variant="primary" padding="lg" className="border border-(--color-border) space-y-6">
+        <div className="border-b border-(--color-border) pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <h3 className="text-base font-bold text-[var(--color-text)]">
+            <h3 className="text-base font-bold text-(--color-text)">
               Progressive Consumption Slabs ({activeTariff.discom.split(' ')[0]})
             </h3>
-            <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">
+            <p className="text-xs text-(--color-text-secondary) mt-0.5">
               UPPCL domestic tariffs charge progressively higher rates as consumption crosses tiered thresholds.
             </p>
           </div>
-          <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-[var(--color-surface-secondary)] text-[var(--color-text-secondary)] border border-[var(--color-border)] self-start sm:self-auto">
+          <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-(--color-surface-secondary) text-(--color-text-secondary) border border-(--color-border) self-start sm:self-auto">
             Total Cycle: {projectedBillingCycleKwh} kWh
           </span>
         </div>
@@ -232,21 +222,21 @@ export function BillingTariffPage() {
                 key={slab.id || index}
                 className={`p-4 rounded-xl border space-y-3 transition-all ${
                   isCurrent
-                    ? 'bg-[var(--color-surface-secondary)] border-[var(--color-accent)] shadow-xs ring-1 ring-[var(--color-accent)]'
-                    : 'bg-[var(--color-surface)] border-[var(--color-border)]'
+                    ? 'bg-(--color-surface-secondary) border-(--color-accent) shadow-xs ring-1 ring-(--color-accent)'
+                    : 'bg-(--color-surface) border-(--color-border)'
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[var(--color-text-secondary)]">
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-(--color-text-secondary)">
                     Slab {index + 1}
                   </span>
                   <span
                     className={`text-[9px] font-mono px-1.5 py-0.5 rounded font-bold ${
                       isCurrent
-                        ? 'bg-[var(--color-accent)] text-white'
+                        ? 'bg-(--color-accent) text-white'
                         : isFull
-                        ? 'bg-[var(--color-surface-secondary)] text-[var(--color-text-secondary)]'
-                        : 'bg-[var(--color-surface-secondary)] text-[var(--color-text-muted)]'
+                        ? 'bg-(--color-surface-secondary) text-(--color-text-secondary)'
+                        : 'bg-(--color-surface-secondary) text-(--color-text-muted)'
                     }`}
                   >
                     {isCurrent ? 'ACTIVE TIER' : isFull ? 'FILLED' : 'UNREACHED'}
@@ -254,22 +244,22 @@ export function BillingTariffPage() {
                 </div>
 
                 <div>
-                  <div className="text-base font-mono font-bold text-[var(--color-text)]">
+                  <div className="text-base font-mono font-bold text-(--color-text)">
                     {slab.label || (isInf ? `> ${lower} kWh` : `${lower} – ${upper} kWh`)}
                   </div>
-                  <div className="text-xs font-mono text-[var(--color-accent)] font-semibold mt-0.5">
+                  <div className="text-xs font-mono text-(--color-accent) font-semibold mt-0.5">
                     {formatINR(slab.ratePerKWh)} / kWh
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-[var(--color-border)] space-y-1 text-xs font-mono">
-                  <div className="flex items-center justify-between text-[var(--color-text-secondary)]">
+                <div className="pt-2 border-t border-(--color-border) space-y-1 text-xs font-mono">
+                  <div className="flex items-center justify-between text-(--color-text-secondary)">
                     <span>Units Billed:</span>
-                    <span className="font-bold text-[var(--color-text)]">{slabBreakdown.units} kWh</span>
+                    <span className="font-bold text-(--color-text)">{slabBreakdown.units} kWh</span>
                   </div>
-                  <div className="flex items-center justify-between text-[var(--color-text-secondary)]">
+                  <div className="flex items-center justify-between text-(--color-text-secondary)">
                     <span>Slab Charge:</span>
-                    <span className="font-bold text-[var(--color-text)]">{formatINR(slabBreakdown.cost)}</span>
+                    <span className="font-bold text-(--color-text)">{formatINR(slabBreakdown.cost)}</span>
                   </div>
                 </div>
               </div>
@@ -279,20 +269,20 @@ export function BillingTariffPage() {
 
         {/* Visual Progress Bar of Units across slabs */}
         <div className="space-y-1.5 pt-2">
-          <div className="flex items-center justify-between text-[11px] font-mono text-[var(--color-text-secondary)]">
+          <div className="flex items-center justify-between text-[11px] font-mono text-(--color-text-secondary)">
             <span>Slab Progression (0 to 500+ kWh)</span>
-            <span className="font-bold text-[var(--color-accent)]">
+            <span className="font-bold text-(--color-accent)">
               {projectedBillingCycleKwh} kWh consumed
             </span>
           </div>
-          <div className="w-full h-3 rounded-full bg-[var(--color-surface-secondary)] overflow-hidden flex border border-[var(--color-border)]">
+          <div className="w-full h-3 rounded-full bg-(--color-surface-secondary) overflow-hidden flex border border-(--color-border)">
             {(activeTariff.slabs || []).map((slab, index) => {
               const slabBreakdown = slabBreakdowns[index] || { units: 0 };
               const percent = projectedBillingCycleKwh > 0
                 ? (slabBreakdown.units / projectedBillingCycleKwh) * 100
                 : 0;
               const colors = [
-                'bg-[var(--color-accent)]',
+                'bg-(--color-accent)',
                 'bg-blue-500',
                 'bg-amber-500',
                 'bg-rose-500',
@@ -312,87 +302,87 @@ export function BillingTariffPage() {
       </Surface>
 
       {/* 4. Itemized Monthly Bill Decomposition */}
-      <Surface variant="primary" padding="lg" className="border border-[var(--color-border)] space-y-6">
-        <div className="border-b border-[var(--color-border)] pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+      <Surface variant="primary" padding="lg" className="border border-(--color-border) space-y-6">
+        <div className="border-b border-(--color-border) pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <h3 className="text-base font-bold text-[var(--color-text)]">
+            <h3 className="text-base font-bold text-(--color-text)">
               Itemized Monthly Bill Breakdown
             </h3>
-            <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">
+            <p className="text-xs text-(--color-text-secondary) mt-0.5">
               Exact statutory formula: Bill = Energy Charges + Fixed Demand Charge + Electricity Duty ({activeTariff.electricityDutyPercent}%).
             </p>
           </div>
-          <span className="text-xs font-mono font-bold text-[var(--color-accent)]">
+          <span className="text-xs font-mono font-bold text-(--color-accent)">
             Billing Cycle: 30 Days
           </span>
         </div>
 
         <div className="space-y-3">
           {/* Energy Charges line */}
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[var(--color-surface-secondary)] text-xs">
+          <div className="flex items-center justify-between p-3 rounded-xl bg-(--color-surface-secondary) text-xs">
             <div>
-              <span className="font-bold text-[var(--color-text)]">1. Energy Charges (Progressive Slabs)</span>
-              <p className="text-[11px] text-[var(--color-text-secondary)] mt-0.5">
+              <span className="font-bold text-(--color-text)">1. Energy Charges (Progressive Slabs)</span>
+              <p className="text-[11px] text-(--color-text-secondary) mt-0.5">
                 Calculated across {(activeTariff.slabs || []).length} slabs for {projectedBillingCycleKwh} kWh
               </p>
             </div>
-            <span className="font-mono font-bold text-sm text-[var(--color-text)]">
+            <span className="font-mono font-bold text-sm text-(--color-text)">
               {formatINR(energyCharges)}
             </span>
           </div>
 
           {/* Fixed Demand Charge line */}
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[var(--color-surface-secondary)] text-xs">
+          <div className="flex items-center justify-between p-3 rounded-xl bg-(--color-surface-secondary) text-xs">
             <div>
-              <span className="font-bold text-[var(--color-text)]">2. Fixed Demand Charge</span>
-              <p className="text-[11px] text-[var(--color-text-secondary)] mt-0.5">
+              <span className="font-bold text-(--color-text)">2. Fixed Demand Charge</span>
+              <p className="text-[11px] text-(--color-text-secondary) mt-0.5">
                 {contractedLoadKw} kW Sanctioned Load × ₹{activeTariff.fixedChargeRate || 110}/kW/month
               </p>
             </div>
-            <span className="font-mono font-bold text-sm text-[var(--color-text)]">
+            <span className="font-mono font-bold text-sm text-(--color-text)">
               {formatINR(fixedCharges)}
             </span>
           </div>
 
           {/* Electricity Duty line */}
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[var(--color-surface-secondary)] text-xs">
+          <div className="flex items-center justify-between p-3 rounded-xl bg-(--color-surface-secondary) text-xs">
             <div>
-              <span className="font-bold text-[var(--color-text)]">3. Statutory Electricity Duty</span>
-              <p className="text-[11px] text-[var(--color-text-secondary)] mt-0.5">
+              <span className="font-bold text-(--color-text)">3. Statutory Electricity Duty</span>
+              <p className="text-[11px] text-(--color-text-secondary) mt-0.5">
                 {activeTariff.electricityDutyPercent}% levied on Energy Charges ({formatINR(energyCharges)})
               </p>
             </div>
-            <span className="font-mono font-bold text-sm text-[var(--color-text)]">
+            <span className="font-mono font-bold text-sm text-(--color-text)">
               {formatINR(duty)}
             </span>
           </div>
 
           {/* Surcharges if any */}
           {activeTariff.regulatorySurchargePercent > 0 && (
-            <div className="flex items-center justify-between p-3 rounded-xl bg-[var(--color-surface-secondary)] text-xs">
+            <div className="flex items-center justify-between p-3 rounded-xl bg-(--color-surface-secondary) text-xs">
               <div>
-                <span className="font-bold text-[var(--color-text)]">4. Regulatory Surcharge</span>
-                <p className="text-[11px] text-[var(--color-text-secondary)] mt-0.5">
+                <span className="font-bold text-(--color-text)">4. Regulatory Surcharge</span>
+                <p className="text-[11px] text-(--color-text-secondary) mt-0.5">
                   {activeTariff.regulatorySurchargePercent}% on base energy charges
                 </p>
               </div>
-              <span className="font-mono font-bold text-sm text-[var(--color-text)]">
+              <span className="font-mono font-bold text-sm text-(--color-text)">
                 {formatINR((energyCharges * activeTariff.regulatorySurchargePercent) / 100)}
               </span>
             </div>
           )}
 
           {/* Total Payable Bill */}
-          <div className="flex items-center justify-between p-4 rounded-xl border border-[var(--color-accent)] bg-[var(--color-accent-subtle)] text-sm">
+          <div className="flex items-center justify-between p-4 rounded-xl border border-(--color-accent) bg-(--color-accent-subtle) text-sm">
             <div>
-              <span className="font-extrabold text-[var(--color-text)] text-base">
+              <span className="font-extrabold text-(--color-text) text-base">
                 Total Estimated Monthly Bill
               </span>
-              <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">
+              <p className="text-xs text-(--color-text-secondary) mt-0.5">
                 Includes all applicable slabs, demand, and state tax
               </p>
             </div>
-            <span className="font-mono font-extrabold text-2xl text-[var(--color-accent)]">
+            <span className="font-mono font-extrabold text-2xl text-(--color-accent)">
               {formatINR(totalBill)}
             </span>
           </div>
@@ -400,22 +390,22 @@ export function BillingTariffPage() {
       </Surface>
 
       {/* 5. Sanctioned Load Adjustment Widget */}
-      <Surface variant="primary" padding="lg" className="border border-[var(--color-border)] space-y-4">
+      <Surface variant="primary" padding="lg" className="border border-(--color-border) space-y-4">
         <div>
-          <h3 className="text-base font-bold text-[var(--color-text)]">
+          <h3 className="text-base font-bold text-(--color-text)">
             Sanctioned Load Configuration
           </h3>
-          <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">
+          <p className="text-xs text-(--color-text-secondary) mt-0.5">
             Your connection's contracted demand with {activeTariff.discom.split(' ')[0]}. Fixed monthly charges scale directly with this capacity.
           </p>
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-[var(--color-surface-secondary)] border border-[var(--color-border)]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-(--color-surface-secondary) border border-(--color-border)">
           <div>
-            <div className="text-sm font-bold text-[var(--color-text)]">
-              Contracted Capacity: <span className="font-mono text-[var(--color-accent)]">{contractedLoadKw} kW</span>
+            <div className="text-sm font-bold text-(--color-text)">
+              Contracted Capacity: <span className="font-mono text-(--color-accent)">{contractedLoadKw} kW</span>
             </div>
-            <span className="text-xs text-[var(--color-text-muted)] mt-0.5 block">
+            <span className="text-xs text-(--color-text-muted) mt-0.5 block">
               Fixed charge impact: {formatINR(contractedLoadKw * (activeTariff.fixedChargeRate || 110))} per month
             </span>
           </div>
@@ -428,8 +418,8 @@ export function BillingTariffPage() {
                 onClick={() => setContractedLoadKw(kw)}
                 className={`px-3 py-1.5 rounded-lg font-mono text-xs font-bold border transition-colors ${
                   contractedLoadKw === kw
-                    ? 'bg-[var(--color-accent)] text-white border-[var(--color-accent)]'
-                    : 'bg-[var(--color-surface)] text-[var(--color-text)] border-[var(--color-border)] hover:border-[var(--color-accent)]'
+                    ? 'bg-(--color-accent) text-white border-(--color-accent)'
+                    : 'bg-(--color-surface) text-(--color-text) border-(--color-border) hover:border-(--color-accent)'
                 }`}
               >
                 {kw} kW

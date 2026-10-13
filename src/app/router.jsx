@@ -1,5 +1,6 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { AppShell } from '../components/layout/AppShell';
+import { HomePage } from '../pages/HomePage';
 import { OverviewPage } from '../pages/OverviewPage';
 import { LiveMonitoringPage } from '../pages/LiveMonitoringPage';
 import { AppliancesPage } from '../pages/AppliancesPage';
@@ -21,7 +22,7 @@ import { InstallationSupportPage } from '../pages/customer/InstallationSupportPa
 import { LoginPage } from '../pages/auth/LoginPage';
 import { SignupOnboardingPage } from '../pages/auth/SignupOnboardingPage';
 
-// Technician / Company Staff Shell & Pages
+// Developer / Technician Workspace Shell & Pages
 import { TechnicianShell } from '../components/layout/TechnicianShell';
 import { TechnicianOverviewPage } from '../pages/technician/TechnicianOverviewPage';
 import { CustomerProfilesPage } from '../pages/technician/CustomerProfilesPage';
@@ -30,58 +31,71 @@ import { ServiceRequestsPage } from '../pages/technician/ServiceRequestsPage';
 import { TechnicianCataloguePage } from '../pages/technician/TechnicianCataloguePage';
 import { HomeConfiguratorPage } from '../pages/technician/HomeConfiguratorPage';
 
+// Admin Dashboard Page
+import { AdminDashboardPage } from '../pages/admin/AdminDashboardPage';
+
 // Auth State Context
 import { useAuth } from '../context/AuthContext';
 
 /**
- * CustomerAuthGuard — Root entry guard.
- * If unauthenticated, displays LoginPage immediately with zero delay.
- * If authenticated as technician, directs to technician operations workspace.
- * If customer, renders the full customer AppShell.
+ * DeveloperAuthGuard — Protects /developer (and /technician alias).
+ * Allows 'developer', 'technician', or 'admin' roles.
  */
-function CustomerAuthGuard({ theme, onToggleTheme }) {
+function DeveloperAuthGuard({ theme, onToggleTheme }) {
   const { currentUser } = useAuth();
 
   if (!currentUser) {
-    return <LoginPage defaultTab="customer" />;
+    return <LoginPage defaultRole="developer" />;
   }
 
-  if (currentUser.role === 'technician') {
-    return <Navigate to="/technician" replace />;
-  }
-
-  return <AppShell theme={theme} onToggleTheme={onToggleTheme} />;
-}
-
-/**
- * TechnicianAuthGuard — Staff portal guard.
- * If unauthenticated, displays LoginPage with Staff tab pre-selected.
- * If customer, redirects back to customer overview.
- * If technician, renders TechnicianShell.
- */
-function TechnicianAuthGuard({ theme, onToggleTheme }) {
-  const { currentUser } = useAuth();
-
-  if (!currentUser) {
-    return <LoginPage defaultTab="staff" />;
-  }
-
-  if (currentUser.role !== 'technician') {
-    return <Navigate to="/" replace />;
+  if (
+    currentUser.role !== 'developer' &&
+    currentUser.role !== 'technician' &&
+    currentUser.role !== 'admin'
+  ) {
+    return <Navigate to="/dashboard" replace />;
   }
 
   return <TechnicianShell theme={theme} onToggleTheme={onToggleTheme} />;
 }
 
 /**
+ * AdminAuthGuard — Protects /admin.
+ * Allows 'admin' role.
+ */
+function AdminAuthGuard() {
+  const { currentUser } = useAuth();
+
+  if (!currentUser) {
+    return <LoginPage defaultRole="admin" />;
+  }
+
+  if (currentUser.role !== 'admin') {
+    return (
+      <Navigate
+        to={currentUser.role === 'developer' || currentUser.role === 'technician' ? '/developer' : '/dashboard'}
+        replace
+      />
+    );
+  }
+
+  return <AdminDashboardPage />;
+}
+
+/**
  * createAppRouter — Builds the React Router configuration.
+ * Opens on the normal public homepage (/) without requiring login.
  */
 export function createAppRouter(options = {}) {
   const { theme, onToggleTheme } = options;
 
-  const customerRoutes = [
+  const publicAndUserRoutes = [
     {
       index: true,
+      element: <HomePage />,
+    },
+    {
+      path: 'dashboard',
       element: <OverviewPage />,
     },
     {
@@ -138,7 +152,7 @@ export function createAppRouter(options = {}) {
     },
   ];
 
-  const technicianRoutes = [
+  const developerRoutes = [
     {
       index: true,
       element: <TechnicianOverviewPage />,
@@ -170,7 +184,7 @@ export function createAppRouter(options = {}) {
   ];
 
   return createBrowserRouter([
-    // Public / Entry Authentication Routes
+    // Authentication Routes
     {
       path: '/login',
       element: <LoginPage />,
@@ -180,19 +194,30 @@ export function createAppRouter(options = {}) {
       element: <SignupOnboardingPage />,
     },
 
-    // Technician / Company Staff Workspace Routes
+    // Admin Dashboard Route
     {
-      path: '/technician',
-      element: <TechnicianAuthGuard theme={theme} onToggleTheme={onToggleTheme} />,
-      children: technicianRoutes,
+      path: '/admin',
+      element: <AdminAuthGuard />,
     },
 
-    // Customer Portal Routes (Protected by CustomerAuthGuard)
+    // Developer Workspace Routes (/developer & /technician alias)
+    {
+      path: '/developer',
+      element: <DeveloperAuthGuard theme={theme} onToggleTheme={onToggleTheme} />,
+      children: developerRoutes,
+    },
+    {
+      path: '/technician',
+      element: <DeveloperAuthGuard theme={theme} onToggleTheme={onToggleTheme} />,
+      children: developerRoutes,
+    },
+
+    // Normal Public Website & User Portal Routes (No forced login wall on /)
     {
       path: '/',
-      element: <CustomerAuthGuard theme={theme} onToggleTheme={onToggleTheme} />,
+      element: <AppShell theme={theme} onToggleTheme={onToggleTheme} />,
       children: [
-        ...customerRoutes,
+        ...publicAndUserRoutes,
         {
           path: '*',
           element: <Navigate to="/" replace />,
@@ -201,11 +226,12 @@ export function createAppRouter(options = {}) {
     },
     {
       path: '/index.html',
-      element: <CustomerAuthGuard theme={theme} onToggleTheme={onToggleTheme} />,
-      children: customerRoutes,
+      element: <AppShell theme={theme} onToggleTheme={onToggleTheme} />,
+      children: publicAndUserRoutes,
     },
   ]);
 }
 
 export const router = createAppRouter();
 export default router;
+
